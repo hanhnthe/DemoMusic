@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/myrecyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="#1744"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/image1"
+            android:layout_width="65dp"
+            android:layout_height="match_parent"
+            android:padding="7dp"
+            android:src="@drawable/anh_oi_o_lai" />
+
+        <LinearLayout
+            android:layout_width="217dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameSong2"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="bottom"
+                android:text="anh oi o lai"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+            <TextView
+                android:id="@+id/author1"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/w_33"
+                android:text="chi pu"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/playSong1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@color/whilenull"
+            android:src="@drawable/ic_pause_1" />
+    </LinearLayout>
+</LinearLayout>

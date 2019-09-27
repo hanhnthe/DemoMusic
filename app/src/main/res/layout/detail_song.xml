@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/contans_fargemt"
+    android:layout_height="match_parent"
+    >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/anh_nha_o_dau_the"
+        android:id="@+id/manhinh"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:background="@color/whilebackground"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:src="@drawable/anh_oi_o_lai" />
+
+            <LinearLayout
+                android:layout_width="203dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/nameSong3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:text="anh oi o lai"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title" />
+
+                <TextView
+                    android:id="@+id/author2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="chi pu"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/listSong"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@color/whilenull"
+                android:src="@drawable/ic_list_song" />
+
+            <ImageButton
+                android:id="@+id/popup2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@color/whilenull"
+                android:src="@drawable/ic_popup_large" />
+
+        </LinearLayout>
+
+
+        <ImageButton
+            android:id="@+id/repeatbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/ic_repeat"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/shufflebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/ic_shuffle_white"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:background="@color/whilebackground"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/startTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="19dp"
+                    android:gravity="left"
+                    android:paddingLeft="13dp"
+                    android:text="0:00"
+                    android:textColor="#B000"
+                    android:textSize="12sp"/>
+
+                <ImageButton
+                    android:id="@+id/likeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_36"
+                    android:background="@color/whilenull"
+                    app:srcCompat="@drawable/ic_like" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/leftButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@color/whilenull"
+                android:src="@drawable/ic_left" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/whilenull"
+                    android:src="@drawable/ic_play_2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/playSong2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/whilenull"
+                    android:src="@drawable/ic_pause_22"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <ImageButton
+                android:id="@+id/right"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@color/whilenull"
+                android:src="@drawable/ic_right" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/maxTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="19dp"
+                    android:gravity="right"
+                    android:text="5:15"
+                    android:textColor="#B000"
+                    android:paddingRight="13dp"
+                    android:textSize="12sp"/>
+
+                <ImageButton
+                    android:id="@+id/disLikeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@color/whilenull"
+                    android:src="@drawable/ic_dis_like" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:progress="50"
+        android:paddingLeft="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="60dp"
+        />
+</FrameLayout>

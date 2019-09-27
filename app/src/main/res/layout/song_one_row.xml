@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="59dp">
+
+    <TextView
+        android:id="@+id/numberSong"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/nameSong"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:paddingLeft="3dp"
+            android:text="anh ơi ở lại"
+            android:textColor="#000"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/timeSong"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="3dp"
+            android:text="05:15"
+            android:textColor="#000"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/popup"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:background="@color/whilenull"
+        android:src="@drawable/ic_popup_small" />
+
+</LinearLayout>

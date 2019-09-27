@@ -1,0 +1,34 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="width_81">81dp</dimen>
+    <dimen name="width_82">82dp</dimen>
+    <dimen name="height_27">27dp</dimen>
+    <dimen name="layout_36">36dp</dimen>
+    <dimen name="height_61">61dp</dimen>
+    <dimen name="height_68">68dp</dimen>
+    <dimen name="height_50">50dp</dimen>
+    <dimen name="height_361">361dp</dimen>
+    <dimen name="width_76">76dp</dimen>
+    <dimen name="wedth_430">430dp</dimen>
+    <dimen name="w_79">79dp</dimen>
+    <dimen name="w_255">255dp</dimen>
+    <dimen name="w_41">41dp</dimen>
+    <dimen name="w_38">38dp</dimen>
+    <dimen name="w_93">93dp</dimen>
+    <dimen name="w_69">69dp</dimen>
+    <dimen name="s_14">14sp</dimen>
+    <dimen name="w_293">293dp</dimen>
+    <dimen name="w_35">35dp</dimen>
+    <dimen name="s_22">22sp</dimen>
+    <dimen name="w_33">33dp</dimen>
+    <dimen name="s_15">15sp</dimen>
+    <dimen name="w_74">74dp</dimen>
+    <dimen name="w_243">243dp</dimen>
+    <dimen name="w_55">55dp</dimen>
+    <dimen name="w_637">637dp</dimen>
+    <dimen name="w_160">160dp</dimen>
+    <dimen name="w_23">23dp</dimen>
+    <dimen name="w_60">60dp</dimen>
+
+
+</resources>

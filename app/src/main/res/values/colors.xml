@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF5600</color>
+    <color name="colorPrimaryDark">#CC3300</color>
+    <color name="colorAccent">#FF6900</color>
+    <color name="colorOrange">#FF3400</color>
+    <color name="whilebackground">#DFFFFFFF</color>
+    <color name="whilenull">#00FFFFFF</color>
+</resources>
