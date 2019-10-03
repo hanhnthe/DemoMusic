@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/contans_fargemt"
@@ -143,7 +144,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:id="@+id/play">
 
                 <ImageButton
                     android:layout_width="match_parent"
@@ -155,18 +157,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/playSong2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/whilenull"
-                    android:src="@drawable/ic_pause_22"
+                    android:layout_width="29dp"
+                    android:layout_height="29dp"
+                    android:background="@drawable/ic_play_22"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintHorizontal_bias="0.509"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 

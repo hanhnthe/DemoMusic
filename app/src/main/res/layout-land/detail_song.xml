@@ -156,7 +156,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="53dp"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:id="@+id/play">
 
                 <ImageButton
                     android:layout_width="match_parent"
@@ -168,7 +169,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/playSong2"
                     android:layout_width="16dp"
                     android:layout_height="16dp"

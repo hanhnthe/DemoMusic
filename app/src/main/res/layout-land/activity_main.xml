@@ -25,18 +25,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-        <fragment
-            android:name="com.example.hanhcopy26_9.fragment.AllSongsFragment"
+        android:orientation="horizontal"
+        android:id="@+id/container_fragment_land">
+
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id= "@+id/fragment_1"
             />
 
-        <fragment
+        <FrameLayout
             android:id="@+id/fagment_2"
-            android:name="com.example.hanhcopy26_9.fragment.DetailSongFragment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2" />

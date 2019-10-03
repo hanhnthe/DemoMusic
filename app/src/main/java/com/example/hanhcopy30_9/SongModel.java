@@ -1,20 +1,31 @@
-package com.example.hanhcopy26_9;
+package com.example.hanhcopy30_9;
 
 import java.io.Serializable;
 
 public class SongModel implements Serializable {
      int number,imageSong;
      String nameSong, authorSong,timeSong;
+    Boolean checkPlay;
 
      public SongModel(){}
 
-     public SongModel(int number, String nameSong, String authorSong, int imageSong, String timeSong){
-         this.authorSong = authorSong;
-         this.imageSong = imageSong;
-         this.timeSong= timeSong;
-         this.nameSong = nameSong;
-         this.number = number;
-     }
+    public SongModel(int number, String nameSong, String authorSong, int imageSong, String timeSong, Boolean checkPlay) {
+        this.authorSong = authorSong;
+        this.imageSong = imageSong;
+        this.timeSong= timeSong;
+        this.nameSong = nameSong;
+        this.number = number;
+        this.checkPlay = checkPlay;
+    }
+
+    public SongModel(String nameSong, String authorSong, int imageSong, String timeSong, Boolean checkPlay) {
+        this.authorSong = authorSong;
+        this.imageSong = imageSong;
+        this.timeSong = timeSong;
+        this.nameSong = nameSong;
+        this.checkPlay = checkPlay;
+
+    }
 
     public int getNumber() {
         return number;
@@ -56,4 +67,11 @@ public class SongModel implements Serializable {
         this.timeSong = timeSong;
     }
 
+    public Boolean getCheckPlay() {
+        return checkPlay;
+    }
+
+    public void setCheckPlay(Boolean checkPlay) {
+        this.checkPlay = checkPlay;
+    }
 }

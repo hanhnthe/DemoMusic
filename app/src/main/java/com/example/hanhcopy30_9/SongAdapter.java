@@ -1,4 +1,4 @@
-package com.example.hanhcopy26_9;
+package com.example.hanhcopy30_9;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -10,13 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> {
 
     protected SongGetter mSongGetter;
-
     private OnSongClickListener mOnSongClickListener;
+    private int mPos = -1;
 
 
     //contructor
@@ -35,30 +33,30 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final SongAdapter.MyViewHolder holder, final int position) {
-        final SongModel songModel = mSongGetter.getSongAt(position);
+        SongModel songModel = mSongGetter.getSongAt(position);
 
-        //set du lieu vao trong dong
+
         final TextView text1 = holder.textTime;
         text1.setText(songModel.getTimeSong());
-        holder.textNumber.setText("" + songModel.getNumber());
         holder.textName.setText(songModel.getNameSong());
+        holder.textNumber.setText(Integer.toString(songModel.getNumber()));
+        if (mPos == position) {
+            holder.textName.setTypeface(null, Typeface.BOLD);
+        } else {
+            holder.textName.setTypeface(null, Typeface.NORMAL);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSongGetter.setCurrentItemIndex(position);
                 SongModel song = mSongGetter.getCurrentItem();
-
-                if (mListener != null) {
-                    mListener.onClickItem(song);
-                    TextView view1 = view.findViewById(R.id.nameSong);
-                    view1.setTypeface(null,Typeface.BOLD);
+                mPos = holder.getLayoutPosition();
+                if (mOnSongClickListener != null) {
+                    mOnSongClickListener.onClickItem(song);
                     notifyDataSetChanged();
                 }
-
-
             }
         });
-
     }
 
     @Override
@@ -77,14 +75,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             textNumber = (TextView) itemView.findViewById(R.id.numberSong);
             textTime = (TextView) itemView.findViewById(R.id.timeSong);
 
-
         }
     }
 
-    private OnSongClickListener mListener;
-
-    public void setOnclickListener(OnSongClickListener listener) {
-        mListener = listener;
+    public void setOnSongclickListener(OnSongClickListener listener) {
+        mOnSongClickListener = listener;
 
     }
 
