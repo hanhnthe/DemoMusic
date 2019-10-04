@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh4_10.OnClickViewService;
 import com.example.hanh4_10.OnSongClickListener;
 import com.example.hanh4_10.SongModel;
 import com.example.hanh4_10.fragment.AllSongsFragment;
@@ -15,7 +14,7 @@ public abstract class LayoutController implements OnSongClickListener {
 
     protected AppCompatActivity mActivity;
     protected AllSongsFragment mAllSongsFragment;
-    protected OnClickViewService mOnclickService;
+    protected OnSongClickListener mOnclickService;
 
     public LayoutController(AppCompatActivity activity) {
         mActivity = activity;
@@ -39,5 +38,5 @@ public abstract class LayoutController implements OnSongClickListener {
 
     public abstract void onCreate(Bundle saveInstate, int currentSongNumber);
 
-    public abstract void setmOnclickService(OnClickViewService click);
+    public abstract void setmOnclickService(OnSongClickListener click);
 }

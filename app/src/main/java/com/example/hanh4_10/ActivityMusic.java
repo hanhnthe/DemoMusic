@@ -19,11 +19,12 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityMusic extends AppCompatActivity implements OnClickViewService {
+public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
     ActionBar actionBar ;
     LayoutController mLayoutController;
     SongGetter songGetter;// = new SongGetter();
@@ -124,9 +125,10 @@ public class ActivityMusic extends AppCompatActivity implements OnClickViewServi
 
 
     @Override
-    public void clickViewService(SongModel item) {
-        mMediaService.setSong(item.getNumber());
-        mMediaService.playSong();
+    public void onClickItem(SongModel item) {
+        Toast.makeText(this, "hnhanh" + item.getNumber(), Toast.LENGTH_SHORT).show();
+//        mMediaService.setSong(item.getNumber());
+//        mMediaService.playSong();
 
     }
 }

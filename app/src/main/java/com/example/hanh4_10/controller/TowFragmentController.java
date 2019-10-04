@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh4_10.OnClickViewService;
+import com.example.hanh4_10.OnSongClickListener;
 import com.example.hanh4_10.R;
 import com.example.hanh4_10.SongModel;
 import com.example.hanh4_10.fragment.AllSongsFragment;
@@ -44,12 +44,12 @@ public class TowFragmentController extends LayoutController {
     public void onClickItem(SongModel item) {
         Bundle args = newBundleFromSong(item);
         mMediaPlayBackFragment.update(args);
-        mOnclickService.clickViewService(item);
+        mOnclickService.onClickItem(item);
 
     }
 
     @Override
-    public void setmOnclickService(OnClickViewService click) {
+    public void setmOnclickService(OnSongClickListener click) {
         mOnclickService = click;
     }
 }

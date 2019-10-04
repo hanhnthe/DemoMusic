@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh4_10.OnClickViewService;
+import com.example.hanh4_10.OnSongClickListener;
 import com.example.hanh4_10.R;
 import com.example.hanh4_10.SongModel;
 import com.example.hanh4_10.fragment.AllSongsFragment;
@@ -39,7 +39,7 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     public void onClickItem(final SongModel item) {
         View view = allSongsFragment.getView();
 
-        mOnclickService.clickViewService(item);
+        mOnclickService.onClickItem(item);
 
         item.setCheckPlay(true);//set bai hat dang duoc choi
         mBundle = newBundleFromSong(item);// khoi tao bien bunlde vao item click
@@ -91,7 +91,7 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     }
 
     @Override
-    public void setmOnclickService(OnClickViewService click) {
+    public void setmOnclickService(OnSongClickListener click) {
         mOnclickService = click;
     }
 }
