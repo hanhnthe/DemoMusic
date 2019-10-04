@@ -74,7 +74,8 @@ public class SongGetter {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.DURATION
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media._ID
         };
         Cursor cursor = mContext.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -95,6 +96,7 @@ public class SongGetter {
         while (cursor.moveToNext()) {
             song = new SongModel();
             i++;
+            song.setId((int) cursor.getLong(4));
             song.setNumber(i);
             song.setNameSong(cursor.getString(0));
             song.setAuthorSong(cursor.getString(1));
@@ -104,6 +106,7 @@ public class SongGetter {
             song.setTimeSong(convertDuration(duration));
             litSong.add(song);
         }
+        cursor.close();
         return litSong;
 
 

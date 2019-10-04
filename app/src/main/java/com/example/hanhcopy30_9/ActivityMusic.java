@@ -1,5 +1,9 @@
 package com.example.hanhcopy30_9;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -13,13 +17,35 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.IBinder;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ActivityMusic extends AppCompatActivity {
     ActionBar actionBar ;
     LayoutController mLayoutController;
+
+    //khai bao cac doi tuong service
+    private MediaPlaybackService mMediaService;
+    private Intent mPlayIntent;
+    private boolean mMusicBound = false;
+
+    private List<SongModel> list = new ArrayList<SongModel>();//nhaps
+
+    @Override
+    protected void onStart() { // khoi dong doi tuong service khi activity khoi dong
+        super.onStart();
+        if (mPlayIntent == null) {
+            mPlayIntent = new Intent(this, MediaPlaybackService.class);
+            bindService(mPlayIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(mPlayIntent);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +79,26 @@ public class ActivityMusic extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         mLayoutController.onSaveBundleLastSong(outState);
     }
+
+    //ket noi voi service
+    private ServiceConnection musicConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MediaPlaybackService.MusicBinder binder = (MediaPlaybackService.MusicBinder) service;
+            //get service
+            mMediaService = binder.getService();
+            //chuyen list
+            mMediaService.setList(list);
+            mMusicBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            mMusicBound = false;
+
+        }
+    };
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

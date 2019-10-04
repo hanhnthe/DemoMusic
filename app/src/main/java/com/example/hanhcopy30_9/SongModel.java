@@ -3,9 +3,9 @@ package com.example.hanhcopy30_9;
 import java.io.Serializable;
 
 public class SongModel implements Serializable {
-     int number,imageSong;
-     String nameSong, authorSong,timeSong;
-    Boolean checkPlay;
+    private int number, imageSong, id;
+    private String nameSong, authorSong, timeSong;
+    private Boolean checkPlay;
 
      public SongModel(){}
 
@@ -25,6 +25,14 @@ public class SongModel implements Serializable {
         this.nameSong = nameSong;
         this.checkPlay = checkPlay;
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getNumber() {
