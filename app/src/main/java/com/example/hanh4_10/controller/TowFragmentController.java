@@ -1,14 +1,14 @@
-package com.example.hanhcopy30_9.controller;
+package com.example.hanh4_10.controller;
 
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanhcopy30_9.R;
-import com.example.hanhcopy30_9.SongModel;
-import com.example.hanhcopy30_9.fragment.AllSongsFragment;
-import com.example.hanhcopy30_9.fragment.MediaPlaybackFragment;
+import com.example.hanh4_10.OnClickViewService;
+import com.example.hanh4_10.R;
+import com.example.hanh4_10.SongModel;
+import com.example.hanh4_10.fragment.AllSongsFragment;
+import com.example.hanh4_10.fragment.MediaPlaybackFragment;
 
 public class TowFragmentController extends LayoutController {
     private MediaPlaybackFragment mMediaPlayBackFragment;
@@ -44,5 +44,12 @@ public class TowFragmentController extends LayoutController {
     public void onClickItem(SongModel item) {
         Bundle args = newBundleFromSong(item);
         mMediaPlayBackFragment.update(args);
+        mOnclickService.clickViewService(item);
+
+    }
+
+    @Override
+    public void setmOnclickService(OnClickViewService click) {
+        mOnclickService = click;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.hanhcopy30_9;
+package com.example.hanh4_10;
 
 import android.app.Service;
 import android.content.ContentUris;
@@ -12,7 +12,6 @@ import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MediaPlaybackService extends Service implements MediaPlayer.OnPreparedListener,
@@ -33,7 +32,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     @Override
     public void onCreate() {
         super.onCreate();
-        mCurrentSong = 0;//khoi tao vi tri =0
+        mCurrentSong = 1;//khoi tao vi tri =0
         mPlayer = new MediaPlayer();
         initMusicPlayer();
 
@@ -71,12 +70,12 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     //giai phong tai nguyen khi doi tuong service khong duoc lien ket
     //thu thi khi nguoi dung thoat khoi ung dung,-> ngung service
-    @Override
+   /* @Override
     public boolean onUnbind(Intent intent) {
         mPlayer.stop();
         mPlayer.release();
         return false;
-    }
+    }*/
 
     //thiet lap de play 1 song
     public void playSong() {

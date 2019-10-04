@@ -1,4 +1,4 @@
-package com.example.hanhcopy30_9;
+package com.example.hanh4_10;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -7,10 +7,9 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import com.example.hanhcopy30_9.controller.LayoutController;
-import com.example.hanhcopy30_9.controller.OneFragmentController;
-import com.example.hanhcopy30_9.controller.TowFragmentController;
-import com.example.hanhcopy30_9.fragment.AllSongsFragment;
+import com.example.hanh4_10.controller.LayoutController;
+import com.example.hanh4_10.controller.OneFragmentController;
+import com.example.hanh4_10.controller.TowFragmentController;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -18,23 +17,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.IBinder;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityMusic extends AppCompatActivity {
+public class ActivityMusic extends AppCompatActivity implements OnClickViewService {
     ActionBar actionBar ;
     LayoutController mLayoutController;
+    SongGetter songGetter;// = new SongGetter();
 
     //khai bao cac doi tuong service
     private MediaPlaybackService mMediaService;
     private Intent mPlayIntent;
     private boolean mMusicBound = false;
 
-    private List<SongModel> list = new ArrayList<SongModel>();//nhaps
+    private List<SongModel> list = new ArrayList<>();//songGetter.getMp3FilesFromMemory() ;//nhaps
 
     @Override
     protected void onStart() { // khoi dong doi tuong service khi activity khoi dong
@@ -71,6 +70,7 @@ public class ActivityMusic extends AppCompatActivity {
            mLayoutController.onCreate(savedInstanceState, currentNumberSong);
 
        }
+        mLayoutController.setmOnclickService(this);
 
     }
 
@@ -123,5 +123,10 @@ public class ActivityMusic extends AppCompatActivity {
     }
 
 
+    @Override
+    public void clickViewService(SongModel item) {
+        mMediaService.setSong(item.getNumber());
+        mMediaService.playSong();
 
+    }
 }

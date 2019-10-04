@@ -1,19 +1,21 @@
-package com.example.hanhcopy30_9.controller;
+package com.example.hanh4_10.controller;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanhcopy30_9.OnSongClickListener;
-import com.example.hanhcopy30_9.SongModel;
-import com.example.hanhcopy30_9.fragment.AllSongsFragment;
-import com.example.hanhcopy30_9.fragment.MediaPlaybackFragment;
+import com.example.hanh4_10.OnClickViewService;
+import com.example.hanh4_10.OnSongClickListener;
+import com.example.hanh4_10.SongModel;
+import com.example.hanh4_10.fragment.AllSongsFragment;
+import com.example.hanh4_10.fragment.MediaPlaybackFragment;
 
 public abstract class LayoutController implements OnSongClickListener {
     public static final String LAST_NUMBER_SONG = "last_number_song";
 
     protected AppCompatActivity mActivity;
     protected AllSongsFragment mAllSongsFragment;
+    protected OnClickViewService mOnclickService;
 
     public LayoutController(AppCompatActivity activity) {
         mActivity = activity;
@@ -36,4 +38,6 @@ public abstract class LayoutController implements OnSongClickListener {
     }
 
     public abstract void onCreate(Bundle saveInstate, int currentSongNumber);
+
+    public abstract void setmOnclickService(OnClickViewService click);
 }

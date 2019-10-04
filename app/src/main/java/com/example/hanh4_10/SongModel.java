@@ -1,4 +1,4 @@
-package com.example.hanhcopy30_9;
+package com.example.hanh4_10;
 
 import java.io.Serializable;
 
@@ -82,4 +82,5 @@ public class SongModel implements Serializable {
     public void setCheckPlay(Boolean checkPlay) {
         this.checkPlay = checkPlay;
     }
+
 }

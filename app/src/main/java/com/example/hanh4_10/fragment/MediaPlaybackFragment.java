@@ -1,10 +1,9 @@
-package com.example.hanhcopy30_9.fragment;
+package com.example.hanh4_10.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,11 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.hanhcopy30_9.ActivityMusic;
-import com.example.hanhcopy30_9.R;
-import com.example.hanhcopy30_9.SongGetter;
-import com.example.hanhcopy30_9.SongModel;
-import com.example.hanhcopy30_9.controller.LayoutController;
+import com.example.hanh4_10.ActivityMusic;
+import com.example.hanh4_10.R;
+import com.example.hanh4_10.SongGetter;
+import com.example.hanh4_10.SongModel;
+import com.example.hanh4_10.controller.LayoutController;
 
 
 public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.LoadCallback {

@@ -1,4 +1,4 @@
-package com.example.hanhcopy30_9.controller;
+package com.example.hanh4_10.controller;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,12 +8,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanhcopy30_9.R;
-import com.example.hanhcopy30_9.SongModel;
-import com.example.hanhcopy30_9.fragment.AllSongsFragment;
-import com.example.hanhcopy30_9.fragment.MediaPlaybackFragment;
+import com.example.hanh4_10.OnClickViewService;
+import com.example.hanh4_10.R;
+import com.example.hanh4_10.SongModel;
+import com.example.hanh4_10.fragment.AllSongsFragment;
+import com.example.hanh4_10.fragment.MediaPlaybackFragment;
 
 public class OneFragmentController extends LayoutController implements View.OnClickListener {
+
     private Bundle mBundle;//khai bao luu tru gia tri hien tai
 
     AllSongsFragment allSongsFragment = new AllSongsFragment();
@@ -30,15 +32,14 @@ public class OneFragmentController extends LayoutController implements View.OnCl
             allSongsFragment.setOnSongClickListener(this);
             mActivity.getSupportFragmentManager().beginTransaction().
                     replace(R.id.container_fragment, allSongsFragment).commit();
-
-
         }
-
     }
 
     @Override
     public void onClickItem(final SongModel item) {
         View view = allSongsFragment.getView();
+
+        mOnclickService.clickViewService(item);
 
         item.setCheckPlay(true);//set bai hat dang duoc choi
         mBundle = newBundleFromSong(item);// khoi tao bien bunlde vao item click
@@ -48,7 +49,6 @@ public class OneFragmentController extends LayoutController implements View.OnCl
         name = item.getNameSong();
         author = item.getAuthorSong();
         image = item.getImageSong();
-
 
         TextView nameSong2 = (TextView) view.findViewById(R.id.nameSong2);
         nameSong2.setText(name);
@@ -88,5 +88,10 @@ public class OneFragmentController extends LayoutController implements View.OnCl
         mActivity.getSupportFragmentManager().beginTransaction().
                 replace(R.id.container_fragment, mediaPlaybackFragment).
                 addToBackStack(null).commit();
+    }
+
+    @Override
+    public void setmOnclickService(OnClickViewService click) {
+        mOnclickService = click;
     }
 }

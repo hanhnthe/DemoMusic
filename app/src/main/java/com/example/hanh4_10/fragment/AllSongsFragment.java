@@ -1,18 +1,11 @@
-package com.example.hanhcopy30_9.fragment;
+package com.example.hanh4_10.fragment;
 
 
-import android.content.res.Configuration;
-import android.database.Cursor;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +14,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanhcopy30_9.OnSongClickListener;
-import com.example.hanhcopy30_9.R;
-import com.example.hanhcopy30_9.SongAdapter;
-import com.example.hanhcopy30_9.SongGetter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.hanhcopy30_9.R.id.playSong1;
+import com.example.hanh4_10.OnSongClickListener;
+import com.example.hanh4_10.R;
+import com.example.hanh4_10.SongAdapter;
+import com.example.hanh4_10.SongGetter;
 
 public class AllSongsFragment extends Fragment {
     public final static String LAST_SONG = "last_song";
