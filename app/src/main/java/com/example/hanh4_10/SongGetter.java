@@ -135,7 +135,6 @@ public class SongGetter {
         if(pos<0) pos=0;
         if(pos>=getCount()) pos=getCount()-1;
         mCurrentItemIndex=pos;
-
     }
     public void setCurrentSongNumber(int number){
         for (int i = 0; i < litSong.size(); i++) {

@@ -126,9 +126,8 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     @Override
     public void onClickItem(SongModel item) {
-        Toast.makeText(this, "hnhanh" + item.getNumber(), Toast.LENGTH_SHORT).show();
-//        mMediaService.setSong(item.getNumber());
-//        mMediaService.playSong();
+        mMediaService.setSong(item.getNumber());
+        mMediaService.playSong();
 
     }
 }

@@ -35,7 +35,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
     public void onBindViewHolder(@NonNull final SongAdapter.MyViewHolder holder, final int position) {
         SongModel songModel = mSongGetter.getSongAt(position);
 
-
         final TextView text1 = holder.textTime;
         text1.setText(songModel.getTimeSong());
         holder.textName.setText(songModel.getNameSong());

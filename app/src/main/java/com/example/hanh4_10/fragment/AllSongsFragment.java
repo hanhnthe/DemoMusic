@@ -71,11 +71,11 @@ public class AllSongsFragment extends Fragment {
         mRecyclerview.setLayoutManager(mLayout);
         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
         // mSongGetter = new SongGetter(this);
+        mSongGetter = new SongGetter(getContext());
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                mSongGetter = new SongGetter(getContext());
                 return null;
             }
 

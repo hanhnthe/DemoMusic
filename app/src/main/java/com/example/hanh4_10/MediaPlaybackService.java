@@ -32,7 +32,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     @Override
     public void onCreate() {
         super.onCreate();
-        mCurrentSong = 1;//khoi tao vi tri =0
+        mCurrentSong = 0;//khoi tao vi tri =0
         mPlayer = new MediaPlayer();
         initMusicPlayer();
 
