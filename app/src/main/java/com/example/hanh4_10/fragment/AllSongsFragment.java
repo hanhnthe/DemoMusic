@@ -1,6 +1,7 @@
 package com.example.hanh4_10.fragment;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,9 @@ import com.example.hanh4_10.OnSongClickListener;
 import com.example.hanh4_10.R;
 import com.example.hanh4_10.SongAdapter;
 import com.example.hanh4_10.SongGetter;
+import com.example.hanh4_10.SongModel;
+
+import java.util.List;
 
 public class AllSongsFragment extends Fragment {
     public final static String LAST_SONG = "last_song";
@@ -29,6 +33,9 @@ public class AllSongsFragment extends Fragment {
     private View.OnClickListener mListen;
     private SongGetter mSongGetter;
     private OnSongClickListener mOnSongClickListener;
+    private DataCallBack mDataBack;
+
+    private List<SongModel> mList;
 
     private int mCurrentNumber;
     public LoadCallback mLoadCallback;
@@ -63,6 +70,16 @@ public class AllSongsFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof DataCallBack) {
+            mDataBack = (DataCallBack) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + "must implement DataCallBack");
+        }
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -72,6 +89,8 @@ public class AllSongsFragment extends Fragment {
         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
         // mSongGetter = new SongGetter(this);
         mSongGetter = new SongGetter(getContext());
+        mList = mSongGetter.getLitSong();
+        mDataBack.dataCallBack(mList);
 
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -119,6 +138,10 @@ public class AllSongsFragment extends Fragment {
 
     public interface LoadCallback {
         public void onLoadFinish(SongGetter songGetter);
+    }
+
+    public interface DataCallBack {
+        public void dataCallBack(List<SongModel> list);
     }
 
     public SongAdapter getSongAdapter(SongGetter songGetter) {

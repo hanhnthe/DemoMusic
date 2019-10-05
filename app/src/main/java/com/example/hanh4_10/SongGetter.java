@@ -26,6 +26,9 @@ public class SongGetter {
 
     }
 
+    public List<SongModel> getLitSong() {
+        return litSong;
+    }
 
     public List<SongModel> getMp3FilesFromMemory() {
 
@@ -36,7 +39,8 @@ public class SongGetter {
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media._ID
+                MediaStore.Audio.Media._ID,
+                //MediaStore.Audio.Media.DATA
         };
         Cursor cursor = mContext.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -132,9 +136,13 @@ public class SongGetter {
         return litSong.get(pos);
     }
     public void setCurrentItemIndex(int pos){
-        if(pos<0) pos=0;
-        if(pos>=getCount()) pos=getCount()-1;
-        mCurrentItemIndex=pos;
+        if (pos < 0) {
+            pos = 0;
+        }
+        if (pos >= getCount()) {
+            pos = getCount() - 1;
+        }
+        mCurrentItemIndex = pos;
     }
     public void setCurrentSongNumber(int number){
         for (int i = 0; i < litSong.size(); i++) {

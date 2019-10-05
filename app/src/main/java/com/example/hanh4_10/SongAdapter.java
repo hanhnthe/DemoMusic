@@ -47,6 +47,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 mSongGetter.setCurrentItemIndex(position);
                 SongModel song = mSongGetter.getCurrentItem();
                 mPos = holder.getLayoutPosition();

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.example.hanh4_10.controller.LayoutController;
 import com.example.hanh4_10.controller.OneFragmentController;
 import com.example.hanh4_10.controller.TowFragmentController;
+import com.example.hanh4_10.fragment.AllSongsFragment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -24,17 +25,17 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
+public class ActivityMusic extends AppCompatActivity implements OnSongClickListener, AllSongsFragment.DataCallBack {
     ActionBar actionBar ;
     LayoutController mLayoutController;
-    SongGetter songGetter;// = new SongGetter();
+    SongGetter songGetter;//= new SongGetter(this);
 
     //khai bao cac doi tuong service
     private MediaPlaybackService mMediaService;
     private Intent mPlayIntent;
     private boolean mMusicBound = false;
 
-    private List<SongModel> list = new ArrayList<>();//songGetter.getMp3FilesFromMemory() ;//nhaps
+    private List<SongModel> mList;// = new ArrayList<SongModel>();// songGetter.getMp3FilesFromMemory() ;//nhaps
 
     @Override
     protected void onStart() { // khoi dong doi tuong service khi activity khoi dong
@@ -53,6 +54,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
+
 
         int currentNumberSong = -1;
         if (savedInstanceState != null) {
@@ -81,6 +83,11 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         mLayoutController.onSaveBundleLastSong(outState);
     }
 
+    @Override
+    public void dataCallBack(List<SongModel> list) {
+        mList = list;
+    }
+
     //ket noi voi service
     private ServiceConnection musicConnection = new ServiceConnection() {
         @Override
@@ -89,7 +96,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             //get service
             mMediaService = binder.getService();
             //chuyen list
-            mMediaService.setList(list);
+            mMediaService.setList(mList);
             mMusicBound = true;
         }
 
