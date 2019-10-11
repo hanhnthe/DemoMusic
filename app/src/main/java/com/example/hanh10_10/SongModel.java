@@ -1,15 +1,19 @@
-package com.example.hanh4_10;
+package com.example.hanh10_10;
+
+
+import android.graphics.Bitmap;
 
 import java.io.Serializable;
 
 public class SongModel implements Serializable {
-    private int number, imageSong, id;
+    private int number, id;
+    private Bitmap imageSong;
     private String nameSong, authorSong, timeSong;
     private Boolean checkPlay;
 
      public SongModel(){}
 
-    public SongModel(int number, String nameSong, String authorSong, int imageSong, String timeSong, Boolean checkPlay) {
+    public SongModel(int number, String nameSong, String authorSong, Bitmap imageSong, String timeSong, Boolean checkPlay) {
         this.authorSong = authorSong;
         this.imageSong = imageSong;
         this.timeSong= timeSong;
@@ -18,7 +22,7 @@ public class SongModel implements Serializable {
         this.checkPlay = checkPlay;
     }
 
-    public SongModel(String nameSong, String authorSong, int imageSong, String timeSong, Boolean checkPlay) {
+    public SongModel(String nameSong, String authorSong, Bitmap imageSong, String timeSong, Boolean checkPlay) {
         this.authorSong = authorSong;
         this.imageSong = imageSong;
         this.timeSong = timeSong;
@@ -43,7 +47,7 @@ public class SongModel implements Serializable {
         return authorSong;
     }
 
-    public int getImageSong() {
+    public Bitmap getImageSong() {
         return imageSong;
     }
 
@@ -59,7 +63,7 @@ public class SongModel implements Serializable {
         this.authorSong = authorSong;
     }
 
-    public void setImageSong(int imageSong) {
+    public void setImageSong(Bitmap imageSong) {
         this.imageSong = imageSong;
     }
 

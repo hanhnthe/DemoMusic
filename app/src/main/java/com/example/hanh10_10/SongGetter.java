@@ -1,9 +1,17 @@
-package com.example.hanh4_10;
+package com.example.hanh10_10;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,14 +56,6 @@ public class SongGetter {
                 selection,
                 null,
                 null);
-
-//        Cursor cursorAlbums = context.getContentResolver().query(
-//                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-//                new String[] {MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ALBUM},
-//                MediaStore.Audio.Media.ALBUM_ID + "=?",
-//                new String[]{String.valueOf(albumId)},null);
-//        long albumId = cursor.getLong(
-//                cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
         SongModel song;
         int i = 0;
         while (cursor.moveToNext()) {
@@ -65,18 +65,42 @@ public class SongGetter {
             song.setNumber(i);
             song.setNameSong(cursor.getString(0));
             song.setAuthorSong(cursor.getString(1));
-            // song.setImageSong(cursor.getString(2));
+            long image = cursor.getLong(2);
+            song.setImageSong(getAlbumart(image));
             long duration = cursor.getLong(3);
-
             song.setTimeSong(convertDuration(duration));
             litSong.add(song);
         }
         cursor.close();
         return litSong;
-
-
     }
 
+    public Bitmap getAlbumart(long album_id) {
+        Bitmap bm = null;
+        try {
+            final Uri artWorkUri = Uri.parse("content://media/external/audio/albumart");
+            Uri uri = ContentUris.withAppendedId(artWorkUri, album_id);
+            ParcelFileDescriptor pfd = mContext.getContentResolver()
+                    .openFileDescriptor(uri, "r");
+
+            if (pfd != null) {
+                FileDescriptor fd = pfd.getFileDescriptor();
+                bm = BitmapFactory.decodeFileDescriptor(fd);
+            }
+
+        } catch (Exception e) {
+        }
+        return bm;
+    }
+
+    public static String encodeTobase64(Bitmap image) {
+        Bitmap immagex = image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.PNG, 90, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+        return imageEncoded;
+    }
     public String convertDuration(long duration) {
         String out = null;
         long hours = 0;
@@ -146,9 +170,10 @@ public class SongGetter {
     }
     public void setCurrentSongNumber(int number){
         for (int i = 0; i < litSong.size(); i++) {
-            SongModel song = new SongModel();
+            SongModel song = litSong.get(i);
             if(number == song.getNumber()){
                 mCurrentItemIndex=i;
+                String name = song.getNameSong();
                 return;
             }
         }

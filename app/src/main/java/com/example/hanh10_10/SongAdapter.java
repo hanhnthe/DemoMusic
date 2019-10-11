@@ -1,4 +1,4 @@
-package com.example.hanh4_10;
+package com.example.hanh10_10;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -68,13 +68,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
 
         public TextView textNumber, textName, textTime;
 
-
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textName = (TextView) itemView.findViewById(R.id.nameSong);
             textNumber = (TextView) itemView.findViewById(R.id.numberSong);
             textTime = (TextView) itemView.findViewById(R.id.timeSong);
-
         }
     }
 

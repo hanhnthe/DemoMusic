@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/anh_nha_o_dau_the"
+        android:background="#FFCCCC"
         android:id="@+id/manhinh"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -209,7 +209,6 @@
 
     <SeekBar
         android:id="@+id/seekBar"
-        android:progress="50"
         android:paddingLeft="0dp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
@@ -217,5 +216,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="60dp"
+        android:secondaryProgress="100"
         />
 </FrameLayout>

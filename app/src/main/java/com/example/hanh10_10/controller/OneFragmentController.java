@@ -1,5 +1,6 @@
-package com.example.hanh4_10.controller;
+package com.example.hanh10_10.controller;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -8,11 +9,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh4_10.OnSongClickListener;
-import com.example.hanh4_10.R;
-import com.example.hanh4_10.SongModel;
-import com.example.hanh4_10.fragment.AllSongsFragment;
-import com.example.hanh4_10.fragment.MediaPlaybackFragment;
+import com.example.hanh10_10.MediaPlaybackService;
+import com.example.hanh10_10.OnSongClickListener;
+import com.example.hanh10_10.R;
+import com.example.hanh10_10.SongModel;
+import com.example.hanh10_10.fragment.AllSongsFragment;
+import com.example.hanh10_10.fragment.MediaPlaybackFragment;
 
 public class OneFragmentController extends LayoutController implements View.OnClickListener {
 
@@ -20,14 +22,19 @@ public class OneFragmentController extends LayoutController implements View.OnCl
 
     AllSongsFragment allSongsFragment = new AllSongsFragment();
 
-    public OneFragmentController(AppCompatActivity activity) {
-        super(activity);
+    public OneFragmentController(AppCompatActivity activity, MediaPlaybackService service) {
+        super(activity, service);
     }
 
     @Override
     public void onCreate(Bundle saveInstate, int currentSongNumber) {
         if (mActivity.findViewById(R.id.container_fragment) != null) {
 
+            Bundle args = new Bundle();
+            args.putInt("last_music", currentSongNumber);
+            if (args != null) {
+                allSongsFragment.setArguments(args);
+            }
             allSongsFragment.setOnClickListener(this);
             allSongsFragment.setOnSongClickListener(this);
             mActivity.getSupportFragmentManager().beginTransaction().
@@ -45,10 +52,11 @@ public class OneFragmentController extends LayoutController implements View.OnCl
         mBundle = newBundleFromSong(item);// khoi tao bien bunlde vao item click
 
         String name, author;
-        int image;
+        Bitmap image;
         name = item.getNameSong();
         author = item.getAuthorSong();
         image = item.getImageSong();
+
 
         TextView nameSong2 = (TextView) view.findViewById(R.id.nameSong2);
         nameSong2.setText(name);
@@ -57,7 +65,7 @@ public class OneFragmentController extends LayoutController implements View.OnCl
         authorSong.setText(author);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.image1);
-        imageView.setImageResource(image);
+        imageView.setImageBitmap(image);
 
         final ImageButton button1 = (ImageButton) view.findViewById(R.id.playSong1);
         button1.setImageResource(R.drawable.ic_pause_1);
@@ -73,10 +81,8 @@ public class OneFragmentController extends LayoutController implements View.OnCl
                     button1.setImageResource(R.drawable.ic_pause_1);
                     item.setCheckPlay(true);
                 }
-
             }
         });
-
 
     }
 
@@ -94,4 +100,5 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     public void setmOnclickService(OnSongClickListener click) {
         mOnclickService = click;
     }
+
 }

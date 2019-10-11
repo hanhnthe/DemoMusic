@@ -1,20 +1,21 @@
-package com.example.hanh4_10.controller;
+package com.example.hanh10_10.controller;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh4_10.OnSongClickListener;
-import com.example.hanh4_10.R;
-import com.example.hanh4_10.SongModel;
-import com.example.hanh4_10.fragment.AllSongsFragment;
-import com.example.hanh4_10.fragment.MediaPlaybackFragment;
+import com.example.hanh10_10.MediaPlaybackService;
+import com.example.hanh10_10.OnSongClickListener;
+import com.example.hanh10_10.R;
+import com.example.hanh10_10.SongModel;
+import com.example.hanh10_10.fragment.AllSongsFragment;
+import com.example.hanh10_10.fragment.MediaPlaybackFragment;
 
 public class TowFragmentController extends LayoutController {
     private MediaPlaybackFragment mMediaPlayBackFragment;
 
-    public TowFragmentController(AppCompatActivity activity) {
-        super(activity);
+    public TowFragmentController(AppCompatActivity activity, MediaPlaybackService service) {
+        super(activity, service);
     }
 
     @Override
@@ -22,7 +23,7 @@ public class TowFragmentController extends LayoutController {
         if (mActivity.findViewById(R.id.container_fragment_land) != null) {
             mMediaPlayBackFragment = new MediaPlaybackFragment();
             Bundle args = new Bundle();
-            args.putInt(LAST_NUMBER_SONG, currentSongNumber);
+            args.putInt("last_music", currentSongNumber);
             mMediaPlayBackFragment.setArguments(args);
 
             mAllSongsFragment = new AllSongsFragment();

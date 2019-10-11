@@ -1,4 +1,4 @@
-package com.example.hanh4_10.fragment;
+package com.example.hanh10_10.fragment;
 
 
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,16 +17,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh4_10.OnSongClickListener;
-import com.example.hanh4_10.R;
-import com.example.hanh4_10.SongAdapter;
-import com.example.hanh4_10.SongGetter;
-import com.example.hanh4_10.SongModel;
+import com.example.hanh10_10.OnSongClickListener;
+import com.example.hanh10_10.R;
+import com.example.hanh10_10.SongAdapter;
+import com.example.hanh10_10.SongGetter;
+import com.example.hanh10_10.SongModel;
 
 import java.util.List;
 
 public class AllSongsFragment extends Fragment {
-    public final static String LAST_SONG = "last_song";
 
     private RecyclerView mRecyclerview;
     private SongAdapter mSongAdapter;
@@ -35,12 +36,14 @@ public class AllSongsFragment extends Fragment {
     private OnSongClickListener mOnSongClickListener;
     private DataCallBack mDataBack;
 
-    private List<SongModel> mList;
+    public List<SongModel> mList;
 
     private int mCurrentNumber;
     public LoadCallback mLoadCallback;
 
     public Boolean i = false;
+    private TextView name, au;
+    private ImageView ima;
 
 
     public void setmLoadCallback(LoadCallback mLoadCallback) {
@@ -53,11 +56,12 @@ public class AllSongsFragment extends Fragment {
        final View view = inflater.inflate(R.layout.list_music,container,false);
 
        mRecyclerview = view.findViewById(R.id.myrecyclerview);
-
        mRecyclerview.setHasFixedSize(true);
-
-
         View view1 = view.findViewById(R.id.linearLayout3);
+        name = (TextView) view1.findViewById(R.id.nameSong2);
+        au = (TextView) view1.findViewById(R.id.author1);
+        ima = (ImageView) view1.findViewById(R.id.image1);
+
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,9 +69,22 @@ public class AllSongsFragment extends Fragment {
                 mListen.onClick(view);
             }
         });
-
-
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Bundle args = getArguments();
+        int last_music = -1;
+        if (args != null) {
+            last_music = args.getInt("last_music");
+            mSongGetter.setCurrentSongNumber(last_music);
+            SongModel song = mSongGetter.getCurrentItem();
+            name.setText(song.getNameSong());
+            au.setText(song.getAuthorSong());
+            ima.setImageBitmap(song.getImageSong());
+        }
     }
 
     @Override
@@ -134,7 +151,6 @@ public class AllSongsFragment extends Fragment {
     public int getmCurrentNumber() {
         return mSongGetter.getCurrentItem().getNumber();
     }
-
 
     public interface LoadCallback {
         public void onLoadFinish(SongGetter songGetter);
