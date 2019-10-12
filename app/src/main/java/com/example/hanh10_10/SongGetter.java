@@ -12,6 +12,7 @@ import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +21,8 @@ public class SongGetter {
     private int mCurrentItemIndex;
     private Context mContext;
 
-    public SongGetter() {
-        //getMp3FilesFromMemory();
-
-    }
-
     //set du lieu
     public SongGetter(Context context) {
-        //mSong = allSongsFragment.getMp3FilesFromMemory();
         mContext = context;
         mCurrentItemIndex=0;
         getMp3FilesFromMemory();
@@ -41,15 +36,12 @@ public class SongGetter {
     public List<SongModel> getMp3FilesFromMemory() {
 
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
-
         String[] projetion = {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.ALBUM_ID,
                 MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media._ID,
-                //MediaStore.Audio.Media.DATA
-        };
+                MediaStore.Audio.Media._ID,};
         Cursor cursor = mContext.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 projetion,
@@ -68,7 +60,8 @@ public class SongGetter {
             long image = cursor.getLong(2);
             song.setImageSong(getAlbumart(image));
             long duration = cursor.getLong(3);
-            song.setTimeSong(convertDuration(duration));
+            SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
+            song.setTimeSong(dinhdang.format(duration));
             litSong.add(song);
         }
         cursor.close();
@@ -91,47 +84,6 @@ public class SongGetter {
         } catch (Exception e) {
         }
         return bm;
-    }
-
-    public static String encodeTobase64(Bitmap image) {
-        Bitmap immagex = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immagex.compress(Bitmap.CompressFormat.PNG, 90, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-        return imageEncoded;
-    }
-    public String convertDuration(long duration) {
-        String out = null;
-        long hours = 0;
-        try {
-            hours = (duration / 3600000);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return out;
-        }
-        long remaining_minutes = (duration - (hours * 3600000)) / 60000;
-        String minutes = String.valueOf(remaining_minutes);
-        if (minutes.equals(0)) {
-            minutes = "00";
-        }
-        long remaining_seconds = (duration - (hours * 3600000) - (remaining_minutes * 60000));
-        String seconds = String.valueOf(remaining_seconds);
-        if (seconds.length() < 2) {
-            seconds = "00";
-        } else {
-            seconds = seconds.substring(0, 2);
-        }
-
-        if (hours > 0) {
-            out = hours + ":" + minutes + ":" + seconds;
-        } else {
-            out = minutes + ":" + seconds;
-        }
-
-        return out;
-
     }
 
     public SongModel getNextSong(){

@@ -127,10 +127,11 @@
 
                 <ImageButton
                     android:id="@+id/likeButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/layout_36"
-                    android:background="@color/whilenull"
-                    app:srcCompat="@drawable/ic_like" />
+                    android:layout_width="25dp"
+                    android:layout_height="23dp"
+                    android:background="@drawable/ic_like"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="9dp" />
             </LinearLayout>
 
             <ImageButton
@@ -171,7 +172,7 @@
 
 
             <ImageButton
-                android:id="@+id/right"
+                android:id="@+id/rightButton"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -196,10 +197,11 @@
 
                 <ImageButton
                     android:id="@+id/disLikeButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:background="@color/whilenull"
-                    android:src="@drawable/ic_dis_like" />
+                    android:layout_width="25dp"
+                    android:layout_height="23dp"
+                    android:background="@drawable/ic_dis_like"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="9dp" />
             </LinearLayout>
 
 

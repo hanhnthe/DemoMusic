@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hanh10_10.ActivityMusic;
+import com.example.hanh10_10.MediaPlaybackService;
 import com.example.hanh10_10.OnSongClickListener;
 import com.example.hanh10_10.R;
 import com.example.hanh10_10.SongAdapter;
@@ -30,21 +33,29 @@ public class AllSongsFragment extends Fragment {
     private RecyclerView mRecyclerview;
     private SongAdapter mSongAdapter;
     private RecyclerView.LayoutManager mLayout;
-   // private ActivityMusic mActivityMusic;
-    private View.OnClickListener mListen;
     private SongGetter mSongGetter;
+    public List<SongModel> mList;
+
+    private View.OnClickListener mListen;
     private OnSongClickListener mOnSongClickListener;
     private DataCallBack mDataBack;
-
-    public List<SongModel> mList;
 
     private int mCurrentNumber;
     public LoadCallback mLoadCallback;
 
-    public Boolean i = false;
     private TextView name, au;
     private ImageView ima;
+    private ImageButton mPlay;
 
+    private MediaPlaybackService mService;
+    private ActivityMusic mActi;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActi = (ActivityMusic) getActivity();
+        mService = mActi.mMediaService;
+    }
 
     public void setmLoadCallback(LoadCallback mLoadCallback) {
         this.mLoadCallback = mLoadCallback;
@@ -54,14 +65,30 @@ public class AllSongsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
        final View view = inflater.inflate(R.layout.list_music,container,false);
-
        mRecyclerview = view.findViewById(R.id.myrecyclerview);
        mRecyclerview.setHasFixedSize(true);
         View view1 = view.findViewById(R.id.linearLayout3);
         name = (TextView) view1.findViewById(R.id.nameSong2);
         au = (TextView) view1.findViewById(R.id.author1);
         ima = (ImageView) view1.findViewById(R.id.image1);
-
+        mPlay = (ImageButton) view1.findViewById(R.id.playSong1);
+        if (mService != null) {
+            if (mService.isPng()) {
+                mPlay.setImageResource(R.drawable.ic_play_1);
+            } else mPlay.setImageResource(R.drawable.ic_pause_1);
+            mPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mService.isPng()) {
+                        mPlay.setImageResource(R.drawable.ic_play_1);
+                        mService.pausePlayer();
+                    } else {
+                        mPlay.setImageResource(R.drawable.ic_pause_1);
+                        mService.go();
+                    }
+                }
+            });
+        } else mPlay.setImageResource(R.drawable.ic_play_1);
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

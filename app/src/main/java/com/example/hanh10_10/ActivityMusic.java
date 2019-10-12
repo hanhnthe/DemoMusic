@@ -101,7 +101,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             mMediaService.setList(mList);
             mMusicBound = true;
         }
-
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mMusicBound = false;

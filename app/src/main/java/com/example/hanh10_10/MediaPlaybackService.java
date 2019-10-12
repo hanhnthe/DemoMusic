@@ -21,6 +21,7 @@ import android.widget.RemoteViews;
 import androidx.core.app.NotificationCompat;
 
 import java.util.List;
+import java.util.Random;
 
 public class MediaPlaybackService extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
@@ -38,6 +39,9 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     private static final String PRIMARY_CHANNEL_ID = "primary_notification_channel";
     private static final int FOREGROUND_ID = 2;
 
+    private boolean shuffle = false;
+    private Random rand;
+
     //oncreat cho service
     @Override
     public void onCreate() {
@@ -46,6 +50,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         mPlayer = new MediaPlayer();
         initMusicPlayer();
         createNotificationChannel();
+        rand = new Random();
     }
 
     //phuong thuc khoi tao lop mediaplayer
@@ -78,7 +83,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         return mMusicBind;
     }
 
-
     //thiet lap de play 1 song
     public void playSong() {
         mPlayer.reset();
@@ -94,6 +98,11 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         }
         mPlayer.prepareAsync();
         startForeground(FOREGROUND_ID, buildForegroundNotification());
+    }
+
+    public void stopForeGroundAndCancelNotification() {
+        stopForeground(false);
+        mNotifyManager.cancel(FOREGROUND_ID);
     }
 
     public Notification buildForegroundNotification() {
@@ -119,7 +128,8 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setCustomContentView(notificationLayout)
-                        .setCustomBigContentView(notificationLayoutBig);
+                        .setCustomBigContentView(notificationLayoutBig)
+                        .setAutoCancel(true);
         return (notification.build());
     }
 
@@ -131,7 +141,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                             NotificationManager.IMPORTANCE_HIGH);
             mNotifyManager.createNotificationChannel(notificationChannel);
         }
-
     }
 
     @Override
@@ -151,12 +160,22 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+        mediaPlayer.reset();
         return false;
     }
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
+        if (mPlayer.getCurrentPosition() > mPlayer.getDuration()) {
+            mediaPlayer.reset();
+            playNext();
+        }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopForeGroundAndCancelNotification();
     }
 
     //tac dong den musiccontroller
@@ -171,7 +190,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public Boolean isPng() {
         return mPlayer.isPlaying();
     }
-
     public void pausePlayer() {
         mPlayer.pause();
     }
@@ -184,9 +202,49 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         mPlayer.start();
     }
 
-    //chuyeen tiep den bai hat tiep theo
+    //chuyen tiep den bai hat truoc do neu dang phat <3s
+    //chuyen choi lai bai hat neu dang choi >3s
     public void playPrev() {
-        mCurrentSong--;
+        if (mPlayer.getCurrentPosition() > 3000) {
+            playSong();
+        } else {
+            if (shuffle) {
+                int newSong = mCurrentSong;
+                while (newSong == mCurrentSong) {
+                    newSong = rand.nextInt(songs.size());
+                }
+                mCurrentSong = newSong;
+            } else {
+                mCurrentSong--;
+                if (mCurrentSong < 0) mCurrentSong = songs.size() - 1;
+            }
+            playSong();
+        }
+    }
+
+    //choi bai hat sau, neu la bai cuoi thi choi lai bai dau tien
+    public void playNext() {
+        if (shuffle) {
+            int newSong = mCurrentSong;
+            while (newSong == mCurrentSong) {
+                newSong = rand.nextInt(songs.size());
+            }
+            mCurrentSong = newSong;
+        } else {
+            mCurrentSong++;
+            if (mCurrentSong >= songs.size()) mCurrentSong = 0;
+        }
         playSong();
     }
+
+    //phat ngau nhien shuffle
+    public void shuffeSong() {
+        if (shuffle) shuffle = false;
+        else shuffle = true;
+    }
+
+    public void repeatSong() {
+
+    }
+
 }

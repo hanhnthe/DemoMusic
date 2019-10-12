@@ -2,13 +2,13 @@ package com.example.hanh10_10.fragment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaRouter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,11 +20,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.hanh10_10.ActivityMusic;
 import com.example.hanh10_10.MediaPlaybackService;
-import com.example.hanh10_10.MusicController;
 import com.example.hanh10_10.R;
 import com.example.hanh10_10.SongGetter;
 import com.example.hanh10_10.SongModel;
-import com.example.hanh10_10.controller.LayoutController;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -43,13 +41,11 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     private ImageView mPlaySong;
     private SeekBar mSeekbar;
     private TextView mProgressTime;
+    private ImageButton mNext, mPrev, mLike, mDisLike, mList, mShuffle, mRepeat;
 
-    private MusicController mController;
     private MediaPlaybackService mService;
     private boolean mBoundMusic;
     private ActivityMusic mActi;
-    private int mMax;
-    private int mProgress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +70,13 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         mPlaySong = (ImageView) view1.findViewById(R.id.playSong2);
         mSeekbar = (SeekBar) view.findViewById(R.id.seekBar);
         mProgressTime = (TextView) view.findViewById(R.id.startTime);
+        mNext = (ImageButton) view.findViewById(R.id.rightButton);
+        mPrev = (ImageButton) view.findViewById(R.id.leftButton);
+        mLike = (ImageButton) view.findViewById(R.id.likeButton);
+        mDisLike = (ImageButton) view.findViewById(R.id.disLikeButton);
+        mList = (ImageButton) view.findViewById(R.id.listSong);
+        mShuffle = (ImageButton) view.findViewById(R.id.shufflebutton);
+        mRepeat = (ImageButton) view.findViewById(R.id.repeatbutton);
 
         mSeekbar.setMax(mService.getDur());
         mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -83,27 +86,27 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 mProgressTime.setText(dinhdang.format(progress));
                 updateTimeSong();
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mService.seek(mSeekbar.getProgress());
             }
         });
         updateTimeSong();
-
-
+        next();
+        pre();
+        shuffle();
+        repeat();
+        likeAndDis();
+        listComeBack();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         Bundle args = getArguments();
         update(args);
     }
@@ -122,31 +125,170 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     public void updateUI(int number, String name, String author, String time, String image, boolean checkplay) {
         mNameSong.setText(name);
         mAuthor.setText(author);
-
         if (image != null) {
             mImageSong.setImageBitmap(decodeBase64(image));
             mImageBackground.setImageBitmap(decodeBase64(image));
         }
-
         mTime.setText(time);
-        mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+        play();
+    }
 
+    public void play() {
+        if (mService.isPng()) {
+            mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+        } else mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
         mPlaySong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mService.isPng()) {
+                    mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
+                    mService.pausePlayer();
+                } else {
+                    mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+                    mService.go();
+                }
+            }
+        });
+    }
+
+    public void next() {
+        mNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mService.playNext();
+                SongModel song = mService.songs.get(mService.getmCurrentSong());
+                String songString = encodeTobase64(song.getImageSong());
+                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString, mService.isPng());
+            }
+        });
+    }
+
+    public void pre() {
+        mPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mService.playPrev();
+                SongModel song = mService.songs.get(mService.getmCurrentSong());
+                String songString = encodeTobase64(song.getImageSong());
+                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString, mService.isPng());
+            }
+        });
+    }
+
+    public void shuffle() {
+        mShuffle.setOnClickListener(new View.OnClickListener() {
             boolean i = true;
 
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 if (i) {
-                    mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
-                    mService.go();
+                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_click);
+                    mService.shuffeSong();
                     i = false;
                 } else {
-                    mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
-                    mService.pausePlayer();
+                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
+                    mService.shuffeSong();
                     i = true;
                 }
             }
         });
+    }
+
+    public void repeat() {
+        mRepeat.setOnClickListener(new View.OnClickListener() {
+            int i = 1;
+
+            @Override
+            public void onClick(View v) {
+                if (i == 1) {
+                    mRepeat.setBackgroundResource(R.drawable.ic_repeat_click);
+                    i = 2;
+                } else if (i == 2) {
+                    mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
+                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
+                    i = 3;
+                } else if (i == 3) {
+                    mRepeat.setBackgroundResource(R.drawable.ic_repeat);
+                    i = 1;
+                }
+            }
+        });
+    }
+
+    public void likeAndDis() {
+        mLike.setOnClickListener(new View.OnClickListener() {
+            boolean i = true;
+
+            @Override
+            public void onClick(View v) {
+                if (i) {
+                    mLike.setBackgroundResource(R.drawable.ic_like_click);
+                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
+                    i = false;
+                } else {
+                    mLike.setBackgroundResource(R.drawable.ic_like);
+                }
+            }
+        });
+        mDisLike.setOnClickListener(new View.OnClickListener() {
+            boolean i = true;
+
+            @Override
+            public void onClick(View v) {
+                if (i) {
+                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like_click);
+                    mLike.setBackgroundResource(R.drawable.ic_like);
+                    i = false;
+                } else {
+                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
+                }
+            }
+        });
+    }
+
+    public void listComeBack() {
+        mList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ActivityMusic activityMusic = (ActivityMusic) getActivity();
+        activityMusic.getSupportActionBar().show();
+    }
+
+    //giao dien quay ngang
+    @Override
+    public void onLoadFinish(SongGetter songGetter) {
+        Bundle args = getArguments();
+        int lastNumberSong = -1;
+        if (args != null) {
+            lastNumberSong = args.getInt("last_music");
+        }
+        songGetter.setCurrentSongNumber(lastNumberSong);
+        SongModel song = songGetter.getCurrentItem();
+        String songString = encodeTobase64(song.getImageSong());
+        updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString, args.getBoolean(CHECKPLAY_EXTRA));
+
+    }
+
+    private void updateTimeSong() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
+                mProgressTime.setText(dinhdang.format(mService.getPos()));
+                mSeekbar.setProgress(mService.getPos());
+
+                handler.postDelayed(this, 500);
+            }
+        }, 100);
     }
 
     //chuyen byte[] thanh bimap
@@ -165,41 +307,4 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         return imageEncoded;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        ActivityMusic activityMusic = (ActivityMusic) getActivity();
-        activityMusic.getSupportActionBar().show();
-    }
-
-    //giao dien quay ngang
-    @Override
-    public void onLoadFinish(SongGetter songGetter) {
-        Bundle args = getArguments();
-
-        int lastNumberSong = -1;
-        if (args != null) {
-            lastNumberSong = args.getInt("last_music");
-        }
-
-        songGetter.setCurrentSongNumber(lastNumberSong);
-
-        SongModel song = songGetter.getCurrentItem();
-        String songString = encodeTobase64(song.getImageSong());
-        updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString, args.getBoolean(CHECKPLAY_EXTRA));
-
-    }
-
-    private void updateTimeSong() {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
-                mProgressTime.setText(dinhdang.format(mService.getPos()));
-                mSeekbar.setProgress(mService.getPos());
-                handler.postDelayed(this, 500);
-            }
-        }, 100);
-    }
 }
