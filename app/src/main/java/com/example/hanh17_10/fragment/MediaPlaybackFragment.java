@@ -1,4 +1,4 @@
-package com.example.hanh16_10.fragment;
+package com.example.hanh17_10.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,11 +22,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.hanh16_10.ActivityMusic;
-import com.example.hanh16_10.MediaPlaybackService;
-import com.example.hanh16_10.R;
-import com.example.hanh16_10.SongGetter;
-import com.example.hanh16_10.SongModel;
+import com.example.hanh17_10.ActivityMusic;
+import com.example.hanh17_10.MediaPlaybackService;
+import com.example.hanh17_10.R;
+import com.example.hanh17_10.SongGetter;
+import com.example.hanh17_10.SongModel;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -84,6 +84,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         mShuffle = (ImageButton) view.findViewById(R.id.shufflebutton);
         mRepeat = (ImageButton) view.findViewById(R.id.repeatbutton);
 
+        updateUIFromService();
         seekbarChange();
         next();
         pre();
@@ -95,11 +96,22 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         return view;
     }
 
-    @Override
+   /* @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Bundle args = getArguments();
         update(args);
+    }*/
+
+    public void updateUIFromService() {
+        SongModel song = mService.songs.get(mService.getmCurrentSong());
+        String songString = encodeTobase64(song.getImageSong());
+        updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+        if (mService.isPng()) {
+            mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+        } else {
+            mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
+        }
     }
 
     public void update(Bundle args) {

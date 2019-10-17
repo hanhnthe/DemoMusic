@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.hanh16_10">
+    package="com.example.hanh17_10">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name="com.example.hanh16_10.MediaPlaybackService"
+            android:name="com.example.hanh17_10.MediaPlaybackService"
             android:exported="false" />
         <activity
-            android:name="com.example.hanh16_10.ActivityMusic"
+            android:name="com.example.hanh17_10.ActivityMusic"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

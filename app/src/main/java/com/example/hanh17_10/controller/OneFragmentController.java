@@ -1,4 +1,4 @@
-package com.example.hanh16_10.controller;
+package com.example.hanh17_10.controller;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh16_10.MediaPlaybackService;
-import com.example.hanh16_10.OnSongClickListener;
-import com.example.hanh16_10.R;
-import com.example.hanh16_10.SongModel;
-import com.example.hanh16_10.fragment.AllSongsFragment;
-import com.example.hanh16_10.fragment.MediaPlaybackFragment;
+import com.example.hanh17_10.MediaPlaybackService;
+import com.example.hanh17_10.OnSongClickListener;
+import com.example.hanh17_10.R;
+import com.example.hanh17_10.SongModel;
+import com.example.hanh17_10.fragment.AllSongsFragment;
+import com.example.hanh17_10.fragment.MediaPlaybackFragment;
 
 public class OneFragmentController extends LayoutController implements View.OnClickListener {
 
@@ -68,7 +68,7 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     public void onClick(View view) {
         mActivity.getSupportActionBar().hide();
         MediaPlaybackFragment mediaPlaybackFragment = new MediaPlaybackFragment();
-        mediaPlaybackFragment.setArguments(mBundle);//truyen du lieu sang fragment mediaplay
+        //mediaPlaybackFragment.setArguments(mBundle);//truyen du lieu sang fragment mediaplay
         mActivity.getSupportFragmentManager().beginTransaction().
                 replace(R.id.container_fragment, mediaPlaybackFragment).
                 addToBackStack(null).commit();
@@ -78,5 +78,6 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     public void setmOnclickService(OnSongClickListener click) {
         mOnclickService = click;
     }
+
 
 }

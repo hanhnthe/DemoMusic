@@ -1,4 +1,4 @@
-package com.example.hanh16_10;
+package com.example.hanh17_10;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,9 +8,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.hanh16_10.controller.LayoutController;
-import com.example.hanh16_10.controller.OneFragmentController;
-import com.example.hanh16_10.controller.TowFragmentController;
+import com.example.hanh17_10.controller.LayoutController;
+import com.example.hanh17_10.controller.OneFragmentController;
+import com.example.hanh17_10.controller.TowFragmentController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
