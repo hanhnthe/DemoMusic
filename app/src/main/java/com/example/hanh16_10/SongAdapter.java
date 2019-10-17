@@ -1,4 +1,4 @@
-package com.example.hanh10_10;
+package com.example.hanh16_10;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -15,8 +15,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
     protected SongGetter mSongGetter;
     private OnSongClickListener mOnSongClickListener;
     private int mPos = -1;
-
-
     //contructor
     public SongAdapter(SongGetter songGetter) {
         mSongGetter = songGetter;
@@ -47,7 +45,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 mSongGetter.setCurrentItemIndex(position);
                 SongModel song = mSongGetter.getCurrentItem();
                 mPos = holder.getLayoutPosition();

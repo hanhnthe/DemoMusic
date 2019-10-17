@@ -29,7 +29,8 @@
             android:src="@drawable/anh_oi_o_lai" />
 
         <LinearLayout
-            android:layout_width="217dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -51,8 +52,7 @@
 
         <ImageButton
             android:id="@+id/playSong1"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="106dp"
             android:layout_height="match_parent"
             android:background="@color/whilenull"
             android:src="@drawable/ic_play_1" />

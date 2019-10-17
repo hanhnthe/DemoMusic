@@ -1,12 +1,15 @@
-package com.example.hanh10_10;
+package com.example.hanh16_10;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -40,7 +43,15 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     private static final int FOREGROUND_ID = 2;
 
     private boolean shuffle = false;
+    private boolean repeat = false;
     private Random rand;
+
+    private Boolean changeData = false;
+    public static final String ACTION_PLAY = "notification_action_play";
+    public static final String ACTION_NEXT = "notification_action_next";
+    public static final String ACTION_PREV = "notification_action_prev";
+    private RemoteViews notificationLayout;
+    private RemoteViews notificationLayoutBig;
 
     //oncreat cho service
     @Override
@@ -97,12 +108,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
         mPlayer.prepareAsync();
-        startForeground(FOREGROUND_ID, buildForegroundNotification());
-    }
 
-    public void stopForeGroundAndCancelNotification() {
-        stopForeground(false);
-        mNotifyManager.cancel(FOREGROUND_ID);
     }
 
     public Notification buildForegroundNotification() {
@@ -110,18 +116,38 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                 getApplicationContext(), ActivityMusic.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+        //xu ly su kien tren notification
+        Intent playClick = new Intent(ACTION_PLAY);
+        Intent nextClick = new Intent(ACTION_NEXT);
+        Intent prevClick = new Intent(ACTION_PREV);
+        PendingIntent notiPlay = PendingIntent
+                .getBroadcast(getApplicationContext(), 1, playClick, 0);
+        PendingIntent notiNext = PendingIntent
+                .getBroadcast(getApplicationContext(), 1, nextClick, 0);
+        PendingIntent notiPrev = PendingIntent
+                .getBroadcast(getApplicationContext(), 1, prevClick, 0);
 
-        RemoteViews notificationLayout = new RemoteViews(
+        notificationLayout = new RemoteViews(
                 getPackageName(), R.layout.notification_small);
-        RemoteViews notificationLayoutBig = new RemoteViews(
+        notificationLayoutBig = new RemoteViews(
                 getPackageName(), R.layout.notification_big);
-
 
         SongModel song = songs.get(mCurrentSong);
         notificationLayout.setImageViewBitmap(R.id.notify_image, song.getImageSong());
         notificationLayoutBig.setImageViewBitmap(R.id.notify_image, song.getImageSong());
         notificationLayoutBig.setTextViewText(R.id.notify_name, song.getNameSong());
         notificationLayoutBig.setTextViewText(R.id.notify_author, song.getAuthorSong());
+        notificationLayout.setImageViewResource(R.id.playNoti, R.drawable.ic_pause_22);
+        notificationLayoutBig.setImageViewResource(R.id.playNoti, R.drawable.ic_pause_22);
+
+        //set su kien:
+        notificationLayout.setOnClickPendingIntent(R.id.playNoti, notiPlay);
+        notificationLayout.setOnClickPendingIntent(R.id.nextNoti, notiNext);
+        notificationLayout.setOnClickPendingIntent(R.id.prevNoti, notiPrev);
+        //big
+        notificationLayoutBig.setOnClickPendingIntent(R.id.playNoti, notiPlay);
+        notificationLayoutBig.setOnClickPendingIntent(R.id.nextNoti, notiNext);
+        notificationLayoutBig.setOnClickPendingIntent(R.id.prevNoti, notiPrev);
 
         NotificationCompat.Builder notification =
                 new NotificationCompat.Builder(getApplicationContext(), PRIMARY_CHANNEL_ID)
@@ -132,7 +158,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                         .setAutoCancel(true);
         return (notification.build());
     }
-
     public void createNotificationChannel() {
         mNotifyManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -147,6 +172,22 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public void onPrepared(MediaPlayer mediaPlayer) {
         //start playback
         mediaPlayer.start();
+        startForeground(FOREGROUND_ID, buildForegroundNotification());
+        getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PLAY));
+        getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_NEXT));
+        getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PREV));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mPlayer.stop();
+        stopForeground(true);
+        getApplication().unregisterReceiver(receiverNotification);
+    }
+
+    public SongModel getSongCurrent() {
+        return songs.get(mCurrentSong);
     }
 
     //thiet lap bai hat hien tai duoc chon
@@ -167,17 +208,13 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         if (mPlayer.getCurrentPosition() > mPlayer.getDuration()) {
+            changeData = true;
+            sendBroadCast();
             mediaPlayer.reset();
             playNext();
+            changeData = false;
         }
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopForeGroundAndCancelNotification();
-    }
-
     //tac dong den musiccontroller
     public int getPos() {
         return mPlayer.getCurrentPosition();
@@ -224,7 +261,9 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     //choi bai hat sau, neu la bai cuoi thi choi lai bai dau tien
     public void playNext() {
-        if (shuffle) {
+        if (repeat) {
+            mCurrentSong = mCurrentSong;
+        } else if (shuffle) {
             int newSong = mCurrentSong;
             while (newSong == mCurrentSong) {
                 newSong = rand.nextInt(songs.size());
@@ -244,7 +283,44 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     }
 
     public void repeatSong() {
-
+        if (repeat) repeat = false;
+        else repeat = true;
     }
+
+    public void sendBroadCast() {
+        String action = "my_action";
+        Intent intent = new Intent(action);
+        intent.setAction(action);//thiet lap ten de receiver nhan duoc thi nhan biet do la intent
+        intent.putExtra("my_key", changeData);
+        sendBroadcast(intent);
+    }
+
+    public BroadcastReceiver receiverNotification = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_PLAY)) {
+                if (mPlayer.isPlaying()) {
+                    mPlayer.pause();
+                    notificationLayout.setImageViewResource(R.id.playNoti, R.drawable.ic_play_22);
+                    notificationLayoutBig.setImageViewResource(R.id.playNoti, R.drawable.ic_play_22);
+                } else {
+                    mPlayer.start();
+                    notificationLayout.setImageViewResource(R.id.playNoti, R.drawable.ic_pause_22);
+                    notificationLayoutBig.setImageViewResource(R.id.playNoti, R.drawable.ic_pause_22);
+                }
+            } else if (intent.getAction().equals(ACTION_NEXT)) {
+                changeData = true;
+                sendBroadCast();
+                playNext();
+                changeData = false;
+            } else if (intent.getAction().equals(ACTION_PREV)) {
+                changeData = true;
+                sendBroadCast();
+                playPrev();
+                changeData = false;
+            }
+        }
+    };
+
 
 }

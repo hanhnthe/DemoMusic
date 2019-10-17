@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFCCCC"
+        android:scaleType="fitXY"
         android:id="@+id/manhinh"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -35,7 +35,8 @@
                 android:src="@drawable/anh_oi_o_lai" />
 
             <LinearLayout
-                android:layout_width="203dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
@@ -60,16 +61,14 @@
 
             <ImageButton
                 android:id="@+id/listSong"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:background="@color/whilenull"
                 android:src="@drawable/ic_list_song" />
 
             <ImageButton
                 android:id="@+id/popup2"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="49dp"
                 android:layout_height="match_parent"
                 android:background="@color/whilenull"
                 android:src="@drawable/ic_popup_large" />
@@ -217,7 +216,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="65dp"
         android:secondaryProgress="100"
         />
 </FrameLayout>

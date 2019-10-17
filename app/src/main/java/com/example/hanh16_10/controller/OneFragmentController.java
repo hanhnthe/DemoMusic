@@ -1,4 +1,4 @@
-package com.example.hanh10_10.controller;
+package com.example.hanh16_10.controller;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh10_10.MediaPlaybackService;
-import com.example.hanh10_10.OnSongClickListener;
-import com.example.hanh10_10.R;
-import com.example.hanh10_10.SongModel;
-import com.example.hanh10_10.fragment.AllSongsFragment;
-import com.example.hanh10_10.fragment.MediaPlaybackFragment;
+import com.example.hanh16_10.MediaPlaybackService;
+import com.example.hanh16_10.OnSongClickListener;
+import com.example.hanh16_10.R;
+import com.example.hanh16_10.SongModel;
+import com.example.hanh16_10.fragment.AllSongsFragment;
+import com.example.hanh16_10.fragment.MediaPlaybackFragment;
 
 public class OneFragmentController extends LayoutController implements View.OnClickListener {
 
@@ -45,10 +45,7 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     @Override
     public void onClickItem(final SongModel item) {
         View view = allSongsFragment.getView();
-
         mOnclickService.onClickItem(item);
-
-        item.setCheckPlay(true);//set bai hat dang duoc choi
         mBundle = newBundleFromSong(item);// khoi tao bien bunlde vao item click
 
         String name, author;
@@ -57,33 +54,14 @@ public class OneFragmentController extends LayoutController implements View.OnCl
         author = item.getAuthorSong();
         image = item.getImageSong();
 
-
         TextView nameSong2 = (TextView) view.findViewById(R.id.nameSong2);
         nameSong2.setText(name);
-
         TextView authorSong = (TextView) view.findViewById(R.id.author1);
         authorSong.setText(author);
-
         ImageView imageView = (ImageView) view.findViewById(R.id.image1);
         imageView.setImageBitmap(image);
-
-        final ImageButton button1 = (ImageButton) view.findViewById(R.id.playSong1);
-        button1.setImageResource(R.drawable.ic_pause_1);
-
-        button1.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                if (item.getCheckPlay()) {
-                    button1.setImageResource(R.drawable.ic_play_1);
-                    item.setCheckPlay(false);
-                } else {
-                    button1.setImageResource(R.drawable.ic_pause_1);
-                    item.setCheckPlay(true);
-                }
-            }
-        });
-
+        ImageButton play = (ImageButton) view.findViewById(R.id.playSong1);
+        play.setImageResource(R.drawable.ic_pause_1);
     }
 
     @Override

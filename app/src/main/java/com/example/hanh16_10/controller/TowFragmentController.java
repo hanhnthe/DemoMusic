@@ -1,15 +1,15 @@
-package com.example.hanh10_10.controller;
+package com.example.hanh16_10.controller;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh10_10.MediaPlaybackService;
-import com.example.hanh10_10.OnSongClickListener;
-import com.example.hanh10_10.R;
-import com.example.hanh10_10.SongModel;
-import com.example.hanh10_10.fragment.AllSongsFragment;
-import com.example.hanh10_10.fragment.MediaPlaybackFragment;
+import com.example.hanh16_10.MediaPlaybackService;
+import com.example.hanh16_10.OnSongClickListener;
+import com.example.hanh16_10.R;
+import com.example.hanh16_10.SongModel;
+import com.example.hanh16_10.fragment.AllSongsFragment;
+import com.example.hanh16_10.fragment.MediaPlaybackFragment;
 
 public class TowFragmentController extends LayoutController {
     private MediaPlaybackFragment mMediaPlayBackFragment;
@@ -30,15 +30,12 @@ public class TowFragmentController extends LayoutController {
             mAllSongsFragment.setOnSongClickListener(this);
             mAllSongsFragment.setmLoadCallback(mMediaPlayBackFragment);
 
-
             mActivity.getSupportFragmentManager().beginTransaction().
                     replace(R.id.fragment_1, mAllSongsFragment).
                     replace(R.id.fagment_2, mMediaPlayBackFragment).
                     commit();
 //            mActivity.findViewById(R.id.linearLayout3).setVisibility(View.GONE);
-
         }
-
     }
 
     @Override
@@ -46,7 +43,6 @@ public class TowFragmentController extends LayoutController {
         Bundle args = newBundleFromSong(item);
         mMediaPlayBackFragment.update(args);
         mOnclickService.onClickItem(item);
-
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.hanh10_10;
+package com.example.hanh16_10;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,10 +8,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.hanh10_10.controller.LayoutController;
-import com.example.hanh10_10.controller.OneFragmentController;
-import com.example.hanh10_10.controller.TowFragmentController;
-import com.example.hanh10_10.fragment.AllSongsFragment;
+import com.example.hanh16_10.controller.LayoutController;
+import com.example.hanh16_10.controller.OneFragmentController;
+import com.example.hanh16_10.controller.TowFragmentController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -20,15 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.IBinder;
-import android.view.View;
-import android.widget.MediaController;
 
 import java.util.List;
 
-public class ActivityMusic extends AppCompatActivity implements OnSongClickListener, AllSongsFragment.DataCallBack {
-    ActionBar actionBar ;
-    LayoutController mLayoutController;
-    SongGetter songGetter;
+public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
+    private ActionBar actionBar;
+    private LayoutController mLayoutController;
+    private SongGetter songGetter;
 
     //khai bao cac doi tuong service
     public MediaPlaybackService mMediaService;
@@ -38,6 +35,10 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     private List<SongModel> mList;
 
     private static final String LAST_MUSIC = "last_music";
+
+    public SongGetter getSongGetter() {
+        return songGetter;
+    }
 
     @Override
     protected void onStart() { // khoi dong doi tuong service khi activity khoi dong
@@ -51,6 +52,8 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
+        songGetter = new SongGetter(this);
+        mList = songGetter.getLitSong();
         if (mPlayIntent == null) {
             mPlayIntent = new Intent(this, MediaPlaybackService.class);
             bindService(mPlayIntent, musicConnection, Context.BIND_AUTO_CREATE);
@@ -80,14 +83,16 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(LAST_MUSIC, mMediaService.songs.get(mMediaService.getmCurrentSong()).getNumber());
+    protected void onDestroy() {
+        stopService(mPlayIntent);
+        super.onDestroy();
+
     }
 
     @Override
-    public void dataCallBack(List<SongModel> list) {
-        mList = list;
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(LAST_MUSIC, mMediaService.songs.get(mMediaService.getmCurrentSong()).getNumber());
     }
 
     //ket noi voi service
@@ -104,7 +109,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             mMusicBound = false;
-
         }
     };
 
@@ -114,14 +118,5 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         mMediaService.setSong(item.getNumber() - 1);
         mMediaService.playSong();
     }
-    //chuyen bitmap -> byte
-//    public static String encodeTobase64(Bitmap image) {
-//        Bitmap immagex = image;
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        immagex.compress(Bitmap.CompressFormat.PNG, 90, baos);
-//        byte[] b = baos.toByteArray();
-//        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-//        return imageEncoded;
-//    }
 
 }

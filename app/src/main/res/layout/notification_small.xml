@@ -20,7 +20,7 @@
         android:layout_weight="1" />
 
     <ImageButton
-        android:id="@+id/leftButton"
+        android:id="@+id/prevNoti"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
@@ -41,16 +41,16 @@
             android:src="@drawable/ic_play_2" />
 
         <ImageView
-            android:id="@+id/playSong2"
+            android:id="@+id/playNoti"
             android:layout_width="29dp"
             android:layout_height="29dp"
-            android:background="@drawable/ic_play_22"
+            android:scaleType="fitXY"
             android:layout_gravity="center" />
     </FrameLayout>
 
 
     <ImageButton
-        android:id="@+id/right"
+        android:id="@+id/nextNoti"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"

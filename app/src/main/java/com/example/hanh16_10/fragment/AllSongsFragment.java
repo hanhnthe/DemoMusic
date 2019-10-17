@@ -1,7 +1,7 @@
-package com.example.hanh10_10.fragment;
+package com.example.hanh16_10.fragment;
 
 
-import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,13 +18,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh10_10.ActivityMusic;
-import com.example.hanh10_10.MediaPlaybackService;
-import com.example.hanh10_10.OnSongClickListener;
-import com.example.hanh10_10.R;
-import com.example.hanh10_10.SongAdapter;
-import com.example.hanh10_10.SongGetter;
-import com.example.hanh10_10.SongModel;
+import com.example.hanh16_10.ActivityMusic;
+import com.example.hanh16_10.MediaPlaybackService;
+import com.example.hanh16_10.OnSongClickListener;
+import com.example.hanh16_10.R;
+import com.example.hanh16_10.SongAdapter;
+import com.example.hanh16_10.SongGetter;
+import com.example.hanh16_10.SongModel;
 
 import java.util.List;
 
@@ -38,7 +38,6 @@ public class AllSongsFragment extends Fragment {
 
     private View.OnClickListener mListen;
     private OnSongClickListener mOnSongClickListener;
-    private DataCallBack mDataBack;
 
     private int mCurrentNumber;
     public LoadCallback mLoadCallback;
@@ -54,7 +53,7 @@ public class AllSongsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActi = (ActivityMusic) getActivity();
-        mService = mActi.mMediaService;
+        //setRetainInstance(true);
     }
 
     public void setmLoadCallback(LoadCallback mLoadCallback) {
@@ -64,65 +63,53 @@ public class AllSongsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       final View view = inflater.inflate(R.layout.list_music,container,false);
-       mRecyclerview = view.findViewById(R.id.myrecyclerview);
-       mRecyclerview.setHasFixedSize(true);
+        final View view = inflater.inflate(R.layout.list_music, container, false);
+        mRecyclerview = (RecyclerView) view.findViewById(R.id.myrecyclerview);
+        mRecyclerview.setHasFixedSize(true);
+
         View view1 = view.findViewById(R.id.linearLayout3);
         name = (TextView) view1.findViewById(R.id.nameSong2);
         au = (TextView) view1.findViewById(R.id.author1);
         ima = (ImageView) view1.findViewById(R.id.image1);
         mPlay = (ImageButton) view1.findViewById(R.id.playSong1);
+
+        mService = mActi.mMediaService;
         if (mService != null) {
-            if (mService.isPng()) {
-                mPlay.setImageResource(R.drawable.ic_play_1);
-            } else mPlay.setImageResource(R.drawable.ic_pause_1);
-            mPlay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mService.isPng()) {
-                        mPlay.setImageResource(R.drawable.ic_play_1);
-                        mService.pausePlayer();
-                    } else {
-                        mPlay.setImageResource(R.drawable.ic_pause_1);
-                        mService.go();
-                    }
-                }
-            });
-        } else mPlay.setImageResource(R.drawable.ic_play_1);
+            SongModel item1 = mService.getSongCurrent();
+            String name1, author;
+            Bitmap image;
+            name1 = item1.getNameSong();
+            author = item1.getAuthorSong();
+            image = item1.getImageSong();
+            name.setText(name1);
+            au.setText(author);
+            ima.setImageBitmap(image);
+            mPlay.setImageResource(R.drawable.ic_pause_1);
+        }
+        play();
         view1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mListen!= null)
-                mListen.onClick(view);
+                if (mListen != null)
+                    mListen.onClick(view);
             }
         });
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Bundle args = getArguments();
-        int last_music = -1;
-        if (args != null) {
-            last_music = args.getInt("last_music");
-            mSongGetter.setCurrentSongNumber(last_music);
-            SongModel song = mSongGetter.getCurrentItem();
-            name.setText(song.getNameSong());
-            au.setText(song.getAuthorSong());
-            ima.setImageBitmap(song.getImageSong());
-        }
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof DataCallBack) {
-            mDataBack = (DataCallBack) context;
-        } else {
-            throw new ClassCastException(context.toString()
-                    + "must implement DataCallBack");
-        }
+    public void play() {
+        mPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mService.isPng()) {
+                    mPlay.setImageResource(R.drawable.ic_play_1);
+                    mService.pausePlayer();
+                } else {
+                    mPlay.setImageResource(R.drawable.ic_pause_1);
+                    mService.go();
+                }
+            }
+        });
     }
 
     @Override
@@ -131,14 +118,11 @@ public class AllSongsFragment extends Fragment {
         mLayout = new LinearLayoutManager(getActivity());
         mRecyclerview.setLayoutManager(mLayout);
         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
-        // mSongGetter = new SongGetter(this);
-        mSongGetter = new SongGetter(getContext());
-        mList = mSongGetter.getLitSong();
-        mDataBack.dataCallBack(mList);
 
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
+                mSongGetter = mActi.getSongGetter();
                 return null;
             }
 
@@ -150,28 +134,23 @@ public class AllSongsFragment extends Fragment {
                 mSongAdapter.setOnSongclickListener(mOnSongClickListener);
 
                 mRecyclerview.setAdapter(mSongAdapter);
+                mSongAdapter.notifyDataSetChanged();
 
                 if (mLoadCallback != null) {
                     mLoadCallback.onLoadFinish(mSongGetter);
                 }
             }
-
         }.execute();
 
     }
-
-
     public void setOnSongClickListener(OnSongClickListener onSongClickListener) {
         mOnSongClickListener = onSongClickListener;
         if (mSongAdapter != null) {
             mSongAdapter.setOnSongclickListener(onSongClickListener);
-
         }
-
     }
 
-
-    public void setOnClickListener(View.OnClickListener listener){
+    public void setOnClickListener(View.OnClickListener listener) {
         this.mListen = listener;
     }
 
@@ -181,10 +160,6 @@ public class AllSongsFragment extends Fragment {
 
     public interface LoadCallback {
         public void onLoadFinish(SongGetter songGetter);
-    }
-
-    public interface DataCallBack {
-        public void dataCallBack(List<SongModel> list);
     }
 
     public SongAdapter getSongAdapter(SongGetter songGetter) {

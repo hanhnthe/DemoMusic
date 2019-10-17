@@ -1,5 +1,9 @@
-package com.example.hanh10_10.fragment;
+package com.example.hanh16_10.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,11 +22,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.hanh10_10.ActivityMusic;
-import com.example.hanh10_10.MediaPlaybackService;
-import com.example.hanh10_10.R;
-import com.example.hanh10_10.SongGetter;
-import com.example.hanh10_10.SongModel;
+import com.example.hanh16_10.ActivityMusic;
+import com.example.hanh16_10.MediaPlaybackService;
+import com.example.hanh16_10.R;
+import com.example.hanh16_10.SongGetter;
+import com.example.hanh16_10.SongModel;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -34,7 +38,6 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     public static final String AUTHOR_SONG_EXTRA = "authorsong";
     public static final String IMAGE_SONG_EXTRA = "imagesong";
     public static final String TIME_SONG_EXTRA = "timesong";
-    public static final String CHECKPLAY_EXTRA = "checkplay";
 
     private TextView mNameSong, mAuthor, mTime;
     private ImageView mImageSong, mImageBackground;
@@ -47,12 +50,15 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     private boolean mBoundMusic;
     private ActivityMusic mActi;
 
+    private int mMaxTime;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActi = (ActivityMusic) getActivity();
         mService = mActi.mMediaService;
         mBoundMusic = mActi.mMusicBound;
+        setRetainInstance(true);
 
     }
 
@@ -78,29 +84,14 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         mShuffle = (ImageButton) view.findViewById(R.id.shufflebutton);
         mRepeat = (ImageButton) view.findViewById(R.id.repeatbutton);
 
-        mSeekbar.setMax(mService.getDur());
-        mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
-                mProgressTime.setText(dinhdang.format(progress));
-                updateTimeSong();
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mService.seek(mSeekbar.getProgress());
-            }
-        });
-        updateTimeSong();
+        seekbarChange();
         next();
         pre();
         shuffle();
         repeat();
         likeAndDis();
         listComeBack();
+        updateTimeSong();
         return view;
     }
 
@@ -117,12 +108,12 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                     args.getString(NAME_SONG_EXTRA),
                     args.getString(AUTHOR_SONG_EXTRA),
                     args.getString(TIME_SONG_EXTRA),
-                    args.getString(IMAGE_SONG_EXTRA),
-                    args.getBoolean(CHECKPLAY_EXTRA));
+                    args.getString(IMAGE_SONG_EXTRA));
         }
     }
 
-    public void updateUI(int number, String name, String author, String time, String image, boolean checkplay) {
+    public void updateUI(int number, String name, String author, String time, String image) {
+        mSeekbar.setMax(mService.getDur());
         mNameSong.setText(name);
         mAuthor.setText(author);
         if (image != null) {
@@ -131,12 +122,15 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         }
         mTime.setText(time);
         play();
+        mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
     }
 
     public void play() {
         if (mService.isPng()) {
             mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
-        } else mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
+        } else {
+            mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
+        }
         mPlaySong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,6 +145,23 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         });
     }
 
+    public void seekbarChange() {
+        mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mService.seek(mSeekbar.getProgress());
+            }
+        });
+    }
+
     public void next() {
         mNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +169,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 mService.playNext();
                 SongModel song = mService.songs.get(mService.getmCurrentSong());
                 String songString = encodeTobase64(song.getImageSong());
-                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString, mService.isPng());
+                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
             }
         });
     }
@@ -170,7 +181,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 mService.playPrev();
                 SongModel song = mService.songs.get(mService.getmCurrentSong());
                 String songString = encodeTobase64(song.getImageSong());
-                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString, mService.isPng());
+                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
             }
         });
     }
@@ -205,7 +216,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                     i = 2;
                 } else if (i == 2) {
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
-                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
+                    mService.repeatSong();
                     i = 3;
                 } else if (i == 3) {
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat);
@@ -250,7 +261,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         mList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mActi.getSupportFragmentManager().popBackStack();
             }
         });
     }
@@ -260,8 +271,8 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         super.onPause();
         ActivityMusic activityMusic = (ActivityMusic) getActivity();
         activityMusic.getSupportActionBar().show();
+        getActivity().unregisterReceiver(receiver);
     }
-
     //giao dien quay ngang
     @Override
     public void onLoadFinish(SongGetter songGetter) {
@@ -273,8 +284,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         songGetter.setCurrentSongNumber(lastNumberSong);
         SongModel song = songGetter.getCurrentItem();
         String songString = encodeTobase64(song.getImageSong());
-        updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString, args.getBoolean(CHECKPLAY_EXTRA));
-
+        updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
     }
 
     private void updateTimeSong() {
@@ -285,7 +295,6 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
                 mProgressTime.setText(dinhdang.format(mService.getPos()));
                 mSeekbar.setProgress(mService.getPos());
-
                 handler.postDelayed(this, 500);
             }
         }, 100);
@@ -307,4 +316,29 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         return imageEncoded;
     }
 
+    public String ACTION = "my_action";
+    public BroadcastReceiver receiver = new BroadcastReceiver() {
+        //code thi hanh khi receiver nhan dc intent
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //kiem tra intent
+            if (intent.getAction().equals(ACTION)) {
+                //doc du lieu tu intent
+                Boolean change = intent.getBooleanExtra("my_key", true);
+                if (change) {
+                    // mSeekbar.setMax(mService.getDur());
+                    SongModel song = mService.songs.get(mService.getmCurrentSong());
+                    String songString = encodeTobase64(song.getImageSong());
+                    updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(receiver, new IntentFilter(ACTION));
+    }
 }
+

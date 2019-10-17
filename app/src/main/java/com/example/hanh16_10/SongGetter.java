@@ -1,4 +1,4 @@
-package com.example.hanh10_10;
+package com.example.hanh16_10;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -8,9 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.util.Base64;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +24,6 @@ public class SongGetter {
         mContext = context;
         mCurrentItemIndex=0;
         getMp3FilesFromMemory();
-
     }
 
     public List<SongModel> getLitSong() {
@@ -34,7 +31,6 @@ public class SongGetter {
     }
 
     public List<SongModel> getMp3FilesFromMemory() {
-
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
         String[] projetion = {
                 MediaStore.Audio.Media.TITLE,
@@ -58,7 +54,14 @@ public class SongGetter {
             song.setNameSong(cursor.getString(0));
             song.setAuthorSong(cursor.getString(1));
             long image = cursor.getLong(2);
-            song.setImageSong(getAlbumart(image));
+            if (getAlbumart(image) != null) {
+                song.setImageSong(getAlbumart(image));
+            } else {
+                Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
+                        R.drawable.mac_dinh);
+                song.setImageSong(icon);
+            }
+
             long duration = cursor.getLong(3);
             SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
             song.setTimeSong(dinhdang.format(duration));
@@ -75,12 +78,10 @@ public class SongGetter {
             Uri uri = ContentUris.withAppendedId(artWorkUri, album_id);
             ParcelFileDescriptor pfd = mContext.getContentResolver()
                     .openFileDescriptor(uri, "r");
-
             if (pfd != null) {
                 FileDescriptor fd = pfd.getFileDescriptor();
                 bm = BitmapFactory.decodeFileDescriptor(fd);
             }
-
         } catch (Exception e) {
         }
         return bm;
