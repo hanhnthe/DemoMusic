@@ -1,4 +1,4 @@
-package com.example.hanh17_10;
+package com.example.hanh19_10;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -199,6 +199,10 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     public int getmCurrentSong() {
         return mCurrentSong;
+    }
+
+    public int getmCurrentSongLand() {
+        return mCurrentSong + 1;
     }
 
     @Override

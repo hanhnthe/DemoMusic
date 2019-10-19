@@ -1,16 +1,18 @@
-package com.example.hanh17_10.controller;
+package com.example.hanh19_10.controller;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh17_10.MediaPlaybackService;
-import com.example.hanh17_10.OnSongClickListener;
-import com.example.hanh17_10.SongModel;
-import com.example.hanh17_10.fragment.AllSongsFragment;
-import com.example.hanh17_10.fragment.MediaPlaybackFragment;
+import com.example.hanh19_10.ActivityMusic;
+import com.example.hanh19_10.MediaPlaybackService;
+import com.example.hanh19_10.OnSongClickListener;
+import com.example.hanh19_10.SongModel;
+import com.example.hanh19_10.fragment.AllSongsFragment;
+import com.example.hanh19_10.fragment.MediaPlaybackFragment;
 
 import java.io.ByteArrayOutputStream;
 
@@ -19,11 +21,9 @@ public abstract class LayoutController implements OnSongClickListener {
     protected AppCompatActivity mActivity;
     protected AllSongsFragment mAllSongsFragment;
     protected OnSongClickListener mOnclickService;
-    protected MediaPlaybackService mService;
 
-    public LayoutController(AppCompatActivity activity, MediaPlaybackService service) {
+    public LayoutController(AppCompatActivity activity) {
         mActivity = activity;
-        mService = service;
     }
 
     //lưu trữ để truyeemf dữ liệu tu fragmnet nay sang fragment khác
@@ -38,7 +38,7 @@ public abstract class LayoutController implements OnSongClickListener {
         return args;
     }
 
-    public abstract void onCreate(Bundle saveInstate, int currentSongNumber);
+    public abstract void onCreate();
 
     public abstract void setmOnclickService(OnSongClickListener click);
 

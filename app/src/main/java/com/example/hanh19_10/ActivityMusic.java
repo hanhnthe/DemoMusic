@@ -1,4 +1,4 @@
-package com.example.hanh17_10;
+package com.example.hanh19_10;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,9 +8,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.hanh17_10.controller.LayoutController;
-import com.example.hanh17_10.controller.OneFragmentController;
-import com.example.hanh17_10.controller.TowFragmentController;
+import com.example.hanh19_10.controller.LayoutController;
+import com.example.hanh19_10.controller.OneFragmentController;
+import com.example.hanh19_10.controller.TowFragmentController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -31,6 +31,8 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     public MediaPlaybackService mMediaService;
     private Intent mPlayIntent;
     public boolean mMusicBound = false;
+    public AppCompatActivity compatActivity;
+    public int a, b;
 
     private List<SongModel> mList;
 
@@ -54,24 +56,14 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         actionBar = getSupportActionBar();
         songGetter = new SongGetter(this);
         mList = songGetter.getLitSong();
+        compatActivity = this;
+        a = getResources().getConfiguration().orientation;
+        b = Configuration.ORIENTATION_PORTRAIT;
         if (mPlayIntent == null) {
             mPlayIntent = new Intent(this, MediaPlaybackService.class);
-            bindService(mPlayIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(mPlayIntent);
+            bindService(mPlayIntent, musicConnection, Context.BIND_AUTO_CREATE);
         }
-        int currentNumberSong = -1;
-        if (savedInstanceState != null) {
-            currentNumberSong = savedInstanceState.getInt(LAST_MUSIC);
-        }
-        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
-            // if(isPortrait){
-            mLayoutController = new OneFragmentController(this, mMediaService);
-            mLayoutController.onCreate(savedInstanceState, currentNumberSong);
-        } else{
-            mLayoutController = new TowFragmentController(this, mMediaService);
-            mLayoutController.onCreate(savedInstanceState, currentNumberSong);
-        }
-        mLayoutController.setmOnclickService(this);
         //setController();
 
     }
@@ -89,12 +81,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(LAST_MUSIC, mMediaService.songs.get(mMediaService.getmCurrentSong()).getNumber());
-    }
-
     //ket noi voi service
     private ServiceConnection musicConnection = new ServiceConnection() {
         @Override
@@ -105,6 +91,14 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             //chuyen list
             mMediaService.setList(mList);
             mMusicBound = true;
+            if (a == b) {
+                // if(isPortrait){
+                mLayoutController = new OneFragmentController(compatActivity);
+            } else {
+                mLayoutController = new TowFragmentController(compatActivity);
+            }
+            mLayoutController.onCreate();
+            mLayoutController.setmOnclickService((OnSongClickListener) compatActivity);
         }
         @Override
         public void onServiceDisconnected(ComponentName componentName) {

@@ -1,5 +1,6 @@
-package com.example.hanh17_10.controller;
+package com.example.hanh19_10.controller;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -9,12 +10,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh17_10.MediaPlaybackService;
-import com.example.hanh17_10.OnSongClickListener;
-import com.example.hanh17_10.R;
-import com.example.hanh17_10.SongModel;
-import com.example.hanh17_10.fragment.AllSongsFragment;
-import com.example.hanh17_10.fragment.MediaPlaybackFragment;
+import com.example.hanh19_10.ActivityMusic;
+import com.example.hanh19_10.MediaPlaybackService;
+import com.example.hanh19_10.OnSongClickListener;
+import com.example.hanh19_10.R;
+import com.example.hanh19_10.SongModel;
+import com.example.hanh19_10.fragment.AllSongsFragment;
+import com.example.hanh19_10.fragment.MediaPlaybackFragment;
 
 public class OneFragmentController extends LayoutController implements View.OnClickListener {
 
@@ -22,19 +24,13 @@ public class OneFragmentController extends LayoutController implements View.OnCl
 
     AllSongsFragment allSongsFragment = new AllSongsFragment();
 
-    public OneFragmentController(AppCompatActivity activity, MediaPlaybackService service) {
-        super(activity, service);
+    public OneFragmentController(AppCompatActivity activity) {
+        super(activity);
     }
 
     @Override
-    public void onCreate(Bundle saveInstate, int currentSongNumber) {
+    public void onCreate() {
         if (mActivity.findViewById(R.id.container_fragment) != null) {
-
-            Bundle args = new Bundle();
-            args.putInt("last_music", currentSongNumber);
-            if (args != null) {
-                allSongsFragment.setArguments(args);
-            }
             allSongsFragment.setOnClickListener(this);
             allSongsFragment.setOnSongClickListener(this);
             mActivity.getSupportFragmentManager().beginTransaction().
@@ -47,7 +43,6 @@ public class OneFragmentController extends LayoutController implements View.OnCl
         View view = allSongsFragment.getView();
         mOnclickService.onClickItem(item);
         mBundle = newBundleFromSong(item);// khoi tao bien bunlde vao item click
-
         String name, author;
         Bitmap image;
         name = item.getNameSong();
@@ -68,7 +63,6 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     public void onClick(View view) {
         mActivity.getSupportActionBar().hide();
         MediaPlaybackFragment mediaPlaybackFragment = new MediaPlaybackFragment();
-        //mediaPlaybackFragment.setArguments(mBundle);//truyen du lieu sang fragment mediaplay
         mActivity.getSupportFragmentManager().beginTransaction().
                 replace(R.id.container_fragment, mediaPlaybackFragment).
                 addToBackStack(null).commit();

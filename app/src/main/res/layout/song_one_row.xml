@@ -8,9 +8,9 @@
         android:layout_width="80dp"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="2"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:drawablePadding="3dp" />
 
     <LinearLayout
         android:layout_width="0dp"

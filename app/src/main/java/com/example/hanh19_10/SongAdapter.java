@@ -1,4 +1,4 @@
-package com.example.hanh17_10;
+package com.example.hanh19_10;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -36,11 +36,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
         final TextView text1 = holder.textTime;
         text1.setText(songModel.getTimeSong());
         holder.textName.setText(songModel.getNameSong());
-        holder.textNumber.setText(Integer.toString(songModel.getNumber()));
+        //holder.textNumber.setText(Integer.toString(songModel.getNumber()));
         if (mPos == position) {
             holder.textName.setTypeface(null, Typeface.BOLD);
+            holder.textNumber.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_notification, 0, 0);
         } else {
             holder.textName.setTypeface(null, Typeface.NORMAL);
+            holder.textNumber.setText("" + songModel.getNumber());
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

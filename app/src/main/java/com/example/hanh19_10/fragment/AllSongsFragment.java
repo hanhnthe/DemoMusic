@@ -1,4 +1,4 @@
-package com.example.hanh17_10.fragment;
+package com.example.hanh19_10.fragment;
 
 
 import android.content.BroadcastReceiver;
@@ -6,16 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,15 +21,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh17_10.ActivityMusic;
-import com.example.hanh17_10.MediaPlaybackService;
-import com.example.hanh17_10.OnSongClickListener;
-import com.example.hanh17_10.R;
-import com.example.hanh17_10.SongAdapter;
-import com.example.hanh17_10.SongGetter;
-import com.example.hanh17_10.SongModel;
-
-import java.util.List;
+import com.example.hanh19_10.ActivityMusic;
+import com.example.hanh19_10.MediaPlaybackService;
+import com.example.hanh19_10.OnSongClickListener;
+import com.example.hanh19_10.R;
+import com.example.hanh19_10.SongAdapter;
+import com.example.hanh19_10.SongGetter;
+import com.example.hanh19_10.SongModel;
 
 public class AllSongsFragment extends Fragment {
 
