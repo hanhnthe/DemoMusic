@@ -23,11 +23,12 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
 public class MediaPlaybackService extends Service implements MediaPlayer.OnPreparedListener,
-        MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, Serializable {
 
     //them doi tuong
     //media player
@@ -84,7 +85,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     }
 
     //them binder de tuong tac voi activity
-    public class MusicBinder extends Binder {
+    public class MusicBinder extends Binder implements Serializable {
         MediaPlaybackService getService() {
             return MediaPlaybackService.this;
         }
@@ -173,6 +174,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         //start playback
         mediaPlayer.start();
         startForeground(FOREGROUND_ID, buildForegroundNotification());
+        // sendBroadCastObjectService();
         getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PLAY));
         getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_NEXT));
         getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PREV));
@@ -321,6 +323,5 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             }
         }
     };
-
 
 }

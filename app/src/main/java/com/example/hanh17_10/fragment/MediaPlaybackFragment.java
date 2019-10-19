@@ -96,13 +96,6 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         return view;
     }
 
-   /* @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Bundle args = getArguments();
-        update(args);
-    }*/
-
     public void updateUIFromService() {
         SongModel song = mService.songs.get(mService.getmCurrentSong());
         String songString = encodeTobase64(song.getImageSong());
@@ -278,13 +271,6 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         });
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        ActivityMusic activityMusic = (ActivityMusic) getActivity();
-        activityMusic.getSupportActionBar().show();
-        getActivity().unregisterReceiver(receiver);
-    }
     //giao dien quay ngang
     @Override
     public void onLoadFinish(SongGetter songGetter) {
@@ -351,6 +337,14 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(receiver, new IntentFilter(ACTION));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ActivityMusic activityMusic = (ActivityMusic) getActivity();
+        activityMusic.getSupportActionBar().show();
+        getActivity().unregisterReceiver(receiver);
     }
 }
 

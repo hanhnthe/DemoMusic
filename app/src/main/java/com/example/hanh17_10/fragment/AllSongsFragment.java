@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -166,6 +167,7 @@ public class AllSongsFragment extends Fragment {
         return new SongAdapter(songGetter);
     }
 
+    //cap nhat giao dien small detail
     public String ACTION = "my_action";
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         //code thi hanh khi receiver nhan dc intent
@@ -188,7 +190,6 @@ public class AllSongsFragment extends Fragment {
         super.onResume();
         getActivity().registerReceiver(receiver, new IntentFilter(ACTION));
     }
-
     @Override
     public void onPause() {
         super.onPause();
