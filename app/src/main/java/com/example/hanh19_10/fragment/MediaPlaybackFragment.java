@@ -99,11 +99,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         SongModel song = mService.songs.get(mService.getmCurrentSong());
         String songString = encodeTobase64(song.getImageSong());
         updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-        if (mService.isPng()) {
-            mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
-        } else {
-            mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
-        }
+        mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
     }
 
 
