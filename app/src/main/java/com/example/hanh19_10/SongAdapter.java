@@ -39,9 +39,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
         //holder.textNumber.setText(Integer.toString(songModel.getNumber()));
         if (mPos == position) {
             holder.textName.setTypeface(null, Typeface.BOLD);
+            holder.textNumber.setText("");
             holder.textNumber.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_notification, 0, 0);
         } else {
             holder.textName.setTypeface(null, Typeface.NORMAL);
+            holder.textNumber.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             holder.textNumber.setText("" + songModel.getNumber());
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -49,7 +51,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             public void onClick(View view) {
                 mSongGetter.setCurrentItemIndex(position);
                 SongModel song = mSongGetter.getCurrentItem();
-                mPos = holder.getLayoutPosition();
+                mPos = holder.getAdapterPosition();
                 if (mOnSongClickListener != null) {
                     mOnSongClickListener.onClickItem(song);
                     notifyDataSetChanged();
