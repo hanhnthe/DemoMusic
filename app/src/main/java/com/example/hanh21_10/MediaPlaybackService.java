@@ -1,4 +1,4 @@
-package com.example.hanh19_10;
+package com.example.hanh21_10;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -58,7 +58,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     @Override
     public void onCreate() {
         super.onCreate();
-        mCurrentSong = 0;//khoi tao vi tri =0
+        mCurrentSong = -1;//khoi tao vi tri =0
         mPlayer = new MediaPlayer();
         initMusicPlayer();
         createNotificationChannel();
@@ -189,7 +189,12 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     }
 
     public SongModel getSongCurrent() {
-        return songs.get(mCurrentSong);
+        if (mCurrentSong != -1) {
+            return songs.get(mCurrentSong);
+        } else {
+            return songs.get(mCurrentSong + 1);
+        }
+
     }
 
     //thiet lap bai hat hien tai duoc chon
@@ -248,8 +253,10 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     //chuyen tiep den bai hat truoc do neu dang phat <3s
     //chuyen choi lai bai hat neu dang choi >3s
     public void playPrev() {
+        changeData = true;
         if (mPlayer.getCurrentPosition() > 3000) {
             playSong();
+            changeData = false;
         } else {
             if (shuffle) {
                 int newSong = mCurrentSong;
@@ -262,6 +269,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                 if (mCurrentSong < 0) mCurrentSong = songs.size() - 1;
             }
             playSong();
+            changeData = false;
         }
     }
 
@@ -328,4 +336,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         }
     };
 
+    public void setChangeData(Boolean changeData) {
+        this.changeData = changeData;
+    }
 }

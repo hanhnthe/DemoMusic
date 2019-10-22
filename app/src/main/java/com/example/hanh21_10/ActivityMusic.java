@@ -1,4 +1,4 @@
-package com.example.hanh19_10;
+package com.example.hanh21_10;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,11 +8,10 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.hanh19_10.controller.LayoutController;
-import com.example.hanh19_10.controller.OneFragmentController;
-import com.example.hanh19_10.controller.TowFragmentController;
+import com.example.hanh21_10.controller.LayoutController;
+import com.example.hanh21_10.controller.OneFragmentController;
+import com.example.hanh21_10.controller.TowFragmentController;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,16 +35,11 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     private List<SongModel> mList;
 
-    private static final String LAST_MUSIC = "last_music";
 
     public SongGetter getSongGetter() {
         return songGetter;
     }
 
-    @Override
-    protected void onStart() { // khoi dong doi tuong service khi activity khoi dong
-        super.onStart();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +58,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             startService(mPlayIntent);
             bindService(mPlayIntent, musicConnection, Context.BIND_AUTO_CREATE);
         }
-        //setController();
+
 
     }
 

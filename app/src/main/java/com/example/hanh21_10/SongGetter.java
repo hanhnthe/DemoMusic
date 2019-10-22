@@ -1,4 +1,4 @@
-package com.example.hanh19_10;
+package com.example.hanh21_10;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -22,7 +22,7 @@ public class SongGetter {
     //set du lieu
     public SongGetter(Context context) {
         mContext = context;
-        mCurrentItemIndex=0;
+        mCurrentItemIndex = -1;
         getMp3FilesFromMemory();
     }
 
@@ -87,24 +87,16 @@ public class SongGetter {
         return bm;
     }
 
-    public SongModel getNextSong(){
-        mCurrentItemIndex++;
-        if (mCurrentItemIndex >= litSong.size()) {
-            mCurrentItemIndex = litSong.size() - 1;
-        }
-        return litSong.get(mCurrentItemIndex);
-    }
     public int getCurrentItemIndex(){
         return mCurrentItemIndex;
     }
+
+    public void setmCurrentItemIndex(int mCurrentItemIndex) {
+        this.mCurrentItemIndex = mCurrentItemIndex;
+    }
+
     public SongModel getCurrentItem(){
         return litSong.get(mCurrentItemIndex);
-    }
-    public boolean hasNext(){
-        return mCurrentItemIndex < litSong.size() - 1;
-    }
-    public boolean hasPrevious(){
-        return mCurrentItemIndex>0;
     }
     public int getCount(){
         return litSong.size();

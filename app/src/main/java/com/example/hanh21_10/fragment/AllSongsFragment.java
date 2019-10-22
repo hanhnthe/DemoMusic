@@ -1,4 +1,4 @@
-package com.example.hanh19_10.fragment;
+package com.example.hanh21_10.fragment;
 
 
 import android.content.BroadcastReceiver;
@@ -21,13 +21,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh19_10.ActivityMusic;
-import com.example.hanh19_10.MediaPlaybackService;
-import com.example.hanh19_10.OnSongClickListener;
-import com.example.hanh19_10.R;
-import com.example.hanh19_10.SongAdapter;
-import com.example.hanh19_10.SongGetter;
-import com.example.hanh19_10.SongModel;
+import com.example.hanh21_10.ActivityMusic;
+import com.example.hanh21_10.MediaPlaybackService;
+import com.example.hanh21_10.OnSongClickListener;
+import com.example.hanh21_10.R;
+import com.example.hanh21_10.SongAdapter;
+import com.example.hanh21_10.SongGetter;
+import com.example.hanh21_10.SongModel;
 
 public class AllSongsFragment extends Fragment {
 
@@ -39,9 +39,7 @@ public class AllSongsFragment extends Fragment {
     private View.OnClickListener mListen;
     private OnSongClickListener mOnSongClickListener;
 
-    private int mCurrentNumber;
-    public LoadCallback mLoadCallback;
-
+    private int mCurrentNumber = -1;
     private TextView name, au;
     private ImageView ima;
     private ImageButton mPlay;
@@ -53,43 +51,40 @@ public class AllSongsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActi = (ActivityMusic) getActivity();
-
-    }
-
-    public void setmLoadCallback(LoadCallback mLoadCallback) {
-        this.mLoadCallback = mLoadCallback;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.list_music, container, false);
+        mService = mActi.mMediaService;
+
         mRecyclerview = (RecyclerView) view.findViewById(R.id.myrecyclerview);
+        setRecyclerview();
+
+        anhxaViewSmallDetail(view);
+
+        bundlerSongSmallDetail();
+        play();
+
+        return view;
+    }
+
+    public void setRecyclerview() {
         mLayout = new LinearLayoutManager(getActivity());
         mRecyclerview.setLayoutManager(mLayout);
         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
         mSongGetter = mActi.getSongGetter();
         mSongGetter.setCurrentSongNumber(mCurrentNumber);
+
+        if (mService != null) {
+            mSongGetter.setmCurrentItemIndex(mService.getmCurrentSong());
+        }
         mSongAdapter = getSongAdapter(mSongGetter);
         mSongAdapter.setOnSongclickListener(mOnSongClickListener);
         mRecyclerview.setAdapter(mSongAdapter);
         mSongAdapter.notifyDataSetChanged();
-        if (mLoadCallback != null) {
-            mLoadCallback.onLoadFinish(mSongGetter);
-        }
         mRecyclerview.setHasFixedSize(true);
-
-        anhxaViewSmallDetail(view);
-        mService = mActi.mMediaService;
-        bundlerSongSmallDetail();
-        play();
-
-        return view;
     }
 
     public void anhxaViewSmallDetail(View view) {
@@ -108,6 +103,7 @@ public class AllSongsFragment extends Fragment {
         });
     }
 
+
     public void play() {
         mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +121,9 @@ public class AllSongsFragment extends Fragment {
 
     public void bundlerSongSmallDetail() {
         if (mService != null) {
+
+            setRecyclerview();
+
             SongModel item1 = mService.getSongCurrent();
             String name1, author;
             Bitmap image;
@@ -139,9 +138,9 @@ public class AllSongsFragment extends Fragment {
             } else {
                 mPlay.setImageResource(R.drawable.ic_play_1);
             }
-
         }
     }
+
 
     public void setOnSongClickListener(OnSongClickListener onSongClickListener) {
         mOnSongClickListener = onSongClickListener;
@@ -153,6 +152,7 @@ public class AllSongsFragment extends Fragment {
     public void setOnClickListener(View.OnClickListener listener) {
         this.mListen = listener;
     }
+
 
     public interface LoadCallback {
         public void onLoadFinish(SongGetter songGetter);
@@ -183,6 +183,7 @@ public class AllSongsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(mSongGetter.getCurrentItemIndex(), 20);
         getActivity().registerReceiver(receiver, new IntentFilter(ACTION));
     }
     @Override

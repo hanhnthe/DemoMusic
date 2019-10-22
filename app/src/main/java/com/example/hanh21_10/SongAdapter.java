@@ -1,4 +1,4 @@
-package com.example.hanh19_10;
+package com.example.hanh21_10;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,7 +14,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
 
     protected SongGetter mSongGetter;
     private OnSongClickListener mOnSongClickListener;
-    private int mPos = -1;
+
     //contructor
     public SongAdapter(SongGetter songGetter) {
         mSongGetter = songGetter;
@@ -36,8 +36,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
         final TextView text1 = holder.textTime;
         text1.setText(songModel.getTimeSong());
         holder.textName.setText(songModel.getNameSong());
-        //holder.textNumber.setText(Integer.toString(songModel.getNumber()));
-        if (mPos == position) {
+        if (getmPos() == position) {
             holder.textName.setTypeface(null, Typeface.BOLD);
             holder.textNumber.setText("");
             holder.textNumber.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_notification, 0, 0);
@@ -51,7 +50,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             public void onClick(View view) {
                 mSongGetter.setCurrentItemIndex(position);
                 SongModel song = mSongGetter.getCurrentItem();
-                mPos = holder.getAdapterPosition();
                 if (mOnSongClickListener != null) {
                     mOnSongClickListener.onClickItem(song);
                     notifyDataSetChanged();
@@ -60,12 +58,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
         });
     }
 
+    public int getmPos() {
+        return mSongGetter.getCurrentItemIndex();
+    }
+
     @Override
     public int getItemCount() {
         return mSongGetter.getCount();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textNumber, textName, textTime;
 

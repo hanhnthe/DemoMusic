@@ -1,11 +1,14 @@
-package com.example.hanh19_10.fragment;
+package com.example.hanh21_10.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
@@ -16,17 +19,20 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.hanh19_10.ActivityMusic;
-import com.example.hanh19_10.MediaPlaybackService;
-import com.example.hanh19_10.R;
-import com.example.hanh19_10.SongGetter;
-import com.example.hanh19_10.SongModel;
+import com.example.hanh21_10.ActivityMusic;
+import com.example.hanh21_10.MediaPlaybackService;
+import com.example.hanh21_10.R;
+import com.example.hanh21_10.SongGetter;
+import com.example.hanh21_10.SongModel;
+import com.example.hanh21_10.sqlite.FavoriteSongProvider;
+import com.example.hanh21_10.sqlite.SongsFavoriteTable;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -98,15 +104,16 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     public void updateUIFromService() {
         SongModel song = mService.songs.get(mService.getmCurrentSong());
         String songString = encodeTobase64(song.getImageSong());
-        updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+        updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
         mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
     }
 
 
-    public void updateUI(int number, String name, String author, String time, String image) {
+    @SuppressLint("Recycle")
+    public void updateUI(int id, String name, String author, String time, String image) {
         if (mSeekbar != null && mNameSong != null && mAuthor != null && mImageBackground != null
                 && mImageBackground != null
-                && mTime != null && mPlaySong != null) {
+                && mTime != null && mPlaySong != null && mLike != null) {
             mSeekbar.setMax(mService.getDur());
             mNameSong.setText(name);
             mAuthor.setText(author);
@@ -117,6 +124,14 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
             mTime.setText(time);
             play();
             mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+            String[] projetion = {SongsFavoriteTable.ID_PROVIDER};
+            if (getActivity().getContentResolver().query(Uri.parse(SongsFavoriteTable.TABLE_NAME), projetion,
+                    SongsFavoriteTable.ID_PROVIDER + " = ?",
+                    new String[]{String.valueOf(id)}, null) != null) {
+                mLike.setBackgroundResource(R.drawable.ic_like_click);
+            } else {
+                mLike.setBackgroundResource(R.drawable.ic_like);
+            }
         }
 
     }
@@ -165,7 +180,8 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 mService.playNext();
                 SongModel song = mService.songs.get(mService.getmCurrentSong());
                 String songString = encodeTobase64(song.getImageSong());
-                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+                updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+
             }
         });
     }
@@ -177,7 +193,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 mService.playPrev();
                 SongModel song = mService.songs.get(mService.getmCurrentSong());
                 String songString = encodeTobase64(song.getImageSong());
-                updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+                updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
             }
         });
     }
@@ -230,10 +246,13 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
             public void onClick(View v) {
                 if (i) {
                     mLike.setBackgroundResource(R.drawable.ic_like_click);
-                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
+                    insertSong();
                     i = false;
+
                 } else {
+                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
                     mLike.setBackgroundResource(R.drawable.ic_like);
+                    i = true;
                 }
             }
         });
@@ -244,10 +263,11 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
             public void onClick(View v) {
                 if (i) {
                     mDisLike.setBackgroundResource(R.drawable.ic_dis_like_click);
-                    mLike.setBackgroundResource(R.drawable.ic_like);
                     i = false;
                 } else {
+                    mLike.setBackgroundResource(R.drawable.ic_like);
                     mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
+                    i = true;
                 }
             }
         });
@@ -262,7 +282,24 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 }
             });
         }
+    }
 
+    //insert vao slqite
+    public void insertSong() {
+        Toast.makeText(getActivity().getBaseContext(),
+                "jashdjsa", Toast.LENGTH_LONG).show();
+        if (mService != null) {
+            SongModel song = mService.songs.get(mService.getmCurrentSong());
+            ContentValues values = new ContentValues();
+            values.put(SongsFavoriteTable.KEY_NAME, song.getNameSong());
+            values.put(SongsFavoriteTable.KEY_AUTHOR, song.getAuthorSong());
+            values.put(SongsFavoriteTable.IS_FAVORITE, 2);
+            values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
+            Uri uri = getActivity().getContentResolver().insert(
+                    FavoriteSongProvider.CONTENT_URI, values);
+            Toast.makeText(getActivity().getBaseContext(),
+                    "Đẫ thêm bài hát " + song.getNameSong() + " vào yêu thich" + uri.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
     //giao dien quay ngang
@@ -270,7 +307,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     public void onLoadFinish(SongGetter songGetter) {
         SongModel song = mService.songs.get(mService.getmCurrentSong());
         String songString = encodeTobase64(song.getImageSong());
-        updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+        updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
     }
 
     private void updateTimeSong() {
@@ -312,10 +349,9 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 //doc du lieu tu intent
                 Boolean change = intent.getBooleanExtra("my_key", true);
                 if (change) {
-                    // mSeekbar.setMax(mService.getDur());
                     SongModel song = mService.songs.get(mService.getmCurrentSong());
                     String songString = encodeTobase64(song.getImageSong());
-                    updateUI(song.getNumber(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+                    updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
                 }
             }
         }
@@ -334,5 +370,6 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         activityMusic.getSupportActionBar().show();
         getActivity().unregisterReceiver(receiver);
     }
+
 }
 

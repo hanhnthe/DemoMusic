@@ -1,18 +1,15 @@
-package com.example.hanh19_10.controller;
+package com.example.hanh21_10.controller;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh19_10.ActivityMusic;
-import com.example.hanh19_10.MediaPlaybackService;
-import com.example.hanh19_10.OnSongClickListener;
-import com.example.hanh19_10.SongModel;
-import com.example.hanh19_10.fragment.AllSongsFragment;
-import com.example.hanh19_10.fragment.MediaPlaybackFragment;
+import com.example.hanh21_10.OnSongClickListener;
+import com.example.hanh21_10.SongModel;
+import com.example.hanh21_10.fragment.AllSongsFragment;
+import com.example.hanh21_10.fragment.MediaPlaybackFragment;
 
 import java.io.ByteArrayOutputStream;
 
