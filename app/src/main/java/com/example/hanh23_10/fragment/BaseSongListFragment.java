@@ -1,5 +1,4 @@
-package com.example.hanh21_10.fragment;
-
+package com.example.hanh23_10.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,25 +20,24 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh21_10.ActivityMusic;
-import com.example.hanh21_10.MediaPlaybackService;
-import com.example.hanh21_10.OnSongClickListener;
-import com.example.hanh21_10.R;
-import com.example.hanh21_10.SongAdapter;
-import com.example.hanh21_10.SongGetter;
-import com.example.hanh21_10.SongModel;
+import com.example.hanh23_10.ActivityMusic;
+import com.example.hanh23_10.MediaPlaybackService;
+import com.example.hanh23_10.OnSongClickListener;
+import com.example.hanh23_10.R;
+import com.example.hanh23_10.SongAdapter;
+import com.example.hanh23_10.SongGetter;
+import com.example.hanh23_10.SongModel;
 
-public class AllSongsFragment extends Fragment {
-
+public class BaseSongListFragment extends Fragment {
     private RecyclerView mRecyclerview;
-    private SongAdapter mSongAdapter;
+    protected SongAdapter mSongAdapter;
     private RecyclerView.LayoutManager mLayout;
     private SongGetter mSongGetter;
 
     private View.OnClickListener mListen;
     private OnSongClickListener mOnSongClickListener;
 
-    private int mCurrentNumber = -1;
+    private int mCurrentNumber;
     private TextView name, au;
     private ImageView ima;
     private ImageButton mPlay;
@@ -57,7 +55,7 @@ public class AllSongsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.list_music, container, false);
-        mService = mActi.mMediaService;
+        mService = mActi.getmMediaService();
 
         mRecyclerview = (RecyclerView) view.findViewById(R.id.myrecyclerview);
         setRecyclerview();
@@ -74,8 +72,9 @@ public class AllSongsFragment extends Fragment {
         mLayout = new LinearLayoutManager(getActivity());
         mRecyclerview.setLayoutManager(mLayout);
         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
+
         mSongGetter = mActi.getSongGetter();
-        mSongGetter.setCurrentSongNumber(mCurrentNumber);
+        // mSongGetter.setCurrentSongNumber(mCurrentNumber);
 
         if (mService != null) {
             mSongGetter.setmCurrentItemIndex(mService.getmCurrentSong());
@@ -103,17 +102,25 @@ public class AllSongsFragment extends Fragment {
         });
     }
 
-
     public void play() {
+        if (mService != null) {
+            if (mService.isPng()) {
+                mPlay.setImageResource(R.drawable.ic_pause_1);
+            } else {
+                mPlay.setImageResource(R.drawable.ic_play_1);
+            }
+        }
         mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mService.isPng()) {
                     mPlay.setImageResource(R.drawable.ic_play_1);
                     mService.pausePlayer();
+                    mService.updatePlayNotification();
                 } else {
                     mPlay.setImageResource(R.drawable.ic_pause_1);
                     mService.go();
+                    mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
                 }
             }
         });
@@ -121,7 +128,6 @@ public class AllSongsFragment extends Fragment {
 
     public void bundlerSongSmallDetail() {
         if (mService != null) {
-
             setRecyclerview();
 
             SongModel item1 = mService.getSongCurrent();
@@ -133,11 +139,7 @@ public class AllSongsFragment extends Fragment {
             name.setText(name1);
             au.setText(author);
             ima.setImageBitmap(image);
-            if (mService.isPng()) {
-                mPlay.setImageResource(R.drawable.ic_pause_1);
-            } else {
-                mPlay.setImageResource(R.drawable.ic_play_1);
-            }
+            play();
         }
     }
 
@@ -163,18 +165,18 @@ public class AllSongsFragment extends Fragment {
     }
 
     //cap nhat giao dien small detail
-    public String ACTION = "my_action";
+
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         //code thi hanh khi receiver nhan dc intent
         @Override
         public void onReceive(Context context, Intent intent) {
             //kiem tra intent
-            if (intent.getAction().equals(ACTION)) {
+            if (intent.getAction().equals(MediaPlaybackService.ACTION)) {
                 //doc du lieu tu intent
-                Boolean change = intent.getBooleanExtra("my_key", true);
+                Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
                 if (change) {
                     bundlerSongSmallDetail();
-                    mPlay.setImageResource(R.drawable.ic_pause_1);
+                    //mPlay.setImageResource(R.drawable.ic_pause_1);
                 }
             }
         }
@@ -184,8 +186,9 @@ public class AllSongsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(mSongGetter.getCurrentItemIndex(), 20);
-        getActivity().registerReceiver(receiver, new IntentFilter(ACTION));
+        getActivity().registerReceiver(receiver, new IntentFilter(MediaPlaybackService.ACTION));
     }
+
     @Override
     public void onPause() {
         super.onPause();

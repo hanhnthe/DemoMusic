@@ -1,4 +1,4 @@
-package com.example.hanh21_10;
+package com.example.hanh23_10;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -22,6 +22,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,7 +42,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     private NotificationManager mNotifyManager;
     private static final String PRIMARY_CHANNEL_ID = "primary_notification_channel";
-    private static final int FOREGROUND_ID = 2;
+    public static final int FOREGROUND_ID = 2;
 
     private boolean shuffle = false;
     private boolean repeat = false;
@@ -51,6 +52,8 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public static final String ACTION_PLAY = "notification_action_play";
     public static final String ACTION_NEXT = "notification_action_next";
     public static final String ACTION_PREV = "notification_action_prev";
+    public static final String ACTION = "my_action";
+    public static final String MY_KEY = "my_key";
     private RemoteViews notificationLayout;
     private RemoteViews notificationLayoutBig;
 
@@ -84,6 +87,10 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         this.songs = songs;
     }
 
+    public NotificationManager getmNotifyManager() {
+        return mNotifyManager;
+    }
+
     //them binder de tuong tac voi activity
     public class MusicBinder extends Binder implements Serializable {
         MediaPlaybackService getService() {
@@ -109,8 +116,10 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
         mPlayer.prepareAsync();
+        mNotifyManager.notify(FOREGROUND_ID, buildForegroundNotification());
 
     }
+
 
     public Notification buildForegroundNotification() {
         Intent notificationIntent = new Intent(
@@ -156,7 +165,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                         .setSmallIcon(R.drawable.ic_notification)
                         .setCustomContentView(notificationLayout)
                         .setCustomBigContentView(notificationLayoutBig)
-                        .setAutoCancel(true);
+                        .setOnlyAlertOnce(true);
         return (notification.build());
     }
     public void createNotificationChannel() {
@@ -167,6 +176,54 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                             NotificationManager.IMPORTANCE_HIGH);
             mNotifyManager.createNotificationChannel(notificationChannel);
         }
+    }
+
+    public void updatePlayNotification() {
+        Intent notificationIntent = new Intent(
+                getApplicationContext(), ActivityMusic.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+        //xu ly su kien tren notification
+        Intent playClick = new Intent(ACTION_PLAY);
+        Intent nextClick = new Intent(ACTION_NEXT);
+        Intent prevClick = new Intent(ACTION_PREV);
+        PendingIntent notiPlay = PendingIntent
+                .getBroadcast(getApplicationContext(), 1, playClick, 0);
+        PendingIntent notiNext = PendingIntent
+                .getBroadcast(getApplicationContext(), 1, nextClick, 0);
+        PendingIntent notiPrev = PendingIntent
+                .getBroadcast(getApplicationContext(), 1, prevClick, 0);
+
+        notificationLayout = new RemoteViews(
+                getPackageName(), R.layout.notification_small);
+        notificationLayoutBig = new RemoteViews(
+                getPackageName(), R.layout.notification_big);
+
+        SongModel song = songs.get(mCurrentSong);
+        notificationLayout.setImageViewBitmap(R.id.notify_image, song.getImageSong());
+        notificationLayoutBig.setImageViewBitmap(R.id.notify_image, song.getImageSong());
+        notificationLayoutBig.setTextViewText(R.id.notify_name, song.getNameSong());
+        notificationLayoutBig.setTextViewText(R.id.notify_author, song.getAuthorSong());
+        notificationLayout.setImageViewResource(R.id.playNoti, R.drawable.ic_play_22);
+        notificationLayoutBig.setImageViewResource(R.id.playNoti, R.drawable.ic_play_22);
+
+        //set su kien:
+        notificationLayout.setOnClickPendingIntent(R.id.playNoti, notiPlay);
+        notificationLayout.setOnClickPendingIntent(R.id.nextNoti, notiNext);
+        notificationLayout.setOnClickPendingIntent(R.id.prevNoti, notiPrev);
+        //big
+        notificationLayoutBig.setOnClickPendingIntent(R.id.playNoti, notiPlay);
+        notificationLayoutBig.setOnClickPendingIntent(R.id.nextNoti, notiNext);
+        notificationLayoutBig.setOnClickPendingIntent(R.id.prevNoti, notiPrev);
+
+        NotificationCompat.Builder notification =
+                new NotificationCompat.Builder(getApplicationContext(), PRIMARY_CHANNEL_ID)
+                        .setContentIntent(pendingIntent)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setCustomContentView(notificationLayout)
+                        .setCustomBigContentView(notificationLayoutBig)
+                        .setOnlyAlertOnce(true);
+        mNotifyManager.notify(FOREGROUND_ID, notification.build());
     }
 
     @Override
@@ -302,10 +359,9 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     }
 
     public void sendBroadCast() {
-        String action = "my_action";
-        Intent intent = new Intent(action);
-        intent.setAction(action);//thiet lap ten de receiver nhan duoc thi nhan biet do la intent
-        intent.putExtra("my_key", changeData);
+        Intent intent = new Intent();
+        intent.setAction(ACTION);//thiet lap ten de receiver nhan duoc thi nhan biet do la intent
+        intent.putExtra(MY_KEY, changeData);
         sendBroadcast(intent);
     }
 
@@ -314,24 +370,29 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_PLAY)) {
                 if (mPlayer.isPlaying()) {
+                    changeData = true;
+                    sendBroadCast();
                     mPlayer.pause();
-                    notificationLayout.setImageViewResource(R.id.playNoti, R.drawable.ic_play_22);
-                    notificationLayoutBig.setImageViewResource(R.id.playNoti, R.drawable.ic_play_22);
+                    updatePlayNotification();
+                    changeData = false;
                 } else {
+                    changeData = true;
+                    sendBroadCast();
                     mPlayer.start();
-                    notificationLayout.setImageViewResource(R.id.playNoti, R.drawable.ic_pause_22);
-                    notificationLayoutBig.setImageViewResource(R.id.playNoti, R.drawable.ic_pause_22);
+                    mNotifyManager.notify(FOREGROUND_ID, buildForegroundNotification());
+                    changeData = false;
                 }
             } else if (intent.getAction().equals(ACTION_NEXT)) {
                 changeData = true;
-                sendBroadCast();
                 playNext();
+                sendBroadCast();
                 changeData = false;
             } else if (intent.getAction().equals(ACTION_PREV)) {
                 changeData = true;
-                sendBroadCast();
                 playPrev();
+                sendBroadCast();
                 changeData = false;
+
             }
         }
     };

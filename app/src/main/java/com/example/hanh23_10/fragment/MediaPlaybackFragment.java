@@ -1,11 +1,11 @@
-package com.example.hanh21_10.fragment;
+package com.example.hanh23_10.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -26,19 +26,19 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.hanh21_10.ActivityMusic;
-import com.example.hanh21_10.MediaPlaybackService;
-import com.example.hanh21_10.R;
-import com.example.hanh21_10.SongGetter;
-import com.example.hanh21_10.SongModel;
-import com.example.hanh21_10.sqlite.FavoriteSongProvider;
-import com.example.hanh21_10.sqlite.SongsFavoriteTable;
+import com.example.hanh23_10.ActivityMusic;
+import com.example.hanh23_10.MediaPlaybackService;
+import com.example.hanh23_10.R;
+import com.example.hanh23_10.SongGetter;
+import com.example.hanh23_10.SongModel;
+import com.example.hanh23_10.sqlite.FavoriteSongProvider;
+import com.example.hanh23_10.sqlite.SongsFavoriteTable;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 
 
-public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.LoadCallback {
+public class MediaPlaybackFragment extends Fragment implements BaseSongListFragment.LoadCallback {
     public static final String NUMBER_EXTRA = "number";
     public static final String NAME_SONG_EXTRA = "namesong";
     public static final String AUTHOR_SONG_EXTRA = "authorsong";
@@ -53,7 +53,6 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     private ImageButton mNext, mPrev, mLike, mDisLike, mList, mShuffle, mRepeat;
 
     private MediaPlaybackService mService;
-    private boolean mBoundMusic;
     private ActivityMusic mActi;
 
 
@@ -61,9 +60,9 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActi = (ActivityMusic) getActivity();
-        mService = mActi.mMediaService;
-        mBoundMusic = mActi.mMusicBound;
-        setRetainInstance(true);
+        mService = mActi.getmMediaService();
+        // setRetainInstance(true);
+
 
     }
 
@@ -104,12 +103,12 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     public void updateUIFromService() {
         SongModel song = mService.songs.get(mService.getmCurrentSong());
         String songString = encodeTobase64(song.getImageSong());
+        play();
         updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-        mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+
     }
 
 
-    @SuppressLint("Recycle")
     public void updateUI(int id, String name, String author, String time, String image) {
         if (mSeekbar != null && mNameSong != null && mAuthor != null && mImageBackground != null
                 && mImageBackground != null
@@ -123,17 +122,18 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
             }
             mTime.setText(time);
             play();
-            mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
-            String[] projetion = {SongsFavoriteTable.ID_PROVIDER};
-            if (getActivity().getContentResolver().query(Uri.parse(SongsFavoriteTable.TABLE_NAME), projetion,
-                    SongsFavoriteTable.ID_PROVIDER + " = ?",
-                    new String[]{String.valueOf(id)}, null) != null) {
-                mLike.setBackgroundResource(R.drawable.ic_like_click);
-            } else {
-                mLike.setBackgroundResource(R.drawable.ic_like);
+            Cursor cursor = findSongById(id);
+            if (cursor != null && cursor.moveToFirst()) {
+                if (cursor.getInt(0) == 1) {
+                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like_click);
+                } else if (cursor.getInt(0) == 2) {
+                    mLike.setBackgroundResource(R.drawable.ic_like_click);
+                } else {
+                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
+                    mLike.setBackgroundResource(R.drawable.ic_like);
+                }
             }
         }
-
     }
 
     public void play() {
@@ -142,15 +142,18 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         } else {
             mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
         }
+
         mPlaySong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mService.isPng()) {
                     mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
                     mService.pausePlayer();
+                    mService.updatePlayNotification();
                 } else {
                     mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
                     mService.go();
+                    mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
                 }
             }
         });
@@ -181,7 +184,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 SongModel song = mService.songs.get(mService.getmCurrentSong());
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-
+                mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
             }
         });
     }
@@ -194,6 +197,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                 SongModel song = mService.songs.get(mService.getmCurrentSong());
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+                mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
             }
         });
     }
@@ -246,10 +250,11 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
             public void onClick(View v) {
                 if (i) {
                     mLike.setBackgroundResource(R.drawable.ic_like_click);
-                    insertSong();
+                    likeSong();
                     i = false;
 
                 } else {
+                    dislikeSong();
                     mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
                     mLike.setBackgroundResource(R.drawable.ic_like);
                     i = true;
@@ -258,19 +263,59 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         });
         mDisLike.setOnClickListener(new View.OnClickListener() {
             boolean i = true;
-
             @Override
             public void onClick(View v) {
                 if (i) {
+                    dislikeSong();
+                    mLike.setBackgroundResource(R.drawable.ic_like);
                     mDisLike.setBackgroundResource(R.drawable.ic_dis_like_click);
                     i = false;
                 } else {
-                    mLike.setBackgroundResource(R.drawable.ic_like);
                     mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
                     i = true;
                 }
             }
         });
+    }
+
+    private void dislikeSong() {
+        if (mService != null) {
+            SongModel song = mService.songs.get(mService.getmCurrentSong());
+            ContentValues values = new ContentValues();
+            values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
+            values.put(SongsFavoriteTable.IS_FAVORITE, 1);
+            if (findSongById(song.getId()).getCount() == 0) {
+                getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+                Toast.makeText(getActivity().getBaseContext(),
+                        "Đẫ xoá bài hát " + song.getNameSong() + " khỏi yêu thich", Toast.LENGTH_LONG).show();
+            } else {
+                getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                        "id_provider = \"" + song.getId() + "\"", null);
+            }
+        }
+    }
+
+    private void likeSong() {
+        if (mService != null) {
+            SongModel song = mService.songs.get(mService.getmCurrentSong());
+            ContentValues values = new ContentValues();
+            values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
+            values.put(SongsFavoriteTable.IS_FAVORITE, 2);
+            if (findSongById(song.getId()).getCount() == 0) {
+                getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+                Toast.makeText(getActivity().getBaseContext(),
+                        "Đẫ thêm bài hát " + song.getNameSong() + " vào yêu thich", Toast.LENGTH_LONG).show();
+            } else {
+                getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                        "id_provider = \"" + song.getId() + "\"", null);
+            }
+        }
+    }
+
+    // tim kiem theo id cua bai hat
+    public Cursor findSongById(int id) {
+        return getActivity().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{SongsFavoriteTable.IS_FAVORITE},
+                "id_provider = \"" + id + "\"", null, null);
     }
 
     public void listComeBack() {
@@ -281,24 +326,6 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
                     mActi.getSupportFragmentManager().popBackStack();
                 }
             });
-        }
-    }
-
-    //insert vao slqite
-    public void insertSong() {
-        Toast.makeText(getActivity().getBaseContext(),
-                "jashdjsa", Toast.LENGTH_LONG).show();
-        if (mService != null) {
-            SongModel song = mService.songs.get(mService.getmCurrentSong());
-            ContentValues values = new ContentValues();
-            values.put(SongsFavoriteTable.KEY_NAME, song.getNameSong());
-            values.put(SongsFavoriteTable.KEY_AUTHOR, song.getAuthorSong());
-            values.put(SongsFavoriteTable.IS_FAVORITE, 2);
-            values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
-            Uri uri = getActivity().getContentResolver().insert(
-                    FavoriteSongProvider.CONTENT_URI, values);
-            Toast.makeText(getActivity().getBaseContext(),
-                    "Đẫ thêm bài hát " + song.getNameSong() + " vào yêu thich" + uri.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -339,15 +366,14 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
         return imageEncoded;
     }
 
-    public String ACTION = "my_action";
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         //code thi hanh khi receiver nhan dc intent
         @Override
         public void onReceive(Context context, Intent intent) {
             //kiem tra intent
-            if (intent.getAction().equals(ACTION)) {
+            if (intent.getAction().equals(MediaPlaybackService.ACTION)) {
                 //doc du lieu tu intent
-                Boolean change = intent.getBooleanExtra("my_key", true);
+                Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
                 if (change) {
                     SongModel song = mService.songs.get(mService.getmCurrentSong());
                     String songString = encodeTobase64(song.getImageSong());
@@ -360,7 +386,7 @@ public class MediaPlaybackFragment extends Fragment implements AllSongsFragment.
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(receiver, new IntentFilter(ACTION));
+        getActivity().registerReceiver(receiver, new IntentFilter(MediaPlaybackService.ACTION));
     }
 
     @Override

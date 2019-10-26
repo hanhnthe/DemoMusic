@@ -1,14 +1,14 @@
-package com.example.hanh21_10.controller;
+package com.example.hanh23_10.controller;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh21_10.OnSongClickListener;
-import com.example.hanh21_10.R;
-import com.example.hanh21_10.SongModel;
-import com.example.hanh21_10.fragment.AllSongsFragment;
-import com.example.hanh21_10.fragment.MediaPlaybackFragment;
+import com.example.hanh23_10.OnSongClickListener;
+import com.example.hanh23_10.R;
+import com.example.hanh23_10.SongModel;
+import com.example.hanh23_10.fragment.BaseSongListFragment;
+import com.example.hanh23_10.fragment.MediaPlaybackFragment;
 
 public class TowFragmentController extends LayoutController {
     private MediaPlaybackFragment mMediaPlayBackFragment;
@@ -22,7 +22,7 @@ public class TowFragmentController extends LayoutController {
         if (mActivity.findViewById(R.id.container_fragment_land) != null) {
             mMediaPlayBackFragment = new MediaPlaybackFragment();
 
-            mAllSongsFragment = new AllSongsFragment();
+            mAllSongsFragment = new BaseSongListFragment();
             mAllSongsFragment.setOnSongClickListener(this);
             mActivity.getSupportFragmentManager().beginTransaction().
                     replace(R.id.fragment_1, mAllSongsFragment).
@@ -36,6 +36,8 @@ public class TowFragmentController extends LayoutController {
         Bundle args = newBundleFromSong(item);
         mOnclickService.onClickItem(item);
         mMediaPlayBackFragment.updateUIFromService();
+
+        clickSongFavorite(item);
     }
 
     @Override

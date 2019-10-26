@@ -1,4 +1,4 @@
-package com.example.hanh21_10;
+package com.example.hanh23_10;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -15,19 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SongGetter {
-    private List<SongModel> litSong = new ArrayList<>();
+    private List<SongModel> mListSong = new ArrayList<>();
     private int mCurrentItemIndex;
     private Context mContext;
 
     //set du lieu
     public SongGetter(Context context) {
         mContext = context;
-        mCurrentItemIndex = -1;
+        mCurrentItemIndex = 0;
         getMp3FilesFromMemory();
     }
 
     public List<SongModel> getLitSong() {
-        return litSong;
+        return mListSong;
     }
 
     public List<SongModel> getMp3FilesFromMemory() {
@@ -65,10 +65,10 @@ public class SongGetter {
             long duration = cursor.getLong(3);
             SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
             song.setTimeSong(dinhdang.format(duration));
-            litSong.add(song);
+            mListSong.add(song);
         }
         cursor.close();
-        return litSong;
+        return mListSong;
     }
 
     public Bitmap getAlbumart(long album_id) {
@@ -96,13 +96,13 @@ public class SongGetter {
     }
 
     public SongModel getCurrentItem(){
-        return litSong.get(mCurrentItemIndex);
+        return mListSong.get(mCurrentItemIndex);
     }
     public int getCount(){
-        return litSong.size();
+        return mListSong.size();
     }
     public SongModel getSongAt(int pos){
-        return litSong.get(pos);
+        return mListSong.get(pos);
     }
     public void setCurrentItemIndex(int pos){
         if (pos < 0) {
@@ -112,16 +112,6 @@ public class SongGetter {
             pos = getCount() - 1;
         }
         mCurrentItemIndex = pos;
-    }
-    public void setCurrentSongNumber(int number){
-        for (int i = 0; i < litSong.size(); i++) {
-            SongModel song = litSong.get(i);
-            if(number == song.getNumber()){
-                mCurrentItemIndex=i;
-                String name = song.getNameSong();
-                return;
-            }
-        }
     }
 
 }
