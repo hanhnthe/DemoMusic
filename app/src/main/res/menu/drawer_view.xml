@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/listent_now"
+            android:icon="@drawable/ic_listennow"
+            android:title="Listen Now" />
+        <item
+            android:id="@+id/recents"
+            android:icon="@drawable/ic_recents"
+            android:title="Recents" />
+        <item
+            android:id="@+id/allSongNavi"
+            android:icon="@drawable/ic_all"
+            android:title="All Songs Music" />
+        <item
+            android:id="@+id/favoriteSongNavi"
+            android:icon="@drawable/ic_favorite"
+            android:title="Favorite Songs Music" />
+    </group>
+    <item android:title="">
+        <menu>
+            <item android:title="Settings" />
+            <item android:title="Help and feedback" />
+        </menu>
+    </item>
+</menu>
