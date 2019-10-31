@@ -1,4 +1,4 @@
-package com.example.hanh29_10.controller;
+package com.example.hanh30_10.controller;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,14 +9,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh29_10.OnSongClickListener;
-import com.example.hanh29_10.SongModel;
-import com.example.hanh29_10.fragment.AllSongsFragment;
-import com.example.hanh29_10.fragment.BaseSongListFragment;
-import com.example.hanh29_10.fragment.FavoriteSongsFragment;
-import com.example.hanh29_10.fragment.MediaPlaybackFragment;
-import com.example.hanh29_10.sqlite.FavoriteSongProvider;
-import com.example.hanh29_10.sqlite.SongsFavoriteTable;
+import com.example.hanh30_10.OnSongClickListener;
+import com.example.hanh30_10.SongModel;
+import com.example.hanh30_10.fragment.BaseSongListFragment;
+import com.example.hanh30_10.fragment.MediaPlaybackFragment;
+import com.example.hanh30_10.sqlite.FavoriteSongProvider;
+import com.example.hanh30_10.sqlite.SongsFavoriteTable;
 
 import java.io.ByteArrayOutputStream;
 

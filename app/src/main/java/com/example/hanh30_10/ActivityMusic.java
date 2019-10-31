@@ -1,18 +1,18 @@
-package com.example.hanh29_10;
+package com.example.hanh30_10;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.hanh29_10.controller.LayoutController;
-import com.example.hanh29_10.controller.OneFragmentController;
-import com.example.hanh29_10.controller.TowFragmentController;
-import com.example.hanh29_10.fragment.AllSongsFragment;
-import com.example.hanh29_10.fragment.FavoriteSongsFragment;
+import com.example.hanh30_10.controller.LayoutController;
+import com.example.hanh30_10.controller.OneFragmentController;
+import com.example.hanh30_10.controller.TowFragmentController;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +20,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.IBinder;
@@ -31,7 +33,7 @@ import java.util.List;
 public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
     private ActionBar mActionBar;
     private LayoutController mLayoutController;
-    private SongGetter mSongGetter;
+    private SongGetter mSongGetter, mSong1;
 
     //khai bao cac doi tuong service
     private MediaPlaybackService mMediaService;
@@ -46,12 +48,10 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     public SongGetter getSongGetter(int i) {
         if (i == 1) {
-            mMediaService.setList(mSongGetter.getLitSong());
             return mSongGetter;
         } else {
-            SongGetter song1 = new SongGetter(this, 2, mSongGetter.getmListAll());
-            mMediaService.setList(song1.getLitSong());
-            return song1;
+            mSong1 = new SongGetter(this, 2, mSongGetter.getmListAll());
+            return mSong1;
         }
     }
 
@@ -62,6 +62,36 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
+
+        //cap quyen truy cap  READ_EXTERNAL_STORAGE
+        int permission_storage = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permission_storage != PackageManager.PERMISSION_GRANTED) {
+            makeRequest();
+        } else {
+            mSongGetter = new SongGetter(this, 1, null);
+            mList = mSongGetter.getLitSong();
+            compatActivity = this;
+            mOrientation = getResources().getConfiguration().orientation;
+
+            if (mPlayIntent == null) {
+                mPlayIntent = new Intent(this, MediaPlaybackService.class);
+                startService(mPlayIntent);
+                bindService(mPlayIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            }
+            navigation();
+        }
+
+    }
+
+    private void makeRequest() {
+        int requestcode = 2;
+        while (requestcode != 1) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            requestcode = 1;
+        }
+
         mSongGetter = new SongGetter(this, 1, null);
         mList = mSongGetter.getLitSong();
         compatActivity = this;
@@ -105,7 +135,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     @Override
     protected void onDestroy() {
-        stopService(mPlayIntent);
+        // stopService(mPlayIntent);
         super.onDestroy();
 
     }
@@ -138,7 +168,13 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClickItem(SongModel item) {
-        mMediaService.setSong(item.getNumber() - 1);
+        if (mSong1 != null) {
+            mMediaService.setList(mSong1.getLitSong());
+        }
+        if (mSongGetter != null) {
+            mMediaService.setList(mSongGetter.getLitSong());
+        }
+        mMediaService.setNumber(item.getId());
         mMediaService.playSong();
     }
 

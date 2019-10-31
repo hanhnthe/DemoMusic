@@ -1,4 +1,4 @@
-package com.example.hanh29_10.fragment;
+package com.example.hanh30_10.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,13 +21,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh29_10.ActivityMusic;
-import com.example.hanh29_10.MediaPlaybackService;
-import com.example.hanh29_10.OnSongClickListener;
-import com.example.hanh29_10.R;
-import com.example.hanh29_10.SongAdapter;
-import com.example.hanh29_10.SongGetter;
-import com.example.hanh29_10.SongModel;
+import com.example.hanh30_10.ActivityMusic;
+import com.example.hanh30_10.MediaPlaybackService;
+import com.example.hanh30_10.OnSongClickListener;
+import com.example.hanh30_10.R;
+import com.example.hanh30_10.SongAdapter;
+import com.example.hanh30_10.SongGetter;
+import com.example.hanh30_10.SongModel;
 
 public class BaseSongListFragment extends Fragment {
     protected RecyclerView mRecyclerview;
@@ -45,7 +45,6 @@ public class BaseSongListFragment extends Fragment {
 
     protected MediaPlaybackService mService;
     protected ActivityMusic mActi;
-    private DrawerLayout mDrawerLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,7 +75,7 @@ public class BaseSongListFragment extends Fragment {
         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
 
         if (mService != null) {
-            songGetter().setmCurrentItemIndex(mService.getmCurrentSong());
+            songGetter().setmCurrentItemIndex(mService.getmCurrentSong() - 1);
             ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(songGetter().getCurrentItemIndex(), 20);
         }
         mSongAdapter = getSongAdapter(songGetter());
@@ -133,7 +132,7 @@ public class BaseSongListFragment extends Fragment {
     public void bundlerSongSmallDetail() {
         if (mService != null) {
             setRecyclerview();
-            SongModel item1 = mService.getSongCurrent();
+            SongModel item1 = mService.findSongFromId();
             String name1, author;
             Bitmap image;
             name1 = item1.getNameSong();
@@ -143,6 +142,7 @@ public class BaseSongListFragment extends Fragment {
             au.setText(author);
             ima.setImageBitmap(image);
             play();
+
         }
     }
 
@@ -179,7 +179,7 @@ public class BaseSongListFragment extends Fragment {
                 Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
                 if (change) {
                     bundlerSongSmallDetail();
-                    //mPlay.setImageResource(R.drawable.ic_pause_1);
+
                 }
             }
         }

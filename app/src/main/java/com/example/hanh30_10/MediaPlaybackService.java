@@ -1,4 +1,4 @@
-package com.example.hanh29_10;
+package com.example.hanh30_10;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -37,6 +37,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public List<SongModel> songs;
     //current position
     private int mCurrentSong;
+    private int mIdCurrentSong;
     private final IBinder mMusicBind = new MusicBinder();
 
     private NotificationManager mNotifyManager;
@@ -60,7 +61,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     @Override
     public void onCreate() {
         super.onCreate();
-        mCurrentSong = 0;//khoi tao vi tri =0
+        mCurrentSong = -1;//khoi tao vi tri =0
         mPlayer = new MediaPlayer();
         initMusicPlayer();
         createNotificationChannel();
@@ -104,7 +105,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     //thiet lap de play 1 song
     public void playSong() {
         mPlayer.reset();
-        SongModel playSong = songs.get(mCurrentSong);//get song
+        SongModel playSong = findSongFromId();//get song
         long idSong = playSong.getId();//get id
         Uri trackUri = ContentUris.withAppendedId(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, idSong);
@@ -119,6 +120,18 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     }
 
+    //tim bai hat theo id trong songs
+    public SongModel findSongFromId() {
+        SongModel songModel = new SongModel();
+        for (int i = 0; i < songs.size(); i++) {
+            SongModel song = songs.get(i);
+            if (song.getId() == mIdCurrentSong) {
+                songModel = song;
+                break;
+            }
+        }
+        return songModel;
+    }
 
     public Notification buildForegroundNotification() {
         Intent notificationIntent = new Intent(
@@ -141,7 +154,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         notificationLayoutBig = new RemoteViews(
                 getPackageName(), R.layout.notification_big);
 
-        SongModel song = songs.get(mCurrentSong);
+        SongModel song = findSongFromId();
         notificationLayout.setImageViewBitmap(R.id.notify_image, song.getImageSong());
         notificationLayoutBig.setImageViewBitmap(R.id.notify_image, song.getImageSong());
         notificationLayoutBig.setTextViewText(R.id.notify_name, song.getNameSong());
@@ -198,7 +211,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         notificationLayoutBig = new RemoteViews(
                 getPackageName(), R.layout.notification_big);
 
-        SongModel song = songs.get(mCurrentSong);
+        SongModel song = findSongFromId();
         notificationLayout.setImageViewBitmap(R.id.notify_image, song.getImageSong());
         notificationLayoutBig.setImageViewBitmap(R.id.notify_image, song.getImageSong());
         notificationLayoutBig.setTextViewText(R.id.notify_name, song.getNameSong());
@@ -235,7 +248,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_NEXT));
         getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PREV));
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -244,24 +256,32 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         getApplication().unregisterReceiver(receiverNotification);
     }
 
-    public SongModel getSongCurrent() {
-        if (mCurrentSong != -1) {
-            return songs.get(mCurrentSong);
-        } else {
-            return songs.get(mCurrentSong + 1);
-        }
-
-    }
-
-    //thiet lap bai hat hien tai duoc chon
-    public void setSong(int songIndex) {
-        mCurrentSong = songIndex;//su dung khi nguoi dung chon 1 bai hat tu danh sach
-    }
-
+    //get number = id hieen tai
     public int getmCurrentSong() {
-        return mCurrentSong;
+        SongModel songModel = findSongFromId();
+        return songModel.getNumber();
     }
 
+    //set id = number da dc cong
+    public void setID(int number) {
+        for (int i = 0; i < songs.size(); i++) {
+            SongModel song = songs.get(i);
+            if (song.getNumber() == number) {
+                mIdCurrentSong = song.getId();
+                break;
+            }
+        }
+    }
+
+    public void setNumber(int id) {
+        mIdCurrentSong = id;
+        SongModel songModel = findSongFromId();
+        setmCurrentSong(songModel.getNumber());
+    }
+
+    public void setmCurrentSong(int mCurrentSong) {
+        this.mCurrentSong = mCurrentSong;
+    }
 
     @Override
     public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
@@ -283,7 +303,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public int getPos() {
         return mPlayer.getCurrentPosition();
     }
-
     public int getDur() { //tra ve tong thoi gian bai hat
         return mPlayer.getDuration();
     }
@@ -303,43 +322,55 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         mPlayer.start();
     }
 
+
     //chuyen tiep den bai hat truoc do neu dang phat <3s
     //chuyen choi lai bai hat neu dang choi >3s
     public void playPrev() {
-        changeData = true;
+
         if (mPlayer.getCurrentPosition() > 3000) {
             playSong();
             changeData = false;
         } else {
+            mCurrentSong = getmCurrentSong();
             if (shuffle) {
                 int newSong = mCurrentSong;
                 while (newSong == mCurrentSong) {
                     newSong = rand.nextInt(songs.size());
                 }
                 mCurrentSong = newSong;
+                setID(mCurrentSong);
             } else {
                 mCurrentSong--;
-                if (mCurrentSong < 0) mCurrentSong = songs.size() - 1;
+                if (mCurrentSong < 1) {
+                    mCurrentSong = songs.size();
+                }
+                setID(mCurrentSong);
             }
             playSong();
-            changeData = false;
         }
+
     }
 
     //choi bai hat sau, neu la bai cuoi thi choi lai bai dau tien
     public void playNext() {
         if (repeat) {
-            mCurrentSong = mCurrentSong;
+            mIdCurrentSong = mIdCurrentSong;
         } else if (shuffle) {
+            mCurrentSong = getmCurrentSong();
             int newSong = mCurrentSong;
             while (newSong == mCurrentSong) {
                 newSong = rand.nextInt(songs.size());
             }
             mCurrentSong = newSong;
+            setID(mCurrentSong);
+
         } else {
+            mCurrentSong = getmCurrentSong();
             mCurrentSong++;
-            if (mCurrentSong >= songs.size()) mCurrentSong = 0;
+            if (mCurrentSong > songs.size()) mCurrentSong = 1;
+            setID(mCurrentSong);
         }
+
         playSong();
     }
 

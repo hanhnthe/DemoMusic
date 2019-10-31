@@ -1,10 +1,11 @@
-package com.example.hanh29_10.fragment;
+package com.example.hanh30_10.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,13 +26,13 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.hanh29_10.ActivityMusic;
-import com.example.hanh29_10.MediaPlaybackService;
-import com.example.hanh29_10.R;
-import com.example.hanh29_10.SongGetter;
-import com.example.hanh29_10.SongModel;
-import com.example.hanh29_10.sqlite.FavoriteSongProvider;
-import com.example.hanh29_10.sqlite.SongsFavoriteTable;
+import com.example.hanh30_10.ActivityMusic;
+import com.example.hanh30_10.MediaPlaybackService;
+import com.example.hanh30_10.R;
+import com.example.hanh30_10.SongGetter;
+import com.example.hanh30_10.SongModel;
+import com.example.hanh30_10.sqlite.FavoriteSongProvider;
+import com.example.hanh30_10.sqlite.SongsFavoriteTable;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -100,10 +101,13 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public void updateUIFromService() {
-        SongModel song = mService.songs.get(mService.getmCurrentSong());
-        String songString = encodeTobase64(song.getImageSong());
-        play();
-        updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+        if (mService != null) {
+            SongModel song = mService.findSongFromId();
+            String songString = encodeTobase64(song.getImageSong());
+            play();
+            updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
+        }
+
     }
 
     public void updateUI(int id, String name, String author, String time, String image) {
@@ -178,7 +182,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
             @Override
             public void onClick(View v) {
                 mService.playNext();
-                SongModel song = mService.songs.get(mService.getmCurrentSong());
+                SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
                 mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
@@ -191,7 +195,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
             @Override
             public void onClick(View v) {
                 mService.playPrev();
-                SongModel song = mService.songs.get(mService.getmCurrentSong());
+                SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
                 mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
@@ -277,7 +281,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
 
     private void dislikeSong() {
         if (mService != null) {
-            SongModel song = mService.songs.get(mService.getmCurrentSong());
+            SongModel song = mService.findSongFromId();
             ContentValues values = new ContentValues();
             values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
             values.put(SongsFavoriteTable.IS_FAVORITE, 1);
@@ -295,7 +299,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
 
     private void likeSong() {
         if (mService != null) {
-            SongModel song = mService.songs.get(mService.getmCurrentSong());
+            SongModel song = mService.findSongFromId();
             ContentValues values = new ContentValues();
             values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
             values.put(SongsFavoriteTable.IS_FAVORITE, 2);
@@ -332,22 +336,25 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     //giao dien quay ngang
     @Override
     public void onLoadFinish(SongGetter songGetter) {
-        SongModel song = mService.songs.get(mService.getmCurrentSong());
+        SongModel song = mService.findSongFromId();
         String songString = encodeTobase64(song.getImageSong());
         updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
     }
 
     private void updateTimeSong() {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
-                mProgressTime.setText(dinhdang.format(mService.getPos()));
-                mSeekbar.setProgress(mService.getPos());
-                handler.postDelayed(this, 500);
-            }
-        }, 100);
+        if (mService != null) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
+                    mProgressTime.setText(dinhdang.format(mService.getPos()));
+                    mSeekbar.setProgress(mService.getPos());
+                    handler.postDelayed(this, 500);
+                }
+            }, 100);
+        }
+
     }
 
     //chuyen byte[] thanh bimap
@@ -360,10 +367,14 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public static String encodeTobase64(Bitmap image) {
         Bitmap immagex = image;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immagex.compress(Bitmap.CompressFormat.PNG, 90, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-        return imageEncoded;
+        if (immagex != null) {
+            immagex.compress(Bitmap.CompressFormat.PNG, 90, baos);
+            byte[] b = baos.toByteArray();
+            String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+            return imageEncoded;
+        } else {
+            return null;
+        }
     }
 
     public BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -375,7 +386,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 //doc du lieu tu intent
                 Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
                 if (change) {
-                    SongModel song = mService.songs.get(mService.getmCurrentSong());
+                    SongModel song = mService.findSongFromId();
                     String songString = encodeTobase64(song.getImageSong());
                     updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
                 }

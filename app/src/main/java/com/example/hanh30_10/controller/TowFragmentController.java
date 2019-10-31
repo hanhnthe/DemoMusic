@@ -1,15 +1,15 @@
-package com.example.hanh29_10.controller;
+package com.example.hanh30_10.controller;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.hanh29_10.OnSongClickListener;
-import com.example.hanh29_10.R;
-import com.example.hanh29_10.SongModel;
-import com.example.hanh29_10.fragment.AllSongsFragment;
-import com.example.hanh29_10.fragment.FavoriteSongsFragment;
-import com.example.hanh29_10.fragment.MediaPlaybackFragment;
+import com.example.hanh30_10.OnSongClickListener;
+import com.example.hanh30_10.R;
+import com.example.hanh30_10.SongModel;
+import com.example.hanh30_10.fragment.AllSongsFragment;
+import com.example.hanh30_10.fragment.FavoriteSongsFragment;
+import com.example.hanh30_10.fragment.MediaPlaybackFragment;
 
 public class TowFragmentController extends LayoutController {
     private MediaPlaybackFragment mMediaPlayBackFragment;
