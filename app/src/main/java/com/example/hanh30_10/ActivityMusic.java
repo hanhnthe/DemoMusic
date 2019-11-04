@@ -28,12 +28,13 @@ import android.os.IBinder;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
     private ActionBar mActionBar;
     private LayoutController mLayoutController;
-    private SongGetter mSongGetter, mSong1;
+    private SongGetter mSongGetter, mSongGetterAll, mSongGetterFavorite, mSong1;
 
     //khai bao cac doi tuong service
     private MediaPlaybackService mMediaService;
@@ -45,6 +46,8 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     private DrawerLayout mDrawerLayout;
 
     private List<SongModel> mList;
+    private final static String CHECK = "check";
+    private Boolean check = true;
 
     public SongGetter getSongGetter(int i) {
         if (i == 1) {
@@ -69,7 +72,18 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         if (permission_storage != PackageManager.PERMISSION_GRANTED) {
             makeRequest();
         } else {
-            mSongGetter = new SongGetter(this, 1, null);
+            if (savedInstanceState != null) {
+                boolean check1 = savedInstanceState.getBoolean(CHECK);
+                if (check1) {
+                    mSongGetter = new SongGetter(this, 1, null);
+                    check = true;
+                } else {
+                    mSongGetter = new SongGetter(this, 2, null);
+                    check = false;
+                }
+            } else {
+                mSongGetter = new SongGetter(this, 1, null);
+            }
             mList = mSongGetter.getLitSong();
             compatActivity = this;
             mOrientation = getResources().getConfiguration().orientation;
@@ -84,14 +98,10 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     }
 
+
     private void makeRequest() {
-        int requestcode = 2;
-        while (requestcode != 1) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            requestcode = 1;
-        }
-
         mSongGetter = new SongGetter(this, 1, null);
         mList = mSongGetter.getLitSong();
         compatActivity = this;
@@ -114,11 +124,12 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if (id == R.id.allSongNavi) {
-
                     mLayoutController.onCreate(1);
+                    check = true;
                     Toast.makeText(getApplicationContext(), "all", Toast.LENGTH_SHORT).show();
                 } else if (id == R.id.favoriteSongNavi) {
                     mLayoutController.onCreate(2);
+                    check = false;
                     Toast.makeText(getApplicationContext(), "favorite", Toast.LENGTH_SHORT).show();
                 }
                 mDrawerLayout.closeDrawers();
@@ -128,16 +139,15 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        unbindService(musicConnection);
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(CHECK, check);
     }
 
     @Override
-    protected void onDestroy() {
-        // stopService(mPlayIntent);
-        super.onDestroy();
-
+    protected void onStop() {
+        super.onStop();
+        unbindService(musicConnection);
     }
 
     //ket noi voi service
@@ -169,9 +179,11 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     @Override
     public void onClickItem(SongModel item) {
         if (mSong1 != null) {
+            //  check=true;
             mMediaService.setList(mSong1.getLitSong());
         }
         if (mSongGetter != null) {
+            //check=false;
             mMediaService.setList(mSongGetter.getLitSong());
         }
         mMediaService.setNumber(item.getId());

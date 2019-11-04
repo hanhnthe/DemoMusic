@@ -142,7 +142,6 @@ public class BaseSongListFragment extends Fragment {
             au.setText(author);
             ima.setImageBitmap(image);
             play();
-
         }
     }
 

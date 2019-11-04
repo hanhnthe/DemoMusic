@@ -13,6 +13,7 @@ import com.example.hanh30_10.sqlite.FavoriteSongProvider;
 import com.example.hanh30_10.sqlite.SongsFavoriteTable;
 
 import java.io.FileDescriptor;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +44,14 @@ public class SongGetter {
     public ArrayList<SongModel> getSongFromDevice(int choose, ArrayList<SongModel> songs) {
         if (choose == 1) {
             mListSong = getAllSong();
-        } else if (choose == 2) {
+        } else if (choose == 2 && songs != null) {
             mListSong = getFavoriteSong(songs);
+        } else if (choose == 2 && songs == null) {
+            mListSong = getFavoriteSong(getAllSong());
         }
         return mListSong;
     }
+
 
     public ArrayList<SongModel> getAllSong() {
         mListAll = new ArrayList<>();
@@ -73,8 +77,9 @@ public class SongGetter {
             song.setNameSong(cursor.getString(0));
             song.setAuthorSong(cursor.getString(1));
             long image = cursor.getLong(2);
-            if (getAlbumart(image) != null) {
-                song.setImageSong(getAlbumart(image));
+            Bitmap img = getAlbumart(image);
+            if (img != null) {
+                song.setImageSong(img);
             } else {
                 Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
                         R.drawable.mac_dinh);
