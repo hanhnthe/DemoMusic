@@ -3,9 +3,13 @@ package com.example.hanh30_10;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +18,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
 
     protected SongGetter mSongGetter;
     private OnSongClickListener mOnSongClickListener;
+    private Context mContext;
 
     //contructor
     public SongAdapter(SongGetter songGetter) {
@@ -23,8 +28,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
     @NonNull
     @Override
     public SongAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        mContext = parent.getContext();
+        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View item = layoutInflater.inflate(R.layout.song_one_row, parent, false);
         return new MyViewHolder(item);
     }
@@ -57,6 +62,29 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
                 }
             }
         });
+        holder.popup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu menu = new PopupMenu(mContext, v);
+                menu.getMenuInflater().inflate(R.menu.options_menu_all, menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.removebuttom: {
+                                Toast.makeText(mContext, "Da xoa bai hat khoi yeu thich", Toast.LENGTH_SHORT).show();
+                            }
+                            case R.id.favoriteButtom: {
+                                Toast.makeText(mContext, "Da them bai hat vao yeu thich", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        return false;
+                    }
+                });
+                menu.show();
+            }
+        });
     }
 
     public int getmPos() {
@@ -71,12 +99,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView textNumber, textName, textTime;
+        public ImageButton popup;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textName = (TextView) itemView.findViewById(R.id.nameSong);
             textNumber = (TextView) itemView.findViewById(R.id.numberSong);
             textTime = (TextView) itemView.findViewById(R.id.timeSong);
+            popup = (ImageButton) itemView.findViewById(R.id.popup);
         }
     }
 

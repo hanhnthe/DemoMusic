@@ -401,11 +401,13 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                     sendBroadCast();
                     mPlayer.pause();
                     updatePlayNotification();
+                    stopForeground(false);
                     changeData = false;
                 } else {
                     changeData = true;
                     sendBroadCast();
                     mPlayer.start();
+                    startForeground(FOREGROUND_ID, buildForegroundNotification());
                     mNotifyManager.notify(FOREGROUND_ID, buildForegroundNotification());
                     changeData = false;
                 }
