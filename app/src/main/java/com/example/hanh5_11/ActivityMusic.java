@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -13,8 +14,9 @@ import android.os.Bundle;
 import com.example.hanh5_11.controller.LayoutController;
 import com.example.hanh5_11.controller.OneFragmentController;
 import com.example.hanh5_11.controller.TowFragmentController;
-import com.example.hanh5_11.sqlite.FavoriteSongProvider;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -24,11 +26,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 
 import android.os.IBinder;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
@@ -44,6 +48,8 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     public int mOrientation;
 
     private DrawerLayout mDrawerLayout;
+    private final static String LISTSONGSAVE = "listsongsave";
+    private final static String SONG = " song";
 
     private List<SongModel> mList;
     private final static String CHECK = "check";
@@ -82,14 +88,16 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
                 if (check) {
                     mSongGetter = mSongGetterAll;
                     check = true;
+                    mList = readListPreference();
                 } else {
                     mSongGetter = mSongGetterFavorite;
                     check = false;
+                    mList = readListPreference();
                 }
             } else {
                 mSongGetter = mSongGetterAll;
+                mList = mSongGetter.getLitSong();
             }
-            mList = mSongGetter.getLitSong();
             compatActivity = this;
             mOrientation = getResources().getConfiguration().orientation;
 
@@ -100,9 +108,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             }
             navigation();
         }
-
     }
-
 
     private void makeRequest() {
             ActivityCompat.requestPermissions(this,
@@ -188,13 +194,13 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     @Override
     public void onClickItem(SongModel item) {
         if (mSongGetterFavorite != null && !check) {
-            //  check=true;
             mMediaService.setList(mSongGetterFavorite.getLitSong());
+            saveList(mSongGetterFavorite.getLitSong());
             mSongGetterAll.setmCheckdataChange(false);
         }
         if (mSongGetterAll != null && check) {
-            //check=false;
             mMediaService.setList(mSongGetterAll.getLitSong());
+            saveList(mSongGetterAll.getLitSong());
         }
         mMediaService.setNumber(item.getId());
         mMediaService.playSong();
@@ -206,6 +212,25 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     public void setmMediaService(MediaPlaybackService mMediaService) {
         this.mMediaService = mMediaService;
+    }
+
+    public void saveList(List<SongModel> list) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(list);
+        editor.putString(LISTSONGSAVE, json);
+        editor.commit();
+    }
+
+    public List<SongModel> readListPreference() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(LISTSONGSAVE, "");
+        Type type = new TypeToken<List<SongModel>>() {
+        }.getType();
+        List<SongModel> list = gson.fromJson(json, type);
+        return list;
     }
 
 }
