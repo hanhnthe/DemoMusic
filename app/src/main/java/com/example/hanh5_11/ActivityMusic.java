@@ -1,4 +1,4 @@
-package com.example.hanh30_10;
+package com.example.hanh5_11;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -10,9 +10,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.hanh30_10.controller.LayoutController;
-import com.example.hanh30_10.controller.OneFragmentController;
-import com.example.hanh30_10.controller.TowFragmentController;
+import com.example.hanh5_11.controller.LayoutController;
+import com.example.hanh5_11.controller.OneFragmentController;
+import com.example.hanh5_11.controller.TowFragmentController;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -28,13 +28,12 @@ import android.os.IBinder;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
     private ActionBar mActionBar;
     private LayoutController mLayoutController;
-    private SongGetter mSongGetter, mSongGetterAll, mSongGetterFavorite, mSong1;
+    private SongGetter mSongGetter, mSongGetterAll, mSongGetterFavorite;
 
     //khai bao cac doi tuong service
     private MediaPlaybackService mMediaService;
@@ -51,10 +50,9 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     public SongGetter getSongGetter(int i) {
         if (i == 1) {
-            return mSongGetter;
+            return mSongGetterAll;
         } else {
-            mSong1 = new SongGetter(this, 2, mSongGetter.getmListAll());
-            return mSong1;
+            return mSongGetterFavorite;
         }
     }
 
@@ -72,17 +70,20 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         if (permission_storage != PackageManager.PERMISSION_GRANTED) {
             makeRequest();
         } else {
+            mSongGetterAll = new SongGetter(this, 1, null);
+            mSongGetterFavorite = new SongGetter(this, 2, null);
+
             if (savedInstanceState != null) {
-                boolean check1 = savedInstanceState.getBoolean(CHECK);
-                if (check1) {
-                    mSongGetter = new SongGetter(this, 1, null);
+                check = savedInstanceState.getBoolean(CHECK);
+                if (check) {
+                    mSongGetter = mSongGetterAll;
                     check = true;
                 } else {
-                    mSongGetter = new SongGetter(this, 2, null);
+                    mSongGetter = mSongGetterFavorite;
                     check = false;
                 }
             } else {
-                mSongGetter = new SongGetter(this, 1, null);
+                mSongGetter = mSongGetterAll;
             }
             mList = mSongGetter.getLitSong();
             compatActivity = this;
@@ -156,17 +157,21 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         public void onServiceConnected(ComponentName name, IBinder service) {
             MediaPlaybackService.MusicBinder binder = (MediaPlaybackService.MusicBinder) service;
             //get service
-            setmMediaService(((MediaPlaybackService.MusicBinder) service).getService());
+            setmMediaService(binder.getService());
             //chuyen list
             mMediaService.setList(mList);
             mMusicBound = true;
             if (mOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                // if(isPortrait){
                 mLayoutController = new OneFragmentController(compatActivity);
             } else {
                 mLayoutController = new TowFragmentController(compatActivity);
             }
-            mLayoutController.onCreate(1);
+            if (check) {
+                mLayoutController.onCreate(1);
+            } else {
+                mLayoutController.onCreate(2);
+            }
+
             mLayoutController.setmOnclickService((OnSongClickListener) compatActivity);
         }
         @Override
@@ -178,13 +183,13 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClickItem(SongModel item) {
-        if (mSong1 != null) {
+        if (mSongGetterFavorite != null && !check) {
             //  check=true;
-            mMediaService.setList(mSong1.getLitSong());
+            mMediaService.setList(mSongGetterFavorite.getLitSong());
         }
-        if (mSongGetter != null) {
+        if (mSongGetterAll != null && check) {
             //check=false;
-            mMediaService.setList(mSongGetter.getLitSong());
+            mMediaService.setList(mSongGetterAll.getLitSong());
         }
         mMediaService.setNumber(item.getId());
         mMediaService.playSong();

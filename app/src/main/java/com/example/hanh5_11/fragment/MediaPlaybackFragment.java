@@ -1,11 +1,10 @@
-package com.example.hanh30_10.fragment;
+package com.example.hanh5_11.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,13 +25,13 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.hanh30_10.ActivityMusic;
-import com.example.hanh30_10.MediaPlaybackService;
-import com.example.hanh30_10.R;
-import com.example.hanh30_10.SongGetter;
-import com.example.hanh30_10.SongModel;
-import com.example.hanh30_10.sqlite.FavoriteSongProvider;
-import com.example.hanh30_10.sqlite.SongsFavoriteTable;
+import com.example.hanh5_11.ActivityMusic;
+import com.example.hanh5_11.MediaPlaybackService;
+import com.example.hanh5_11.R;
+import com.example.hanh5_11.SongGetter;
+import com.example.hanh5_11.SongModel;
+import com.example.hanh5_11.sqlite.FavoriteSongProvider;
+import com.example.hanh5_11.sqlite.SongsFavoriteTable;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;

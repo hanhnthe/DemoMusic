@@ -1,4 +1,4 @@
-package com.example.hanh30_10;
+package com.example.hanh5_11;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -9,11 +9,10 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
-import com.example.hanh30_10.sqlite.FavoriteSongProvider;
-import com.example.hanh30_10.sqlite.SongsFavoriteTable;
+import com.example.hanh5_11.sqlite.FavoriteSongProvider;
+import com.example.hanh5_11.sqlite.SongsFavoriteTable;
 
 import java.io.FileDescriptor;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;

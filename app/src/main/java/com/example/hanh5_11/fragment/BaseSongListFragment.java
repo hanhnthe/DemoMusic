@@ -1,4 +1,4 @@
-package com.example.hanh30_10.fragment;
+package com.example.hanh5_11.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,19 +15,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh30_10.ActivityMusic;
-import com.example.hanh30_10.MediaPlaybackService;
-import com.example.hanh30_10.OnSongClickListener;
-import com.example.hanh30_10.R;
-import com.example.hanh30_10.SongAdapter;
-import com.example.hanh30_10.SongGetter;
-import com.example.hanh30_10.SongModel;
+import com.example.hanh5_11.ActivityMusic;
+import com.example.hanh5_11.MediaPlaybackService;
+import com.example.hanh5_11.OnSongClickListener;
+import com.example.hanh5_11.R;
+import com.example.hanh5_11.SongAdapter;
+import com.example.hanh5_11.SongGetter;
+import com.example.hanh5_11.SongModel;
 
 public class BaseSongListFragment extends Fragment {
     protected RecyclerView mRecyclerview;
@@ -163,7 +162,7 @@ public class BaseSongListFragment extends Fragment {
     }
 
     public SongAdapter getSongAdapter(SongGetter songGetter) {
-        return new SongAdapter(songGetter);
+        return mSongAdapter;
     }
 
     //cap nhat giao dien small detail
@@ -189,6 +188,7 @@ public class BaseSongListFragment extends Fragment {
         super.onResume();
         ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(songGetter().getCurrentItemIndex(), 20);
         getActivity().registerReceiver(receiver, new IntentFilter(MediaPlaybackService.ACTION));
+
     }
 
     @Override
