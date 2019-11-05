@@ -49,7 +49,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     private DrawerLayout mDrawerLayout;
     private final static String LISTSONGSAVE = "listsongsave";
-    private final static String SONG = " song";
 
     private List<SongModel> mList;
     private final static String CHECK = "check";
@@ -167,7 +166,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         public void onServiceConnected(ComponentName name, IBinder service) {
             MediaPlaybackService.MusicBinder binder = (MediaPlaybackService.MusicBinder) service;
             //get service
-            setmMediaService(binder.getService());
+            setmMediaService(((MediaPlaybackService.MusicBinder) service).getService());
             //chuyen list
             mMediaService.setList(mList);
             mMusicBound = true;
@@ -217,6 +216,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     public void saveList(List<SongModel> list) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
         Gson gson = new Gson();
         String json = gson.toJson(list);
         editor.putString(LISTSONGSAVE, json);

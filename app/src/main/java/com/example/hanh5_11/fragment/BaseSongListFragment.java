@@ -44,11 +44,13 @@ public class BaseSongListFragment extends Fragment {
 
     protected MediaPlaybackService mService;
     protected ActivityMusic mActi;
+    private int mSave;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActi = (ActivityMusic) getActivity();
+        mSave = 0;
     }
 
     @Nullable
@@ -120,8 +122,13 @@ public class BaseSongListFragment extends Fragment {
                     mService.pausePlayer();
                     mService.updatePlayNotification();
                 } else {
+                    if (mSave == 0) {
+                        mService.playSong();
+                        mSave++;
+                    } else {
+                        mService.go();
+                    }
                     mPlay.setImageResource(R.drawable.ic_pause_1);
-                    mService.go();
                     mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
                 }
             }

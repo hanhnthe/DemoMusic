@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,6 +44,9 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public static final String AUTHOR_SONG_EXTRA = "authorsong";
     public static final String IMAGE_SONG_EXTRA = "imagesong";
     public static final String TIME_SONG_EXTRA = "timesong";
+    private final static String SONG = " song";
+    public static final String SHUFFLE = "shuffle";
+    public static final String REPEAT = "repeat";
 
     private TextView mNameSong, mAuthor, mTime;
     private ImageView mImageSong, mImageBackground;
@@ -53,6 +57,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
 
     private MediaPlaybackService mService;
     private ActivityMusic mActi;
+    //  private int mSave;
 
 
     @Override
@@ -60,9 +65,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
         super.onCreate(savedInstanceState);
         mActi = (ActivityMusic) getActivity();
         mService = mActi.getmMediaService();
-        // setRetainInstance(true);
-
-
     }
 
     @Nullable
@@ -151,8 +153,8 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                     mService.pausePlayer();
                     mService.updatePlayNotification();
                 } else {
-                    mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
                     mService.go();
+                    mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
                     mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
                 }
             }
@@ -203,40 +205,66 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public void shuffle() {
+        boolean shuffle = readShuffleShare();
+        if (shuffle) {
+            mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
+            if (mService != null) {
+                mService.shuffeSong();
+            }
+        } else {
+            mShuffle.setBackgroundResource(R.drawable.ic_shuffle_click);
+            if (mService != null) {
+                mService.shuffeSong();
+            }
+        }
         mShuffle.setOnClickListener(new View.OnClickListener() {
-            boolean i = true;
-
+            boolean i = readShuffleShare();
             @Override
             public void onClick(View v) {
                 if (i) {
                     mShuffle.setBackgroundResource(R.drawable.ic_shuffle_click);
                     mService.shuffeSong();
                     i = false;
+                    saveStateShuffe(i);
                 } else {
                     mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
                     mService.shuffeSong();
                     i = true;
+                    saveStateShuffe(i);
                 }
             }
         });
     }
 
     public void repeat() {
+        int i = readRepeatShare();
+        if (i == 1) {
+            mRepeat.setBackgroundResource(R.drawable.ic_repeat);
+        } else if (i == 2) {
+            mRepeat.setBackgroundResource(R.drawable.ic_repeat_click);
+        } else if (i == 3) {
+            mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
+            if (mService != null) {
+                mService.repeatSong();
+            }
+        }
         mRepeat.setOnClickListener(new View.OnClickListener() {
-            int i = 1;
-
+            int i = readRepeatShare();
             @Override
             public void onClick(View v) {
                 if (i == 1) {
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat_click);
                     i = 2;
+                    saveStateRepeat(i);
                 } else if (i == 2) {
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
                     mService.repeatSong();
                     i = 3;
+                    saveStateRepeat(3);
                 } else if (i == 3) {
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat);
                     i = 1;
+                    saveStateRepeat(1);
                 }
             }
         });
@@ -245,7 +273,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public void likeAndDis() {
         mLike.setOnClickListener(new View.OnClickListener() {
             boolean i = true;
-
             @Override
             public void onClick(View v) {
                 if (i) {
@@ -405,6 +432,38 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
         ActivityMusic activityMusic = (ActivityMusic) getActivity();
         activityMusic.getSupportActionBar().show();
         getActivity().unregisterReceiver(receiver);
+    }
+
+    public void saveStateShuffe(boolean shuffleState) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SHUFFLE, shuffleState);
+        editor.apply();
+    }
+
+    public void saveStateRepeat(int repeatState) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(REPEAT, repeatState);
+        editor.apply();
+    }
+
+    public Boolean readShuffleShare() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        boolean i = true;
+        if (sharedPreferences != null) {
+            i = sharedPreferences.getBoolean(SHUFFLE, true);
+        }
+        return i;
+    }
+
+    public int readRepeatShare() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        int i = 1;
+        if (sharedPreferences != null) {
+            i = sharedPreferences.getInt(REPEAT, 1);
+        }
+        return i;
     }
 
 }

@@ -170,4 +170,16 @@ public class SongGetter {
     public boolean ismCheckdataChange() {
         return mCheckdataChange;
     }
+
+    public int getIDSong() {
+        int id = -1;
+        for (int i = 0; i < mListSong.size(); i++) {
+            SongModel songModel = mListSong.get(i);
+            if (songModel.getNumber() == mCurrentItemIndex + 1) {
+                id = songModel.getId();
+                break;
+            }
+        }
+        return id;
+    }
 }

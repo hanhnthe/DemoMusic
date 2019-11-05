@@ -49,7 +49,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
         final TextView text1 = holder.textTime;
         text1.setText(songModel.getTimeSong());
         holder.textName.setText(songModel.getNameSong());
-        if (getmPos() == position) {
+        if (getmPos() == songModel.getId()) {
             holder.textName.setTypeface(null, Typeface.BOLD);
             holder.textNumber.setText("");
             holder.textNumber.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_notification, 0, 0);
@@ -174,7 +174,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
     }
 
     public int getmPos() {
-        return mSongGetter.getCurrentItemIndex();
+        return mSongGetter.getIDSong();
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -54,6 +55,8 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public static final String ACTION_PREV = "notification_action_prev";
     public static final String ACTION = "my_action";
     public static final String MY_KEY = "my_key";
+    public static final String SONG1 = "song1";
+    public static final String IDSONGCURRENT = "idsongcurrent";
     private RemoteViews notificationLayout;
     private RemoteViews notificationLayoutBig;
 
@@ -105,6 +108,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     //thiet lap de play 1 song
     public void playSong() {
         mPlayer.reset();
+        saveIdSongCurrent(mIdCurrentSong);
         SongModel playSong = findSongFromId();//get song
         long idSong = playSong.getId();//get id
         Uri trackUri = ContentUris.withAppendedId(
@@ -123,6 +127,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     //tim bai hat theo id trong songs
     public SongModel findSongFromId() {
         SongModel songModel = new SongModel();
+        mIdCurrentSong = readIDShare();
         for (int i = 0; i < songs.size(); i++) {
             SongModel song = songs.get(i);
             if (song.getId() == mIdCurrentSong) {
@@ -268,6 +273,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             SongModel song = songs.get(i);
             if (song.getNumber() == number) {
                 mIdCurrentSong = song.getId();
+                saveIdSongCurrent(mIdCurrentSong);
                 break;
             }
         }
@@ -275,8 +281,10 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     public void setNumber(int id) {
         mIdCurrentSong = id;
+        saveIdSongCurrent(id);
         SongModel songModel = findSongFromId();
         setmCurrentSong(songModel.getNumber());
+
     }
 
     public void setmCurrentSong(int mCurrentSong) {
@@ -426,7 +434,19 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         }
     };
 
-    public void setChangeData(Boolean changeData) {
-        this.changeData = changeData;
+    public void saveIdSongCurrent(int id) {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SONG1, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(IDSONGCURRENT, id);
+        editor.apply();
+    }
+
+    public int readIDShare() {
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SONG1, Context.MODE_PRIVATE);
+        int i = 0;
+        if (sharedPreferences != null) {
+            i = sharedPreferences.getInt(IDSONGCURRENT, 0);
+        }
+        return i;
     }
 }
