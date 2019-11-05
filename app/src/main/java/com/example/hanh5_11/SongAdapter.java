@@ -81,10 +81,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
                             switch (item.getItemId()) {
                                 case R.id.favoriteButtom: {
                                     addFavorite(songModel);
+                                    mSongGetter.setmCheckdataChange(true);
                                     break;
                                 }
                                 case R.id.removebuttom: {
                                     removeFavorite(songModel);
+                                    mSongGetter.setmCheckdataChange(true);
                                     break;
                                 }
                             }

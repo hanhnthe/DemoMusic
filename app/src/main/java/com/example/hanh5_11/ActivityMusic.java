@@ -13,6 +13,7 @@ import android.os.Bundle;
 import com.example.hanh5_11.controller.LayoutController;
 import com.example.hanh5_11.controller.OneFragmentController;
 import com.example.hanh5_11.controller.TowFragmentController;
+import com.example.hanh5_11.sqlite.FavoriteSongProvider;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -52,6 +53,10 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         if (i == 1) {
             return mSongGetterAll;
         } else {
+            boolean check1 = mSongGetterAll.ismCheckdataChange();
+            if (check1) {
+                mSongGetterFavorite = new SongGetter(this, 2, mSongGetterAll.getmListAll());
+            }
             return mSongGetterFavorite;
         }
     }
@@ -72,7 +77,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         } else {
             mSongGetterAll = new SongGetter(this, 1, null);
             mSongGetterFavorite = new SongGetter(this, 2, null);
-
             if (savedInstanceState != null) {
                 check = savedInstanceState.getBoolean(CHECK);
                 if (check) {
@@ -186,6 +190,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         if (mSongGetterFavorite != null && !check) {
             //  check=true;
             mMediaService.setList(mSongGetterFavorite.getLitSong());
+            mSongGetterAll.setmCheckdataChange(false);
         }
         if (mSongGetterAll != null && check) {
             //check=false;

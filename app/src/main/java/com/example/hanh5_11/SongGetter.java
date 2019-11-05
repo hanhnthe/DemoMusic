@@ -23,6 +23,7 @@ public class SongGetter {
     ;
     private int mCurrentItemIndex;
     private Context mContext;
+    private boolean mCheckdataChange = false;
 
     //set du lieu
     public SongGetter(Context context, int i, ArrayList<SongModel> songs) {
@@ -162,4 +163,11 @@ public class SongGetter {
         mCurrentItemIndex = pos;
     }
 
+    public void setmCheckdataChange(boolean mCheckdataChange) {
+        this.mCheckdataChange = mCheckdataChange;
+    }
+
+    public boolean ismCheckdataChange() {
+        return mCheckdataChange;
+    }
 }

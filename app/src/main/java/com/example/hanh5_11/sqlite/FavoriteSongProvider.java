@@ -78,16 +78,6 @@ public class FavoriteSongProvider extends ContentProvider {
         }
         getContext().getContentResolver().notifyChange(uri, null);
         return Uri.parse(SONG_BASE_PATH + "/" + id);
-//        //them 1 bai hat moi
-//        long rowID = mData.insert(mSongsFavorite.TABLE_NAME, null, values);
-//        //neu 1 ban ghi dc them thanh cong
-//
-//        if (rowID > 0) {
-//            Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
-//            getContext().getContentResolver().notifyChange(_uri, null);
-//            return _uri;
-//        }
-//        throw new SQLException("failed to add a record into " + uri);
     }
 
     @Override
