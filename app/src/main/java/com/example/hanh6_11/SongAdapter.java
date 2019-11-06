@@ -81,13 +81,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
                             switch (item.getItemId()) {
                                 case R.id.favoriteButtom: {
                                     addFavorite(songModel);
-                                  mSongGetter.setmCheckdataChange(true);
-                                    //setmCallback(mCallback);
+                                   mCallback.add(songModel);
                                     break;
                                 }
                                 case R.id.removebuttom: {
                                     removeFavorite(songModel);
-                                    mSongGetter.setmCheckdataChange(true);
+                                    mCallback.remove(songModel);
                                     break;
                                 }
                             }
@@ -199,6 +198,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
     public void setOnSongclickListener(OnSongClickListener listener) {
         mOnSongClickListener = listener;
 
+    }
+    callBackActivity mCallback;
+
+    public void setmCallback(callBackActivity mCallback) {
+        this.mCallback = mCallback;
+    }
+
+    public interface callBackActivity {
+        void add(SongModel model);
+        void remove(SongModel song);
     }
 
 }

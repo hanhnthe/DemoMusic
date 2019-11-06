@@ -31,7 +31,7 @@ public class SongGetter {
         getSongFromDevice(i, songs);
     }
 
-    public List<SongModel> getLitSong() {
+    public ArrayList<SongModel> getLitSong() {
         return mListSong;
     }
 
@@ -164,14 +164,6 @@ public class SongGetter {
             pos = getCount() - 1;
         }
         mCurrentItemIndex = pos;
-    }
-
-    public void setmCheckdataChange(boolean mCheckdataChange) {
-        this.mCheckdataChange = mCheckdataChange;
-    }
-
-    public boolean ismCheckdataChange() {
-        return mCheckdataChange;
     }
 
     public void setmListSong(ArrayList<SongModel> mListSong) {

@@ -14,6 +14,17 @@ public class AllSongsFragment extends BaseSongListFragment {
     @Override
     public SongAdapter getSongAdapter(SongGetter songGetter) {
         SongAdapter songAdapter = new SongAdapter(songGetter, 1);
+        songAdapter.setmCallback(new SongAdapter.callBackActivity() {
+            @Override
+            public void add(SongModel song) {
+                mActi.addSongFavorite(song);
+            }
+
+            @Override
+            public void remove(SongModel song) {
+                mActi.removeSongFavorite(song);
+            }
+        });
         return songAdapter;
     }
 }

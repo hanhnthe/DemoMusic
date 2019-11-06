@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityMusic extends AppCompatActivity implements OnSongClickListener {
@@ -58,10 +59,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         if (i == 1) {
             return mSongGetterAll;
         } else {
-            boolean check1 = mSongGetterAll.ismCheckdataChange();
-            if (check1) {
-                mSongGetterFavorite.setmListSong(mSongGetterFavorite.getFavoriteSong(mSongGetterAll.getmListAll()));
-            }
             return mSongGetterFavorite;
         }
     }
@@ -147,6 +144,16 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             }
         });
     }
+    public void addSongFavorite(SongModel songModel){
+        ArrayList<SongModel> songs =  mSongGetterFavorite.getLitSong();
+        songs.add(songModel);
+        mSongGetterFavorite.setmListSong(songs);
+    }
+    public void removeSongFavorite(SongModel songModel){
+        ArrayList<SongModel> songs =  mSongGetterFavorite.getLitSong();
+        songs.remove(songModel);
+        mSongGetterFavorite.setmListSong(songs);
+    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -195,7 +202,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         if (mSongGetterFavorite != null && !check) {
             mMediaService.setList(mSongGetterFavorite.getLitSong());
             saveList(mSongGetterFavorite.getLitSong());
-            mSongGetterAll.setmCheckdataChange(false);
         }
         if (mSongGetterAll != null && check) {
             mMediaService.setList(mSongGetterAll.getLitSong());
