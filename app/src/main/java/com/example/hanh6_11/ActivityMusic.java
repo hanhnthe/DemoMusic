@@ -60,7 +60,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         } else {
             boolean check1 = mSongGetterAll.ismCheckdataChange();
             if (check1) {
-                mSongGetterFavorite.setmListSong(mSongGetterAll.getFavoriteSong(mSongGetterAll.getmListAll()));
+                mSongGetterFavorite.setmListSong(mSongGetterFavorite.getFavoriteSong(mSongGetterAll.getmListAll()));
             }
             return mSongGetterFavorite;
         }
