@@ -271,8 +271,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             getApplication().unregisterReceiver(receiverNotification);
             mchangeListennerIntent = null;
         }
-
-
     }
 
     //get number = id hieen tai
@@ -353,7 +351,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     //chuyen tiep den bai hat truoc do neu dang phat <3s
     //chuyen choi lai bai hat neu dang choi >3s
     public void playPrev() {
-
         if (mPlayer.getCurrentPosition() > 3000) {
             playSong();
             changeData = false;
@@ -390,14 +387,12 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             }
             mCurrentSong = newSong;
             setID(mCurrentSong);
-
         } else {
             mCurrentSong = getmCurrentSong();
             mCurrentSong++;
             if (mCurrentSong > songs.size()) mCurrentSong = 1;
             setID(mCurrentSong);
         }
-
         playSong();
     }
 
@@ -453,7 +448,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
                 isplaying=1;
                 sendBroadCast(isplaying);
                 changeData = false;
-
             }
         }
     };

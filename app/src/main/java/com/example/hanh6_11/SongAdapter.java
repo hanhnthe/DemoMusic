@@ -136,15 +136,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             System.out.println(count);
             if (count == 2) {
                 values.put(SongsFavoriteTable.IS_FAVORITE, 1);
-                Toast.makeText(mContext, "Da xoa bai hat khoi yeu thich", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Đã xoá bài hát khỏi yêu thích", Toast.LENGTH_SHORT).show();
                 mContext.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
                         "id_provider = \"" + song.getId() + "\"", null);
             } else {
-                Toast.makeText(mContext, "bai hat chua dc yeu thich", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "bài hát chưa được yêu thích", Toast.LENGTH_SHORT).show();
             }
             cursor.close();
         } else {
-            Toast.makeText(mContext, "bai hat chua dc yeu thich", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "bài hát chưa được yêu thích", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -155,13 +155,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             int count = cursor.getInt(0);
             System.out.println(count);
             if (count == 2) {
-                Toast.makeText(mContext.getApplicationContext(), "bài hát đã được yêu thích", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getApplicationContext(), "bạn đã thích bài hát này trước đó", Toast.LENGTH_SHORT).show();
             } else {
                 values.put(SongsFavoriteTable.IS_FAVORITE, 2);
-                Toast.makeText(mContext.getApplicationContext(), "đã thêm bài hát vao yeu thich", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getApplicationContext(), "đã thêm bài hát vào  yêu thích", Toast.LENGTH_SHORT).show();
                 mContext.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
                         "id_provider = \"" + song.getId() + "\"", null);
-
             }
             cursor.close();
         } else {
@@ -169,7 +168,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
             values.put(SongsFavoriteTable.IS_FAVORITE, 2);
             mContext.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
-            Toast.makeText(mContext.getApplicationContext(), "đã thêm bài hát vao yeu thich", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext.getApplicationContext(), "đã thêm bài hát vào yêu thích", Toast.LENGTH_SHORT).show();
         }
     }
 

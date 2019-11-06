@@ -47,6 +47,8 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     private final static String SONG = " song";
     public static final String SHUFFLE = "shuffle";
     public static final String REPEAT = "repeat";
+    public static final String CALLBACKALL = "callbackall";
+    public static final String CHECKCALLBACK = "checkcallback";
 
     private TextView mNameSong, mAuthor, mTime;
     private ImageView mImageSong, mImageBackground;
@@ -58,6 +60,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     private MediaPlaybackService mService;
     private ActivityMusic mActi;
     private int mSave;
+    private boolean mChangeCallBackAll= false;
 
 
     @Override
@@ -108,7 +111,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
             play();
             updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
         }
-
     }
 
     public void updateUI(int id, String name, String author, String time, String image) {
@@ -161,7 +163,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                     } else {
                         mService.go();
                     }
-
                     mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
                     mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
                 }
@@ -174,11 +175,9 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mService.seek(mSeekbar.getProgress());
@@ -191,6 +190,9 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
             @Override
             public void onClick(View v) {
                 mService.playNext();
+                mChangeCallBackAll = true;
+                sendCallBackAll();
+                mChangeCallBackAll=false;
                 SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
@@ -204,6 +206,9 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
             @Override
             public void onClick(View v) {
                 mService.playPrev();
+                mChangeCallBackAll = true;
+                sendCallBackAll();
+                mChangeCallBackAll=false;
                 SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
@@ -375,6 +380,13 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
         updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
     }
 
+    public void sendCallBackAll(){
+        Intent intent = new Intent();
+        intent.setAction(CALLBACKALL);
+        intent.putExtra(CHECKCALLBACK,mChangeCallBackAll);
+        mService.sendBroadcast(intent);
+    }
+
     private void updateTimeSong() {
         if (mService != null) {
             final Handler handler = new Handler();
@@ -388,7 +400,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 }
             }, 100);
         }
-
     }
 
     //chuyen byte[] thanh bimap
@@ -479,6 +490,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
         }
         return i;
     }
+
 
 }
 

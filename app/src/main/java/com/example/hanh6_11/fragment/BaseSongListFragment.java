@@ -190,16 +190,27 @@ public class BaseSongListFragment extends Fragment {
                     bundlerSongSmallDetail();
                     mPlay.setImageResource(R.drawable.ic_pause_1);
                 }
-
             }
         }
     };
 
+    public BroadcastReceiver receiverCallBackFragment = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(MediaPlaybackFragment.CALLBACKALL)){
+                boolean change = intent.getBooleanExtra(MediaPlaybackFragment.CHECKCALLBACK,true);
+                if(change){
+                    setRecyclerview();
+                }
+            }
+        }
+    };
     @Override
     public void onResume() {
         super.onResume();
         ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(songGetter().getCurrentItemIndex(), 20);
         getActivity().registerReceiver(receiver, new IntentFilter(MediaPlaybackService.ACTION));
+        getActivity().registerReceiver(receiverCallBackFragment,new IntentFilter(MediaPlaybackFragment.CALLBACKALL));
 
     }
 
@@ -207,6 +218,7 @@ public class BaseSongListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         getActivity().unregisterReceiver(receiver);
+        getActivity().unregisterReceiver(receiverCallBackFragment);
     }
 
     public int getmSave() {
