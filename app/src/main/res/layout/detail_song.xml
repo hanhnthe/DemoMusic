@@ -218,5 +218,6 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="65dp"
         android:secondaryProgress="100"
+        android:thumbOffset="0dp"
         />
 </FrameLayout>

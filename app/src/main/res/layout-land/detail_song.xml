@@ -244,5 +244,6 @@
         android:paddingStart="0dp"
         android:paddingLeft="0dp"
         android:paddingEnd="0dp"
-        android:secondaryProgress="100" />
+        android:secondaryProgress="100"
+        android:thumbOffset="0dp"/>
 </FrameLayout>

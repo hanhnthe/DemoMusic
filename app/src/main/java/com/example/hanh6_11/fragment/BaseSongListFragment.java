@@ -221,7 +221,4 @@ public class BaseSongListFragment extends Fragment {
         getActivity().unregisterReceiver(receiverCallBackFragment);
     }
 
-    public int getmSave() {
-        return mSave;
-    }
 }

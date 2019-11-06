@@ -60,6 +60,10 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public static final String MY_KEY = "my_key";
     public static final String SONG1 = "song1";
     public static final String IDSONGCURRENT = "idsongcurrent";
+    public static final String SHUFFLE = "shuffe";
+    public static final String SHUFFECHECK = "shufflecheck";
+    public static final String REPEAT = "repeat";
+    public static final String REPEATCHECK = "repeatcheck";
     private Intent mchangeListennerIntent = null;
     private RemoteViews notificationLayout;
     private RemoteViews notificationLayoutBig;
@@ -398,13 +402,25 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     //phat ngau nhien shuffle
     public void shuffeSong() {
-        if (shuffle) shuffle = false;
-        else shuffle = true;
+        shuffle = readShuffle();
+        if (shuffle){
+            shuffle = false;
+            saveShuffle(shuffle);
+        }
+        else {
+            shuffle = true;
+            saveShuffle(shuffle);
+        }
     }
 
     public void repeatSong() {
-        if (repeat) repeat = false;
+        repeat = readRepeat();
+        if (repeat){
+            repeat = false;
+            saveRepeat(repeat);
+        }
         else repeat = true;
+        saveRepeat(repeat);
     }
 
     public void sendBroadCast(int i) {
@@ -468,6 +484,34 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         return i;
     }
 
+    public void saveShuffle(boolean a){
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHUFFLE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SHUFFECHECK, a);
+        editor.apply();
+    }
+    public void saveRepeat(boolean a){
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(REPEAT, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(REPEATCHECK, a);
+        editor.apply();
+    }
+    public boolean readShuffle(){
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHUFFLE, Context.MODE_PRIVATE);
+        boolean check = true;
+        if(sharedPreferences!=null){
+            check=sharedPreferences.getBoolean(SHUFFECHECK,true);
+        }
+        return check;
+    }
+    public boolean readRepeat(){
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(REPEAT, Context.MODE_PRIVATE);
+        boolean check = true;
+        if(sharedPreferences!= null){
+            check = sharedPreferences.getBoolean(REPEATCHECK,true);
+        }
+        return check;
+    }
     public int getmSavePlay() {
         return mSavePlay;
     }
@@ -475,4 +519,5 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public void setmSavePlay(int mSavePlay) {
         this.mSavePlay = mSavePlay;
     }
+
 }

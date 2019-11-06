@@ -44,8 +44,6 @@ public class SongGetter {
             mListSong = getAllSong();
         } else if (choose == 2 && songs != null) {
             mListSong = getFavoriteSong(songs);
-        } else if (choose == 2 && songs == null) {
-            mListSong = getFavoriteSong(getAllSong());
         }
         return mListSong;
     }
@@ -174,6 +172,10 @@ public class SongGetter {
 
     public boolean ismCheckdataChange() {
         return mCheckdataChange;
+    }
+
+    public void setmListSong(ArrayList<SongModel> mListSong) {
+        this.mListSong = mListSong;
     }
 
     public int getIDSong() {

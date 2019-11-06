@@ -81,7 +81,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
                             switch (item.getItemId()) {
                                 case R.id.favoriteButtom: {
                                     addFavorite(songModel);
-                                    mSongGetter.setmCheckdataChange(true);
+                                  mSongGetter.setmCheckdataChange(true);
+                                    //setmCallback(mCallback);
                                     break;
                                 }
                                 case R.id.removebuttom: {
@@ -158,6 +159,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
                 Toast.makeText(mContext.getApplicationContext(), "bạn đã thích bài hát này trước đó", Toast.LENGTH_SHORT).show();
             } else {
                 values.put(SongsFavoriteTable.IS_FAVORITE, 2);
+                values.put(SongsFavoriteTable.COUNT_OF_PLAY, 3);
                 Toast.makeText(mContext.getApplicationContext(), "đã thêm bài hát vào  yêu thích", Toast.LENGTH_SHORT).show();
                 mContext.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
                         "id_provider = \"" + song.getId() + "\"", null);
@@ -194,7 +196,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             popup = (ImageButton) itemView.findViewById(R.id.popup);
         }
     }
-
     public void setOnSongclickListener(OnSongClickListener listener) {
         mOnSongClickListener = listener;
 

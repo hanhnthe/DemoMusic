@@ -60,7 +60,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         } else {
             boolean check1 = mSongGetterAll.ismCheckdataChange();
             if (check1) {
-                mSongGetterFavorite = new SongGetter(this, 2, mSongGetterAll.getmListAll());
+                mSongGetterFavorite.setmListSong(mSongGetterAll.getFavoriteSong(mSongGetterAll.getmListAll()));
             }
             return mSongGetterFavorite;
         }
@@ -81,7 +81,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             makeRequest();
         } else {
             mSongGetterAll = new SongGetter(this, 1, null);
-            mSongGetterFavorite = new SongGetter(this, 2, null);
+            mSongGetterFavorite = new SongGetter(this, 2, mSongGetterAll.getmListAll());
             if (savedInstanceState != null) {
                 check = savedInstanceState.getBoolean(CHECK);
                 if (check) {
