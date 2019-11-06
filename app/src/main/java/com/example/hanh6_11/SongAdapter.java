@@ -1,4 +1,4 @@
-package com.example.hanh5_11;
+package com.example.hanh6_11;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -16,8 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh5_11.sqlite.FavoriteSongProvider;
-import com.example.hanh5_11.sqlite.SongsFavoriteTable;
+import com.example.hanh6_11.sqlite.FavoriteSongProvider;
+import com.example.hanh6_11.sqlite.SongsFavoriteTable;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> {
 

@@ -1,4 +1,4 @@
-package com.example.hanh5_11;
+package com.example.hanh6_11;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -11,9 +11,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.hanh5_11.controller.LayoutController;
-import com.example.hanh5_11.controller.OneFragmentController;
-import com.example.hanh5_11.controller.TowFragmentController;
+import com.example.hanh6_11.controller.LayoutController;
+import com.example.hanh6_11.controller.OneFragmentController;
+import com.example.hanh6_11.controller.TowFragmentController;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -232,5 +232,4 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         List<SongModel> list = gson.fromJson(json, type);
         return list;
     }
-
 }

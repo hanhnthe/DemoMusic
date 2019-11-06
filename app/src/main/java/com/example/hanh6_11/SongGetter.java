@@ -1,4 +1,4 @@
-package com.example.hanh5_11;
+package com.example.hanh6_11;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
-import com.example.hanh5_11.sqlite.FavoriteSongProvider;
-import com.example.hanh5_11.sqlite.SongsFavoriteTable;
+import com.example.hanh6_11.sqlite.FavoriteSongProvider;
+import com.example.hanh6_11.sqlite.SongsFavoriteTable;
 
 import java.io.FileDescriptor;
 import java.text.SimpleDateFormat;
@@ -28,8 +28,6 @@ public class SongGetter {
     //set du lieu
     public SongGetter(Context context, int i, ArrayList<SongModel> songs) {
         mContext = context;
-        mCurrentItemIndex = 0;
-        //getMp3FilesFromMemory();
         getSongFromDevice(i, songs);
     }
 
@@ -137,8 +135,15 @@ public class SongGetter {
         return mCurrentItemIndex;
     }
 
-    public void setmCurrentItemIndex(int mCurrentItemIndex) {
-        this.mCurrentItemIndex = mCurrentItemIndex;
+    public void setmCurrentItemIndex(int id) {
+        mCurrentItemIndex = -1;
+        for (int i = 0; i < mListSong.size(); i++) {
+            SongModel song = mListSong.get(i);
+            if (song.getId() == id) {
+                mCurrentItemIndex = i;
+                break;
+            }
+        }
     }
 
     public SongModel getCurrentItem() {
@@ -155,7 +160,7 @@ public class SongGetter {
 
     public void setCurrentItemIndex(int pos) {
         if (pos < 0) {
-            pos = 0;
+            pos = -1;
         }
         if (pos >= getCount()) {
             pos = getCount() - 1;

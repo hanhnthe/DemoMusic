@@ -1,4 +1,4 @@
-package com.example.hanh5_11;
+package com.example.hanh6_11;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -48,6 +48,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     private boolean shuffle = false;
     private boolean repeat = false;
     private Random rand;
+    private int mSavePlay;
 
     private Boolean changeData = false;
     public static final String ACTION_PLAY = "notification_action_play";
@@ -57,6 +58,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public static final String MY_KEY = "my_key";
     public static final String SONG1 = "song1";
     public static final String IDSONGCURRENT = "idsongcurrent";
+    private Intent mchangeListennerIntent = null;
     private RemoteViews notificationLayout;
     private RemoteViews notificationLayoutBig;
 
@@ -69,6 +71,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         initMusicPlayer();
         createNotificationChannel();
         rand = new Random();
+        mSavePlay = 0;
     }
 
     //phuong thuc khoi tao lop mediaplayer
@@ -107,6 +110,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
 
     //thiet lap de play 1 song
     public void playSong() {
+        mSavePlay++;
         mPlayer.reset();
         saveIdSongCurrent(mIdCurrentSong);
         SongModel playSong = findSongFromId();//get song
@@ -249,22 +253,34 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         mediaPlayer.start();
         startForeground(FOREGROUND_ID, buildForegroundNotification());
         // sendBroadCastObjectService();
-        getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PLAY));
-        getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_NEXT));
-        getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PREV));
+        if (mchangeListennerIntent == null) {
+            mchangeListennerIntent = getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PLAY));
+            getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_NEXT));
+            getApplication().registerReceiver(receiverNotification, new IntentFilter(ACTION_PREV));
+        }
+
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
         mPlayer.stop();
         stopForeground(true);
-        getApplication().unregisterReceiver(receiverNotification);
+        if (mchangeListennerIntent != null) {
+            getApplication().unregisterReceiver(receiverNotification);
+            mchangeListennerIntent = null;
+        }
+
+
     }
 
     //get number = id hieen tai
     public int getmCurrentSong() {
         SongModel songModel = findSongFromId();
         return songModel.getNumber();
+    }
+
+    public int getmIdCurrentSong() {
+        return mIdCurrentSong;
     }
 
     //set id = number da dc cong
@@ -448,5 +464,13 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             i = sharedPreferences.getInt(IDSONGCURRENT, 0);
         }
         return i;
+    }
+
+    public int getmSavePlay() {
+        return mSavePlay;
+    }
+
+    public void setmSavePlay(int mSavePlay) {
+        this.mSavePlay = mSavePlay;
     }
 }

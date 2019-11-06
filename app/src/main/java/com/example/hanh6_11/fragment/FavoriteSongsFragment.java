@@ -1,7 +1,7 @@
-package com.example.hanh5_11.fragment;
+package com.example.hanh6_11.fragment;
 
-import com.example.hanh5_11.SongAdapter;
-import com.example.hanh5_11.SongGetter;
+import com.example.hanh6_11.SongAdapter;
+import com.example.hanh6_11.SongGetter;
 
 public class FavoriteSongsFragment extends BaseSongListFragment {
     @Override

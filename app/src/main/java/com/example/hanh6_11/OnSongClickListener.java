@@ -1,4 +1,4 @@
-package com.example.hanh5_11;
+package com.example.hanh6_11;
 
 public interface OnSongClickListener {
     public void onClickItem(SongModel item);

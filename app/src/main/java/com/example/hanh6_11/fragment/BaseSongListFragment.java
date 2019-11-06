@@ -1,4 +1,4 @@
-package com.example.hanh5_11.fragment;
+package com.example.hanh6_11.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -20,13 +20,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh5_11.ActivityMusic;
-import com.example.hanh5_11.MediaPlaybackService;
-import com.example.hanh5_11.OnSongClickListener;
-import com.example.hanh5_11.R;
-import com.example.hanh5_11.SongAdapter;
-import com.example.hanh5_11.SongGetter;
-import com.example.hanh5_11.SongModel;
+import com.example.hanh6_11.ActivityMusic;
+import com.example.hanh6_11.MediaPlaybackService;
+import com.example.hanh6_11.OnSongClickListener;
+import com.example.hanh6_11.R;
+import com.example.hanh6_11.SongAdapter;
+import com.example.hanh6_11.SongGetter;
+import com.example.hanh6_11.SongModel;
 
 public class BaseSongListFragment extends Fragment {
     protected RecyclerView mRecyclerview;
@@ -44,13 +44,12 @@ public class BaseSongListFragment extends Fragment {
 
     protected MediaPlaybackService mService;
     protected ActivityMusic mActi;
-    private int mSave;
+    private int mSave = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActi = (ActivityMusic) getActivity();
-        mSave = 0;
     }
 
     @Nullable
@@ -76,7 +75,7 @@ public class BaseSongListFragment extends Fragment {
         mRecyclerview.setItemAnimator(new DefaultItemAnimator());
 
         if (mService != null) {
-            songGetter().setmCurrentItemIndex(mService.getmCurrentSong() - 1);
+            songGetter().setmCurrentItemIndex(mService.getmIdCurrentSong());
             ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(songGetter().getCurrentItemIndex(), 20);
         }
         mSongAdapter = getSongAdapter(songGetter());
@@ -122,9 +121,11 @@ public class BaseSongListFragment extends Fragment {
                     mService.pausePlayer();
                     mService.updatePlayNotification();
                 } else {
+                    mSave = mService.getmSavePlay();
                     if (mSave == 0) {
                         mService.playSong();
                         mSave++;
+                        mService.setmSavePlay(mSave);
                     } else {
                         mService.go();
                     }
@@ -202,5 +203,9 @@ public class BaseSongListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         getActivity().unregisterReceiver(receiver);
+    }
+
+    public int getmSave() {
+        return mSave;
     }
 }
