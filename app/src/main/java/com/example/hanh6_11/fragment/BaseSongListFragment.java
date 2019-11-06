@@ -59,21 +59,40 @@ public class BaseSongListFragment extends Fragment {
         mService = mActi.getmMediaService();
 
         mRecyclerview = (RecyclerView) view.findViewById(R.id.myrecyclerview);
+        mLayout = new LinearLayoutManager(getActivity());
+        mRecyclerview.setLayoutManager(mLayout);
+        mRecyclerview.setItemAnimator(new DefaultItemAnimator());
         setRecyclerview();
-
         anhxaViewSmallDetail(view);
 
         bundlerSongSmallDetail();
         play();
+        mPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mService.isPng()) {
+                    mPlay.setImageResource(R.drawable.ic_play_1);
+                    mService.pausePlayer();
+                    mService.updatePlayNotification();
+                } else {
+                    mSave = mService.getmSavePlay();
+                    if (mSave == 0) {
+                        mService.playSong();
+                        mSave++;
+                        mService.setmSavePlay(mSave);
+                    } else {
+                        mService.go();
+                    }
+                    mPlay.setImageResource(R.drawable.ic_pause_1);
+                    mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
+                }
+            }
+        });
 
         return view;
     }
 
     public void setRecyclerview() {
-        mLayout = new LinearLayoutManager(getActivity());
-        mRecyclerview.setLayoutManager(mLayout);
-        mRecyclerview.setItemAnimator(new DefaultItemAnimator());
-
         if (mService != null) {
             songGetter().setmCurrentItemIndex(mService.getmIdCurrentSong());
             ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(songGetter().getCurrentItemIndex(), 20);
@@ -109,31 +128,12 @@ public class BaseSongListFragment extends Fragment {
         if (mService != null) {
             if (mService.isPng()) {
                 mPlay.setImageResource(R.drawable.ic_pause_1);
-            } else {
+            }
+            else {
                 mPlay.setImageResource(R.drawable.ic_play_1);
             }
         }
-        mPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mService.isPng()) {
-                    mPlay.setImageResource(R.drawable.ic_play_1);
-                    mService.pausePlayer();
-                    mService.updatePlayNotification();
-                } else {
-                    mSave = mService.getmSavePlay();
-                    if (mSave == 0) {
-                        mService.playSong();
-                        mSave++;
-                        mService.setmSavePlay(mSave);
-                    } else {
-                        mService.go();
-                    }
-                    mPlay.setImageResource(R.drawable.ic_pause_1);
-                    mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
-                }
-            }
-        });
+
     }
 
     public void bundlerSongSmallDetail() {
@@ -183,10 +183,14 @@ public class BaseSongListFragment extends Fragment {
             if (intent.getAction().equals(MediaPlaybackService.ACTION)) {
                 //doc du lieu tu intent
                 Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
-                if (change) {
+                int isplaying = intent.getIntExtra(MediaPlaybackService.ISPLAYING,0);
+                if (change&& isplaying==0) {
                     bundlerSongSmallDetail();
-
+                }else if( change && isplaying==1){
+                    bundlerSongSmallDetail();
+                    mPlay.setImageResource(R.drawable.ic_pause_1);
                 }
+
             }
         }
     };

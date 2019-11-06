@@ -49,12 +49,14 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     private boolean repeat = false;
     private Random rand;
     private int mSavePlay;
+    private int isplaying = 1;
 
     private Boolean changeData = false;
     public static final String ACTION_PLAY = "notification_action_play";
     public static final String ACTION_NEXT = "notification_action_next";
     public static final String ACTION_PREV = "notification_action_prev";
     public static final String ACTION = "my_action";
+    public static final String ISPLAYING ="isplaying";
     public static final String MY_KEY = "my_key";
     public static final String SONG1 = "song1";
     public static final String IDSONGCURRENT = "idsongcurrent";
@@ -317,7 +319,8 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public void onCompletion(MediaPlayer mediaPlayer) {
         if (mPlayer.getCurrentPosition() > mPlayer.getDuration()) {
             changeData = true;
-            sendBroadCast();
+            isplaying=1;
+            sendBroadCast(isplaying);
             mediaPlayer.reset();
             playNext();
             changeData = false;
@@ -409,10 +412,11 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         else repeat = true;
     }
 
-    public void sendBroadCast() {
+    public void sendBroadCast(int i) {
         Intent intent = new Intent();
         intent.setAction(ACTION);//thiet lap ten de receiver nhan duoc thi nhan biet do la intent
         intent.putExtra(MY_KEY, changeData);
+        intent.putExtra(ISPLAYING,i);
         sendBroadcast(intent);
     }
 
@@ -422,14 +426,16 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             if (intent.getAction().equals(ACTION_PLAY)) {
                 if (mPlayer.isPlaying()) {
                     changeData = true;
-                    sendBroadCast();
+                    isplaying = 0;
+                    sendBroadCast(isplaying);
                     mPlayer.pause();
                     updatePlayNotification();
                     stopForeground(false);
                     changeData = false;
                 } else {
                     changeData = true;
-                    sendBroadCast();
+                    isplaying=0;
+                    sendBroadCast(isplaying);
                     mPlayer.start();
                     startForeground(FOREGROUND_ID, buildForegroundNotification());
                     mNotifyManager.notify(FOREGROUND_ID, buildForegroundNotification());
@@ -438,12 +444,14 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             } else if (intent.getAction().equals(ACTION_NEXT)) {
                 changeData = true;
                 playNext();
-                sendBroadCast();
+                isplaying=1;
+                sendBroadCast(isplaying);
                 changeData = false;
             } else if (intent.getAction().equals(ACTION_PREV)) {
                 changeData = true;
                 playPrev();
-                sendBroadCast();
+                isplaying=1;
+                sendBroadCast(isplaying);
                 changeData = false;
 
             }

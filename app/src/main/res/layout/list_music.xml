@@ -56,6 +56,6 @@
             android:layout_width="106dp"
             android:layout_height="match_parent"
             android:background="@color/whilenull"
-            android:src="@drawable/ic_play_1" />
+            android:src="@drawable/ic_pause_1" />
     </LinearLayout>
 </LinearLayout>
