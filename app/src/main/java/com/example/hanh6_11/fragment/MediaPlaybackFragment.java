@@ -431,11 +431,11 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 //doc du lieu tu intent
                 Boolean change = intent.getBooleanExtra(MediaPlaybackService.MY_KEY, true);
                 int isplaying = intent.getIntExtra(MediaPlaybackService.ISPLAYING,0);
-                if (change && isplaying==0) {
+                if (change && isplaying==0 && mService!=null) {
                     SongModel song = mService.findSongFromId();
                     String songString = encodeTobase64(song.getImageSong());
                     updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-                }else if(change && isplaying==1){
+                }else if(change && isplaying==1 && mService != null){
                     SongModel song = mService.findSongFromId();
                     String songString = encodeTobase64(song.getImageSong());
                     updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);

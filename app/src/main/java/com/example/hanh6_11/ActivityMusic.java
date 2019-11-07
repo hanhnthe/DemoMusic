@@ -146,8 +146,20 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     }
     public void addSongFavorite(SongModel songModel){
         ArrayList<SongModel> songs =  mSongGetterFavorite.getLitSong();
-        songs.add(songModel);
-        mSongGetterFavorite.setmListSong(songs);
+        boolean check = false;
+        for(int i=0; i<songs.size(); i++){
+            SongModel song = songs.get(i);
+            if(song==songModel) {
+                check = true;
+                break;
+            }
+        }
+        if(check){
+            mSongGetterFavorite.setmListSong(songs);
+        }else{
+            songs.add(songModel);
+            mSongGetterFavorite.setmListSong(songs);
+        }
     }
     public void removeSongFavorite(SongModel songModel){
         ArrayList<SongModel> songs =  mSongGetterFavorite.getLitSong();
