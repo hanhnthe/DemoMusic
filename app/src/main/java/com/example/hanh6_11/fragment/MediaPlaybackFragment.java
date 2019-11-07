@@ -159,6 +159,9 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                     if (mSave == 0) {
                         mService.playSong();
                         mSave++;
+                        mChangeCallBackAll = true;
+                        sendCallBackAll();
+                        mChangeCallBackAll=false;
                         mService.setmSavePlay(mSave);
                     } else {
                         mService.go();

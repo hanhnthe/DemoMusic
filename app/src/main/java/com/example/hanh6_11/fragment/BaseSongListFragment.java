@@ -80,6 +80,7 @@ public class BaseSongListFragment extends Fragment {
                         mService.playSong();
                         mSave++;
                         mService.setmSavePlay(mSave);
+                        setRecyclerview();
                     } else {
                         mService.go();
                     }
