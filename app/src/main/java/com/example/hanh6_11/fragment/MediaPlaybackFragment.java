@@ -44,7 +44,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public static final String AUTHOR_SONG_EXTRA = "authorsong";
     public static final String IMAGE_SONG_EXTRA = "imagesong";
     public static final String TIME_SONG_EXTRA = "timesong";
-    private final static String SONG = " song";
     public static final String SHUFFLE = "shuffle";
     public static final String REPEAT = "repeat";
     public static final String CALLBACKALL = "callbackall";
@@ -222,31 +221,31 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
 
     public void shuffle() {
         boolean shuffle = readShuffleShare();
-        if (shuffle) {
+        if (!shuffle) {
             mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
             if (mService != null) {
-                mService.shuffeSong();
+                mService.shuffle();
             }
         } else {
             mShuffle.setBackgroundResource(R.drawable.ic_shuffle_click);
             if (mService != null) {
-                mService.shuffeSong();
+                mService.shuffle();
             }
         }
         mShuffle.setOnClickListener(new View.OnClickListener() {
             boolean i = readShuffleShare();
             @Override
             public void onClick(View v) {
-                if (i) {
+                if (!i) {
                     mShuffle.setBackgroundResource(R.drawable.ic_shuffle_click);
-                    mService.shuffeSong();
-                    i = false;
-                    saveStateShuffe(i);
-                } else {
-                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
-                    mService.shuffeSong();
                     i = true;
                     saveStateShuffe(i);
+                    mService.shuffle();
+                } else {
+                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
+                    i = false;
+                    saveStateShuffe(i);
+                    mService.shuffle();
                 }
             }
         });
@@ -256,12 +255,18 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
         int i = readRepeatShare();
         if (i == 1) {
             mRepeat.setBackgroundResource(R.drawable.ic_repeat);
+            if (mService != null) {
+                mService.repeat();
+            }
         } else if (i == 2) {
             mRepeat.setBackgroundResource(R.drawable.ic_repeat_click);
+            if (mService != null) {
+                mService.repeat();
+            }
         } else if (i == 3) {
             mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
             if (mService != null) {
-                mService.repeatSong();
+                mService.repeat();
             }
         }
         mRepeat.setOnClickListener(new View.OnClickListener() {
@@ -272,15 +277,19 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat_click);
                     i = 2;
                     saveStateRepeat(i);
+                    mService.repeat();
                 } else if (i == 2) {
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
-                    mService.repeatSong();
+                    mService.repeat();
                     i = 3;
                     saveStateRepeat(3);
+                    mService.repeat();
                 } else if (i == 3) {
                     mRepeat.setBackgroundResource(R.drawable.ic_repeat);
+                    mService.repeat();
                     i = 1;
                     saveStateRepeat(1);
+                    mService.repeat();
                 }
             }
         });
@@ -463,21 +472,21 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public void saveStateShuffe(boolean shuffleState) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(SHUFFLE, shuffleState);
         editor.apply();
     }
 
     public void saveStateRepeat(int repeatState) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(REPEAT, repeatState);
         editor.apply();
     }
 
     public Boolean readShuffleShare() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         boolean i = true;
         if (sharedPreferences != null) {
             i = sharedPreferences.getBoolean(SHUFFLE, true);
@@ -486,14 +495,12 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public int readRepeatShare() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SONG, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         int i = 1;
         if (sharedPreferences != null) {
             i = sharedPreferences.getInt(REPEAT, 1);
         }
         return i;
     }
-
-
 }
 

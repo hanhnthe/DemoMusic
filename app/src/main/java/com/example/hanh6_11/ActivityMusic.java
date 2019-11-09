@@ -176,7 +176,13 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     @Override
     protected void onStop() {
         super.onStop();
-        unbindService(musicConnection);
+       unbindService(musicConnection);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 
     //ket noi voi service
