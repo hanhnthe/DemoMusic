@@ -32,16 +32,6 @@ public abstract class LayoutController implements OnSongClickListener {
 
     public abstract void setmOnclickService(OnSongClickListener click);
 
-    //chuyen bitmap -> byte
-    public static String encodeTobase64(Bitmap image) {
-        Bitmap immagex = image;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        immagex.compress(Bitmap.CompressFormat.PNG, 90, baos);
-        byte[] b = baos.toByteArray();
-        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
-        return imageEncoded;
-    }
-
     // tim kiem theo id cua bai hat
     public Cursor findSongById(int id) {
         return mActivity.getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{SongsFavoriteTable.COUNT_OF_PLAY},
@@ -74,6 +64,4 @@ public abstract class LayoutController implements OnSongClickListener {
             mActivity.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
         }
     }
-
-
 }
