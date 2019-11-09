@@ -168,10 +168,6 @@ public class BaseSongListFragment extends Fragment {
         this.mListen = listener;
     }
 
-    public interface LoadCallback {
-        public void onLoadFinish(SongGetter songGetter);
-    }
-
     //cap nhat giao dien small detail
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         //code thi hanh khi receiver nhan dc intent

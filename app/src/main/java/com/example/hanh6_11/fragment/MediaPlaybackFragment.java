@@ -38,7 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 
 
-public class MediaPlaybackFragment extends Fragment implements BaseSongListFragment.LoadCallback {
+public class MediaPlaybackFragment extends Fragment {
     public static final String NUMBER_EXTRA = "number";
     public static final String NAME_SONG_EXTRA = "namesong";
     public static final String AUTHOR_SONG_EXTRA = "authorsong";
@@ -384,13 +384,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 new String[]{String.valueOf(id)}, null);
     }
 
-    //giao dien quay ngang
-    @Override
-    public void onLoadFinish(SongGetter songGetter) {
-        SongModel song = mService.findSongFromId();
-        String songString = encodeTobase64(song.getImageSong());
-        updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-    }
 
     public void sendCallBackAll(){
         Intent intent = new Intent();
