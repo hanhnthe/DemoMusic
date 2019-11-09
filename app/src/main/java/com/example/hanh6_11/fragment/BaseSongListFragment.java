@@ -37,7 +37,6 @@ public class BaseSongListFragment extends Fragment {
     private View.OnClickListener mListen;
     protected OnSongClickListener mOnSongClickListener;
 
-    private int mCurrentNumber;
     private TextView nameTxt, auTxt;
     private ImageView ima;
     private ImageButton mPlay;

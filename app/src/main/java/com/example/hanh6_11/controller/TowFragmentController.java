@@ -41,7 +41,6 @@ public class TowFragmentController extends LayoutController {
 
     @Override
     public void onClickItem(SongModel item) {
-        Bundle args = newBundleFromSong(item);
         mOnclickService.onClickItem(item);
         mMediaPlayBackFragment.updateUIFromService();
         View view = mMediaPlayBackFragment.getView();

@@ -18,8 +18,6 @@ import com.example.hanh6_11.fragment.MediaPlaybackFragment;
 
 public class OneFragmentController extends LayoutController implements View.OnClickListener {
 
-    private Bundle mBundle;//khai bao luu tru gia tri hien tai
-
     public OneFragmentController(AppCompatActivity activity) {
         super(activity);
     }
@@ -44,7 +42,6 @@ public class OneFragmentController extends LayoutController implements View.OnCl
     public void onClickItem(final SongModel item) {
         View view = mBaseSongListFragment.getView();
         mOnclickService.onClickItem(item);
-        mBundle = newBundleFromSong(item);// khoi tao bien bunlde vao item click
         String name, author;
         Bitmap image;
         name = item.getNameSong();

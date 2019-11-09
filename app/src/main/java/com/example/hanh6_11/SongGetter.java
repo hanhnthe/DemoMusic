@@ -20,10 +20,8 @@ import java.util.List;
 public class SongGetter {
     private ArrayList<SongModel> mListSong = new ArrayList<>();
     private ArrayList<SongModel> mListAll = new ArrayList<>();
-    ;
     private int mCurrentItemIndex;
     private Context mContext;
-    private boolean mCheckdataChange = false;
 
     //set du lieu
     public SongGetter(Context context, int i, ArrayList<SongModel> songs) {
@@ -48,7 +46,6 @@ public class SongGetter {
         return mListSong;
     }
 
-
     public ArrayList<SongModel> getAllSong() {
         mListAll = new ArrayList<>();
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
@@ -67,7 +64,6 @@ public class SongGetter {
         SongModel song;
         while (cursor.moveToNext()) {
             song = new SongModel();
-
             song.setId((int) cursor.getLong(4));
             //song.setNumber(i);
             song.setNameSong(cursor.getString(0));

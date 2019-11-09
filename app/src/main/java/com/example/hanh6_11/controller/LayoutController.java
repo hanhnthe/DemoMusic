@@ -28,18 +28,6 @@ public abstract class LayoutController implements OnSongClickListener {
         mActivity = activity;
     }
 
-    //lưu trữ để truyeemf dữ liệu tu fragmnet nay sang fragment khác
-    protected Bundle newBundleFromSong(SongModel song) {
-        Bundle args = new Bundle();
-        String songString = encodeTobase64(song.getImageSong());
-        args.putInt(MediaPlaybackFragment.NUMBER_EXTRA, song.getNumber());
-        args.putString(MediaPlaybackFragment.NAME_SONG_EXTRA, song.getNameSong());
-        args.putString(MediaPlaybackFragment.AUTHOR_SONG_EXTRA, song.getAuthorSong());
-        args.putString(MediaPlaybackFragment.TIME_SONG_EXTRA, song.getTimeSong());
-        args.putString(MediaPlaybackFragment.IMAGE_SONG_EXTRA, songString);
-        return args;
-    }
-
     public abstract void onCreate(int i);
 
     public abstract void setmOnclickService(OnSongClickListener click);

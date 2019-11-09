@@ -39,11 +39,6 @@ import java.text.SimpleDateFormat;
 
 
 public class MediaPlaybackFragment extends Fragment {
-    public static final String NUMBER_EXTRA = "number";
-    public static final String NAME_SONG_EXTRA = "namesong";
-    public static final String AUTHOR_SONG_EXTRA = "authorsong";
-    public static final String IMAGE_SONG_EXTRA = "imagesong";
-    public static final String TIME_SONG_EXTRA = "timesong";
     public static final String SHUFFLE = "shuffle";
     public static final String REPEAT = "repeat";
     public static final String CALLBACKALL = "callbackall";

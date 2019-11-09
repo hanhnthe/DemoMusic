@@ -34,8 +34,7 @@ import java.util.Random;
 public class MediaPlaybackService extends Service implements MediaPlayer.OnPreparedListener,
         MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, Serializable {
 
-    //them doi tuong
-    //media player
+    //them doi tuong media player
     private MediaPlayer mPlayer;
     //song list
     public List<SongModel> songs;
@@ -350,7 +349,6 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         mPlayer.start();
     }
 
-
     //chuyen tiep den bai hat truoc do neu dang phat <3s
     //chuyen choi lai bai hat neu dang choi >3s
     public void playPrev() {
@@ -423,6 +421,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
             repeat = 3;
         }
     }
+
     public void sendBroadCast(int i) {
         Intent intent = new Intent();
         intent.setAction(ACTION);//thiet lap ten de receiver nhan duoc thi nhan biet do la intent

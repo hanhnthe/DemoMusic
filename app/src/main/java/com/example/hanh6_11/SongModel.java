@@ -10,7 +10,7 @@ public class SongModel implements Serializable {
     private Bitmap imageSong;
     private String nameSong, authorSong, timeSong;
 
-     public SongModel(){}
+    public SongModel(){}
 
     public SongModel(int number, String nameSong, String authorSong, Bitmap imageSong, String timeSong) {
         this.authorSong = authorSong;
