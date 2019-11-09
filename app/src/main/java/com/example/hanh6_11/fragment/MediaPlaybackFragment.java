@@ -366,13 +366,6 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
         }
     }
 
-    // tim kiem theo id cua bai hat
-    public Cursor findSongById(int id) {
-        return getActivity().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{SongsFavoriteTable.IS_FAVORITE},
-                SongsFavoriteTable.ID_PROVIDER + "=?",
-                new String[]{String.valueOf(id)}, null);
-    }
-
     public void listComeBack() {
         if (mListImg != null) {
             mListImg.setOnClickListener(new View.OnClickListener() {
@@ -382,6 +375,13 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 }
             });
         }
+    }
+
+    // tim kiem theo id cua bai hat
+    public Cursor findSongById(int id) {
+        return getActivity().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{SongsFavoriteTable.IS_FAVORITE},
+                SongsFavoriteTable.ID_PROVIDER + "=?",
+                new String[]{String.valueOf(id)}, null);
     }
 
     //giao dien quay ngang

@@ -38,7 +38,7 @@ public class BaseSongListFragment extends Fragment {
     protected OnSongClickListener mOnSongClickListener;
 
     private int mCurrentNumber;
-    private TextView name, au;
+    private TextView nameTxt, auTxt;
     private ImageView ima;
     private ImageButton mPlay;
 
@@ -109,10 +109,14 @@ public class BaseSongListFragment extends Fragment {
         return mSongGetter;
     }
 
+    public SongAdapter getSongAdapter(SongGetter songGetter) {
+        return mSongAdapter;
+    }
+
     public void anhxaViewSmallDetail(View view) {
         View view1 = view.findViewById(R.id.linearLayout3);
-        name = (TextView) view1.findViewById(R.id.nameSong2);
-        au = (TextView) view1.findViewById(R.id.author1);
+        nameTxt = (TextView) view1.findViewById(R.id.nameSong2);
+        auTxt = (TextView) view1.findViewById(R.id.author1);
         ima = (ImageView) view1.findViewById(R.id.image1);
         mPlay = (ImageButton) view1.findViewById(R.id.playSong1);
         //set click view small detail de chuyen fragment
@@ -146,13 +150,12 @@ public class BaseSongListFragment extends Fragment {
             name1 = item1.getNameSong();
             author = item1.getAuthorSong();
             image = item1.getImageSong();
-            name.setText(name1);
-            au.setText(author);
+            nameTxt.setText(name1);
+            auTxt.setText(author);
             ima.setImageBitmap(image);
             play();
         }
     }
-
 
     public void setOnSongClickListener(OnSongClickListener onSongClickListener) {
         mOnSongClickListener = onSongClickListener;
@@ -165,17 +168,11 @@ public class BaseSongListFragment extends Fragment {
         this.mListen = listener;
     }
 
-
     public interface LoadCallback {
         public void onLoadFinish(SongGetter songGetter);
     }
 
-    public SongAdapter getSongAdapter(SongGetter songGetter) {
-        return mSongAdapter;
-    }
-
     //cap nhat giao dien small detail
-
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         //code thi hanh khi receiver nhan dc intent
         @Override
@@ -212,7 +209,6 @@ public class BaseSongListFragment extends Fragment {
         ((LinearLayoutManager) mLayout).scrollToPositionWithOffset(songGetter().getCurrentItemIndex(), 20);
         getActivity().registerReceiver(receiver, new IntentFilter(MediaPlaybackService.ACTION));
         getActivity().registerReceiver(receiverCallBackFragment,new IntentFilter(MediaPlaybackFragment.CALLBACKALL));
-
     }
 
     @Override
