@@ -49,12 +49,12 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public static final String CALLBACKALL = "callbackall";
     public static final String CHECKCALLBACK = "checkcallback";
 
-    private TextView mNameSong, mAuthor, mTime;
-    private ImageView mImageSong, mImageBackground;
-    private ImageView mPlaySong;
+    private TextView mNameSongTxt, mAuthorTxt, mTimeTxt;
+    private ImageView mImageSongImgV, mImageBackgroundImgV;
+    private ImageView mPlaySongImgV;
     private SeekBar mSeekbar;
-    private TextView mProgressTime;
-    private ImageButton mNext, mPrev, mLike, mDisLike, mList, mShuffle, mRepeat;
+    private TextView mProgressTimeTxt;
+    private ImageButton mNextImg, mPrevImg, mLikeImg, mDisLikeImg, mListImg, mShuffleImg, mRepeatImg;
 
     private MediaPlaybackService mService;
     private ActivityMusic mActi;
@@ -74,22 +74,22 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.detail_song, container, false);
 
-        mNameSong = (TextView) view.findViewById(R.id.nameSong3);
-        mAuthor = (TextView) view.findViewById(R.id.author2);
-        mTime = (TextView) view.findViewById(R.id.maxTime);
-        mImageSong = (ImageView) view.findViewById(R.id.image2);
-        mImageBackground = (ImageView) view.findViewById(R.id.manhinh);
+        mNameSongTxt = (TextView) view.findViewById(R.id.nameSong3);
+        mAuthorTxt = (TextView) view.findViewById(R.id.author2);
+        mTimeTxt = (TextView) view.findViewById(R.id.maxTime);
+        mImageSongImgV = (ImageView) view.findViewById(R.id.image2);
+        mImageBackgroundImgV = (ImageView) view.findViewById(R.id.manhinh);
         ConstraintLayout view1 = (ConstraintLayout) view.findViewById(R.id.play);
-        mPlaySong = (ImageView) view1.findViewById(R.id.playSong2);
+        mPlaySongImgV = (ImageView) view1.findViewById(R.id.playSong2);
         mSeekbar = (SeekBar) view.findViewById(R.id.seekBar);
-        mProgressTime = (TextView) view.findViewById(R.id.startTime);
-        mNext = (ImageButton) view.findViewById(R.id.rightButton);
-        mPrev = (ImageButton) view.findViewById(R.id.leftButton);
-        mLike = (ImageButton) view.findViewById(R.id.likeButton);
-        mDisLike = (ImageButton) view.findViewById(R.id.disLikeButton);
-        mList = (ImageButton) view.findViewById(R.id.listSong);
-        mShuffle = (ImageButton) view.findViewById(R.id.shufflebutton);
-        mRepeat = (ImageButton) view.findViewById(R.id.repeatbutton);
+        mProgressTimeTxt = (TextView) view.findViewById(R.id.startTime);
+        mNextImg = (ImageButton) view.findViewById(R.id.rightButton);
+        mPrevImg = (ImageButton) view.findViewById(R.id.leftButton);
+        mLikeImg = (ImageButton) view.findViewById(R.id.likeButton);
+        mDisLikeImg = (ImageButton) view.findViewById(R.id.disLikeButton);
+        mListImg = (ImageButton) view.findViewById(R.id.listSong);
+        mShuffleImg = (ImageButton) view.findViewById(R.id.shufflebutton);
+        mRepeatImg = (ImageButton) view.findViewById(R.id.repeatbutton);
 
         updateUIFromService();
         seekbarChange();
@@ -113,27 +113,27 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public void updateUI(int id, String name, String author, String time, String image) {
-        if (mSeekbar != null && mNameSong != null && mAuthor != null && mImageBackground != null
-                && mImageBackground != null
-                && mTime != null && mPlaySong != null && mLike != null) {
+        if (mSeekbar != null && mNameSongTxt != null && mAuthorTxt != null && mImageBackgroundImgV != null
+                && mImageBackgroundImgV != null
+                && mTimeTxt != null && mPlaySongImgV != null && mLikeImg != null) {
             mSeekbar.setMax(mService.getDur());
-            mNameSong.setText(name);
-            mAuthor.setText(author);
+            mNameSongTxt.setText(name);
+            mAuthorTxt.setText(author);
             if (image != null) {
-                mImageSong.setImageBitmap(decodeBase64(image));
-                mImageBackground.setImageBitmap(decodeBase64(image));
+                mImageSongImgV.setImageBitmap(decodeBase64(image));
+                mImageBackgroundImgV.setImageBitmap(decodeBase64(image));
             }
-            mTime.setText(time);
+            mTimeTxt.setText(time);
             play();
             Cursor cursor = findSongById(id);
             if (cursor != null && cursor.moveToFirst()) {
                 if (cursor.getInt(0) == 1) {
-                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like_click);
+                    mDisLikeImg.setBackgroundResource(R.drawable.ic_dis_like_click);
                 } else if (cursor.getInt(0) == 2) {
-                    mLike.setBackgroundResource(R.drawable.ic_like_click);
+                    mLikeImg.setBackgroundResource(R.drawable.ic_like_click);
                 } else {
-                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
-                    mLike.setBackgroundResource(R.drawable.ic_like);
+                    mDisLikeImg.setBackgroundResource(R.drawable.ic_dis_like);
+                    mLikeImg.setBackgroundResource(R.drawable.ic_like);
                 }
             }
         }
@@ -141,16 +141,16 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
 
     public void play() {
         if (mService.isPng()) {
-            mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+            mPlaySongImgV.setBackgroundResource(R.drawable.ic_pause_22);
         } else {
-            mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
+            mPlaySongImgV.setBackgroundResource(R.drawable.ic_play_22);
         }
 
-        mPlaySong.setOnClickListener(new View.OnClickListener() {
+        mPlaySongImgV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mService.isPng()) {
-                    mPlaySong.setBackgroundResource(R.drawable.ic_play_22);
+                    mPlaySongImgV.setBackgroundResource(R.drawable.ic_play_22);
                     mService.pausePlayer();
                     mService.updatePlayNotification();
                 } else {
@@ -165,7 +165,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                     } else {
                         mService.go();
                     }
-                    mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+                    mPlaySongImgV.setBackgroundResource(R.drawable.ic_pause_22);
                     mService.getmNotifyManager().notify(mService.FOREGROUND_ID, mService.buildForegroundNotification());
                 }
             }
@@ -188,7 +188,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public void next() {
-        mNext.setOnClickListener(new View.OnClickListener() {
+        mNextImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mService.playNext();
@@ -198,13 +198,13 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-                mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+                mPlaySongImgV.setBackgroundResource(R.drawable.ic_pause_22);
             }
         });
     }
 
     public void pre() {
-        mPrev.setOnClickListener(new View.OnClickListener() {
+        mPrevImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mService.playPrev();
@@ -214,7 +214,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
                 updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-                mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+                mPlaySongImgV.setBackgroundResource(R.drawable.ic_pause_22);
             }
         });
     }
@@ -222,27 +222,27 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public void shuffle() {
         boolean shuffle = readShuffleShare();
         if (!shuffle) {
-            mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
+            mShuffleImg.setBackgroundResource(R.drawable.ic_shuffle_white);
             if (mService != null) {
                 mService.shuffle();
             }
         } else {
-            mShuffle.setBackgroundResource(R.drawable.ic_shuffle_click);
+            mShuffleImg.setBackgroundResource(R.drawable.ic_shuffle_click);
             if (mService != null) {
                 mService.shuffle();
             }
         }
-        mShuffle.setOnClickListener(new View.OnClickListener() {
+        mShuffleImg.setOnClickListener(new View.OnClickListener() {
             boolean i = readShuffleShare();
             @Override
             public void onClick(View v) {
                 if (!i) {
-                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_click);
+                    mShuffleImg.setBackgroundResource(R.drawable.ic_shuffle_click);
                     i = true;
                     saveStateShuffe(i);
                     mService.shuffle();
                 } else {
-                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_white);
+                    mShuffleImg.setBackgroundResource(R.drawable.ic_shuffle_white);
                     i = false;
                     saveStateShuffe(i);
                     mService.shuffle();
@@ -254,38 +254,38 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     public void repeat() {
         int i = readRepeatShare();
         if (i == 1) {
-            mRepeat.setBackgroundResource(R.drawable.ic_repeat);
+            mRepeatImg.setBackgroundResource(R.drawable.ic_repeat);
             if (mService != null) {
                 mService.repeat();
             }
         } else if (i == 2) {
-            mRepeat.setBackgroundResource(R.drawable.ic_repeat_click);
+            mRepeatImg.setBackgroundResource(R.drawable.ic_repeat_click);
             if (mService != null) {
                 mService.repeat();
             }
         } else if (i == 3) {
-            mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
+            mRepeatImg.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
             if (mService != null) {
                 mService.repeat();
             }
         }
-        mRepeat.setOnClickListener(new View.OnClickListener() {
+        mRepeatImg.setOnClickListener(new View.OnClickListener() {
             int i = readRepeatShare();
             @Override
             public void onClick(View v) {
                 if (i == 1) {
-                    mRepeat.setBackgroundResource(R.drawable.ic_repeat_click);
+                    mRepeatImg.setBackgroundResource(R.drawable.ic_repeat_click);
                     i = 2;
                     saveStateRepeat(i);
                     mService.repeat();
                 } else if (i == 2) {
-                    mRepeat.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
+                    mRepeatImg.setBackgroundResource(R.drawable.ic_repeat_click_one_song);
                     mService.repeat();
                     i = 3;
                     saveStateRepeat(3);
                     mService.repeat();
                 } else if (i == 3) {
-                    mRepeat.setBackgroundResource(R.drawable.ic_repeat);
+                    mRepeatImg.setBackgroundResource(R.drawable.ic_repeat);
                     mService.repeat();
                     i = 1;
                     saveStateRepeat(1);
@@ -296,34 +296,34 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public void likeAndDis() {
-        mLike.setOnClickListener(new View.OnClickListener() {
+        mLikeImg.setOnClickListener(new View.OnClickListener() {
             boolean i = true;
             @Override
             public void onClick(View v) {
                 if (i) {
-                    mLike.setBackgroundResource(R.drawable.ic_like_click);
+                    mLikeImg.setBackgroundResource(R.drawable.ic_like_click);
                     likeSong();
                     i = false;
 
                 } else {
                     dislikeSong();
-                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
-                    mLike.setBackgroundResource(R.drawable.ic_like);
+                    mDisLikeImg.setBackgroundResource(R.drawable.ic_dis_like);
+                    mLikeImg.setBackgroundResource(R.drawable.ic_like);
                     i = true;
                 }
             }
         });
-        mDisLike.setOnClickListener(new View.OnClickListener() {
+        mDisLikeImg.setOnClickListener(new View.OnClickListener() {
             boolean i = true;
             @Override
             public void onClick(View v) {
                 if (i) {
                     dislikeSong();
-                    mLike.setBackgroundResource(R.drawable.ic_like);
-                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like_click);
+                    mLikeImg.setBackgroundResource(R.drawable.ic_like);
+                    mDisLikeImg.setBackgroundResource(R.drawable.ic_dis_like_click);
                     i = false;
                 } else {
-                    mDisLike.setBackgroundResource(R.drawable.ic_dis_like);
+                    mDisLikeImg.setBackgroundResource(R.drawable.ic_dis_like);
                     i = true;
                 }
             }
@@ -374,8 +374,8 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
     }
 
     public void listComeBack() {
-        if (mList != null) {
-            mList.setOnClickListener(new View.OnClickListener() {
+        if (mListImg != null) {
+            mListImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mActi.getSupportFragmentManager().popBackStack();
@@ -406,7 +406,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                 @Override
                 public void run() {
                     SimpleDateFormat dinhdang = new SimpleDateFormat("mm:ss");
-                    mProgressTime.setText(dinhdang.format(mService.getPos()));
+                    mProgressTimeTxt.setText(dinhdang.format(mService.getPos()));
                     mSeekbar.setProgress(mService.getPos());
                     handler.postDelayed(this, 500);
                 }
@@ -451,7 +451,7 @@ public class MediaPlaybackFragment extends Fragment implements BaseSongListFragm
                     SongModel song = mService.findSongFromId();
                     String songString = encodeTobase64(song.getImageSong());
                     updateUI(song.getId(), song.getNameSong(), song.getAuthorSong(), song.getTimeSong(), songString);
-                    mPlaySong.setBackgroundResource(R.drawable.ic_pause_22);
+                    mPlaySongImgV.setBackgroundResource(R.drawable.ic_pause_22);
                 }
             }
         }
