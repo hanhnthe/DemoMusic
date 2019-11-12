@@ -1,4 +1,4 @@
-package com.example.hanh6_11.sqlite;
+package com.example.hanh6_11.favoritedatabase;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

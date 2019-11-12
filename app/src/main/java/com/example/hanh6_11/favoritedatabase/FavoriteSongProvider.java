@@ -1,4 +1,4 @@
-package com.example.hanh6_11.sqlite;
+package com.example.hanh6_11.favoritedatabase;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -11,7 +11,7 @@ import android.text.TextUtils;
 
 public class FavoriteSongProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.example.hanh6_11.sqlite.FavoriteSongProvider";
+    private static final String AUTHORITY = "com.example.hanh6_11.favoritedatabase.FavoriteSongProvider";
     public static final int SONG_TABLE = 100;
     public static final int SONG_ID = 110;
 

@@ -29,10 +29,9 @@ import androidx.fragment.app.Fragment;
 import com.example.hanh6_11.ActivityMusic;
 import com.example.hanh6_11.MediaPlaybackService;
 import com.example.hanh6_11.R;
-import com.example.hanh6_11.SongGetter;
 import com.example.hanh6_11.SongModel;
-import com.example.hanh6_11.sqlite.FavoriteSongProvider;
-import com.example.hanh6_11.sqlite.SongsFavoriteTable;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
+import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;

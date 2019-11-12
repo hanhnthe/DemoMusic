@@ -16,8 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh6_11.sqlite.FavoriteSongProvider;
-import com.example.hanh6_11.sqlite.SongsFavoriteTable;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
+import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> {
 

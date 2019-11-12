@@ -9,13 +9,12 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
-import com.example.hanh6_11.sqlite.FavoriteSongProvider;
-import com.example.hanh6_11.sqlite.SongsFavoriteTable;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
+import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
 
 import java.io.FileDescriptor;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SongGetter {
     private ArrayList<SongModel> mListSong = new ArrayList<>();

@@ -2,9 +2,6 @@ package com.example.hanh6_11.controller;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.util.Base64;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.hanh6_11.OnSongClickListener;
 import com.example.hanh6_11.SongModel;
 import com.example.hanh6_11.fragment.BaseSongListFragment;
-import com.example.hanh6_11.fragment.MediaPlaybackFragment;
-import com.example.hanh6_11.sqlite.FavoriteSongProvider;
-import com.example.hanh6_11.sqlite.SongsFavoriteTable;
-
-import java.io.ByteArrayOutputStream;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
+import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
 
 public abstract class LayoutController implements OnSongClickListener {
 
