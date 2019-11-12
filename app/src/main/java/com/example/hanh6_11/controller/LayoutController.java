@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.hanh6_11.OnSongClickListener;
 import com.example.hanh6_11.SongModel;
 import com.example.hanh6_11.fragment.BaseSongListFragment;
-import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
-import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsProvider;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsTable;
 
 public abstract class LayoutController implements OnSongClickListener {
 
@@ -28,8 +28,8 @@ public abstract class LayoutController implements OnSongClickListener {
 
     // tim kiem theo id cua bai hat
     public Cursor findSongById(int id) {
-        return mActivity.getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{SongsFavoriteTable.COUNT_OF_PLAY},
-                SongsFavoriteTable.ID_PROVIDER + "=?",
+        return mActivity.getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, new String[]{FavoriteSongsTable.COUNT_OF_PLAY},
+                FavoriteSongsTable.ID_PROVIDER + "=?",
                 new String[]{String.valueOf(id)}, null);
     }
 
@@ -41,21 +41,21 @@ public abstract class LayoutController implements OnSongClickListener {
             System.out.println(count);
             count++;
             if (count == 3) {
-                values.put(SongsFavoriteTable.IS_FAVORITE, 2);
+                values.put(FavoriteSongsTable.IS_FAVORITE, 2);
                 Toast.makeText(mActivity.getApplicationContext(), "đã thêm bài hát "
                         + item.getNameSong() + " vao yeu thich", Toast.LENGTH_SHORT).show();
             }
-            values.put(SongsFavoriteTable.COUNT_OF_PLAY, count);
-            mActivity.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+            values.put(FavoriteSongsTable.COUNT_OF_PLAY, count);
+            mActivity.getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values,
                     "id_provider = \"" + item.getId() + "\"", null);
             cursor.close();
         } else {
             int count_of_play = 0;
             count_of_play++;
-            values.put(SongsFavoriteTable.COUNT_OF_PLAY, count_of_play);
-            values.put(SongsFavoriteTable.ID_PROVIDER, item.getId());
-            values.put(SongsFavoriteTable.IS_FAVORITE, 0);
-            mActivity.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+            values.put(FavoriteSongsTable.COUNT_OF_PLAY, count_of_play);
+            values.put(FavoriteSongsTable.ID_PROVIDER, item.getId());
+            values.put(FavoriteSongsTable.IS_FAVORITE, 0);
+            mActivity.getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
         }
     }
 }

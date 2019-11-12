@@ -30,8 +30,8 @@ import com.example.hanh6_11.ActivityMusic;
 import com.example.hanh6_11.MediaPlaybackService;
 import com.example.hanh6_11.R;
 import com.example.hanh6_11.SongModel;
-import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
-import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsProvider;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsTable;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -328,14 +328,14 @@ public class MediaPlaybackFragment extends Fragment {
         if (mService != null) {
             SongModel song = mService.findSongFromId();
             ContentValues values = new ContentValues();
-            values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
-            values.put(SongsFavoriteTable.IS_FAVORITE, 1);
+            values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
+            values.put(FavoriteSongsTable.IS_FAVORITE, 1);
             Cursor cursor = findSongById(song.getId());
             if (cursor != null && cursor.moveToFirst()) {
-                getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values,
                         "id_provider = \"" + song.getId() + "\"", null);
             } else {
-                getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+                getActivity().getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
             }
             Toast.makeText(getActivity().getBaseContext(),
                     "Đẫ xoá bài hát " + song.getNameSong() + " khỏi yêu thich", Toast.LENGTH_LONG).show();
@@ -346,14 +346,14 @@ public class MediaPlaybackFragment extends Fragment {
         if (mService != null) {
             SongModel song = mService.findSongFromId();
             ContentValues values = new ContentValues();
-            values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
-            values.put(SongsFavoriteTable.IS_FAVORITE, 2);
+            values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
+            values.put(FavoriteSongsTable.IS_FAVORITE, 2);
             Cursor cursor = findSongById(song.getId());
             if (cursor != null && cursor.moveToFirst()) {
-                getActivity().getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values,
                         "id_provider = \"" + song.getId() + "\"", null);
             } else {
-                getActivity().getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+                getActivity().getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
             }
             Toast.makeText(getActivity().getBaseContext(),
                     "Đẫ thêm bài hát " + song.getNameSong() + " vào yêu thich", Toast.LENGTH_LONG).show();
@@ -373,8 +373,8 @@ public class MediaPlaybackFragment extends Fragment {
 
     // tim kiem theo id cua bai hat
     public Cursor findSongById(int id) {
-        return getActivity().getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{SongsFavoriteTable.IS_FAVORITE},
-                SongsFavoriteTable.ID_PROVIDER + "=?",
+        return getActivity().getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, new String[]{FavoriteSongsTable.IS_FAVORITE},
+                FavoriteSongsTable.ID_PROVIDER + "=?",
                 new String[]{String.valueOf(id)}, null);
     }
 

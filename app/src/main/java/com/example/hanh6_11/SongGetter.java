@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
-import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
-import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsProvider;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsTable;
 
 import java.io.FileDescriptor;
 import java.text.SimpleDateFormat;
@@ -88,12 +88,12 @@ public class SongGetter {
 
     public ArrayList<SongModel> getFavoriteSong(ArrayList<SongModel> list) {
         ArrayList<SongModel> songFavorite = new ArrayList<>();
-        String selecfavorite = SongsFavoriteTable.IS_FAVORITE + "=2";
+        String selecfavorite = FavoriteSongsTable.IS_FAVORITE + "=2";
         String[] proje = {
-                SongsFavoriteTable.ID_PROVIDER,
-                SongsFavoriteTable.IS_FAVORITE,
-                SongsFavoriteTable.COUNT_OF_PLAY};
-        Cursor favorite = mContext.getContentResolver().query(FavoriteSongProvider.CONTENT_URI,
+                FavoriteSongsTable.ID_PROVIDER,
+                FavoriteSongsTable.IS_FAVORITE,
+                FavoriteSongsTable.COUNT_OF_PLAY};
+        Cursor favorite = mContext.getContentResolver().query(FavoriteSongsProvider.CONTENT_URI,
                 proje, selecfavorite, null, null);
         if (favorite != null) {
             while (favorite.moveToNext())

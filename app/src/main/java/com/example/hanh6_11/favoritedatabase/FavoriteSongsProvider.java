@@ -9,9 +9,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
-public class FavoriteSongProvider extends ContentProvider {
+public class FavoriteSongsProvider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.example.hanh6_11.favoritedatabase.FavoriteSongProvider";
+    private static final String AUTHORITY = "com.example.hanh6_11.favoritedatabase.FavoriteSongsProvider";
     public static final int SONG_TABLE = 100;
     public static final int SONG_ID = 110;
 
@@ -19,7 +19,7 @@ public class FavoriteSongProvider extends ContentProvider {
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
             + "/" + SONG_BASE_PATH);
 
-    private SongsFavoriteTable mSongsFavorite;
+    private FavoriteSongsTable mSongsFavorite;
     private SQLiteDatabase mData;
 
 
@@ -33,7 +33,7 @@ public class FavoriteSongProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mSongsFavorite = new SongsFavoriteTable(getContext(), null, null, 1);
+        mSongsFavorite = new FavoriteSongsTable(getContext(), null, null, 1);
         mData = mSongsFavorite.getWritableDatabase();
         return false;
     }
@@ -42,11 +42,11 @@ public class FavoriteSongProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(SongsFavoriteTable.TABLE_NAME);
+        queryBuilder.setTables(FavoriteSongsTable.TABLE_NAME);
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case SONG_ID:
-                queryBuilder.appendWhere(SongsFavoriteTable.ID_PROVIDER + "="
+                queryBuilder.appendWhere(FavoriteSongsTable.ID_PROVIDER + "="
                         + uri.getLastPathSegment());
                 break;
             case SONG_TABLE:
@@ -71,7 +71,7 @@ public class FavoriteSongProvider extends ContentProvider {
         long id = 0;
         switch (uriType) {
             case SONG_TABLE:
-                id = mData.insert(SongsFavoriteTable.TABLE_NAME, null, values);
+                id = mData.insert(FavoriteSongsTable.TABLE_NAME, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -86,16 +86,16 @@ public class FavoriteSongProvider extends ContentProvider {
         int rowsDeleted = 0;
         switch (uriType) {
             case SONG_TABLE:
-                rowsDeleted = mData.delete(SongsFavoriteTable.TABLE_NAME, selection,
+                rowsDeleted = mData.delete(FavoriteSongsTable.TABLE_NAME, selection,
                         selectionArgs);
                 break;
             case SONG_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsDeleted = mData.delete(SongsFavoriteTable.TABLE_NAME,
+                    rowsDeleted = mData.delete(FavoriteSongsTable.TABLE_NAME,
                             mSongsFavorite.ID_PROVIDER + "=" + id, null);
                 } else {
-                    rowsDeleted = mData.delete(SongsFavoriteTable.TABLE_NAME,
+                    rowsDeleted = mData.delete(FavoriteSongsTable.TABLE_NAME,
                             mSongsFavorite.ID_PROVIDER + "=" + id + " and " + selection,
                             selectionArgs);
                 }
@@ -113,17 +113,17 @@ public class FavoriteSongProvider extends ContentProvider {
         int rowsUpdated = 0;
         switch (uriType) {
             case SONG_TABLE:
-                rowsUpdated = mData.update(SongsFavoriteTable.TABLE_NAME, values,
+                rowsUpdated = mData.update(FavoriteSongsTable.TABLE_NAME, values,
                         selection, selectionArgs);
                 break;
             case SONG_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated = mData.update(SongsFavoriteTable.TABLE_NAME,
-                            values, SongsFavoriteTable.ID_PROVIDER + "=" + id, null);
+                    rowsUpdated = mData.update(FavoriteSongsTable.TABLE_NAME,
+                            values, FavoriteSongsTable.ID_PROVIDER + "=" + id, null);
                 } else {
-                    rowsUpdated = mData.update(SongsFavoriteTable.TABLE_NAME,
-                            values, SongsFavoriteTable.ID_PROVIDER + "=" + id + " and "
+                    rowsUpdated = mData.update(FavoriteSongsTable.TABLE_NAME,
+                            values, FavoriteSongsTable.ID_PROVIDER + "=" + id + " and "
                                     + selection, selectionArgs);
                 }
                 break;

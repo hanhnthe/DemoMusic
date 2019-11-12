@@ -16,8 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hanh6_11.favoritedatabase.FavoriteSongProvider;
-import com.example.hanh6_11.favoritedatabase.SongsFavoriteTable;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsProvider;
+import com.example.hanh6_11.favoritedatabase.FavoriteSongsTable;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> {
 
@@ -123,8 +123,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
     }
 
     public Cursor findSongById(int id) {
-        return mContext.getContentResolver().query(FavoriteSongProvider.CONTENT_URI, new String[]{SongsFavoriteTable.IS_FAVORITE},
-                SongsFavoriteTable.ID_PROVIDER + "=?",
+        return mContext.getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, new String[]{FavoriteSongsTable.IS_FAVORITE},
+                FavoriteSongsTable.ID_PROVIDER + "=?",
                 new String[]{String.valueOf(id)}, null);
     }
 
@@ -135,9 +135,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             int count = cursor.getInt(0);
             System.out.println(count);
             if (count == 2) {
-                values.put(SongsFavoriteTable.IS_FAVORITE, 1);
+                values.put(FavoriteSongsTable.IS_FAVORITE, 1);
                 Toast.makeText(mContext, "Đã xoá bài hát khỏi yêu thích", Toast.LENGTH_SHORT).show();
-                mContext.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                mContext.getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values,
                         "id_provider = \"" + song.getId() + "\"", null);
             } else {
                 Toast.makeText(mContext, "bài hát chưa được yêu thích", Toast.LENGTH_SHORT).show();
@@ -157,18 +157,18 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.MyViewHolder> 
             if (count == 2) {
                 Toast.makeText(mContext.getApplicationContext(), "bạn đã thích bài hát này trước đó", Toast.LENGTH_SHORT).show();
             } else {
-                values.put(SongsFavoriteTable.IS_FAVORITE, 2);
-                values.put(SongsFavoriteTable.COUNT_OF_PLAY, 3);
+                values.put(FavoriteSongsTable.IS_FAVORITE, 2);
+                values.put(FavoriteSongsTable.COUNT_OF_PLAY, 3);
                 Toast.makeText(mContext.getApplicationContext(), "đã thêm bài hát vào  yêu thích", Toast.LENGTH_SHORT).show();
-                mContext.getContentResolver().update(FavoriteSongProvider.CONTENT_URI, values,
+                mContext.getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values,
                         "id_provider = \"" + song.getId() + "\"", null);
             }
             cursor.close();
         } else {
-            values.put(SongsFavoriteTable.COUNT_OF_PLAY, 3);
-            values.put(SongsFavoriteTable.ID_PROVIDER, song.getId());
-            values.put(SongsFavoriteTable.IS_FAVORITE, 2);
-            mContext.getContentResolver().insert(FavoriteSongProvider.CONTENT_URI, values);
+            values.put(FavoriteSongsTable.COUNT_OF_PLAY, 3);
+            values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
+            values.put(FavoriteSongsTable.IS_FAVORITE, 2);
+            mContext.getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
             Toast.makeText(mContext.getApplicationContext(), "đã thêm bài hát vào yêu thích", Toast.LENGTH_SHORT).show();
         }
     }

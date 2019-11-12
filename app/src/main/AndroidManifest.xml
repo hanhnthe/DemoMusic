@@ -27,8 +27,8 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.example.hanh6_11.favoritedatabase.FavoriteSongProvider"
-            android:name="com.example.hanh6_11.favoritedatabase.FavoriteSongProvider"
+            android:authorities="com.example.hanh6_11.favoritedatabase.FavoriteSongsProvider"
+            android:name="com.example.hanh6_11.favoritedatabase.FavoriteSongsProvider"
             android:enabled="true"
             android:exported="true"></provider>
     </application>
