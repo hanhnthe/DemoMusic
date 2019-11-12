@@ -43,16 +43,14 @@ public class MediaPlaybackFragment extends Fragment {
     public static final String CALLBACKALL = "callbackall";
     public static final String CHECKCALLBACK = "checkcallback";
 
-    private TextView mNameSongTxt, mAuthorTxt, mTimeTxt;
-    private ImageView mImageSongImgV, mImageBackgroundImgV;
-    private ImageView mPlaySongImgV;
+    private TextView mNameSongTxt, mAuthorTxt, mMaxTimeTxt, mProgressTimeTxt;
+    private ImageView mImageSongImgV, mImageBackgroundImgV, mPlaySongImgV;
     private SeekBar mSeekbar;
-    private TextView mProgressTimeTxt;
     private ImageButton mNextImg, mPrevImg, mLikeImg, mDisLikeImg, mListImg, mShuffleImg, mRepeatImg;
 
     private MediaPlaybackService mService;
     private ActivityMusic mActi;
-    private int mSave;
+    private int mSaveInstance;
     private boolean mChangeCallBackAll= false;
 
 
@@ -70,7 +68,7 @@ public class MediaPlaybackFragment extends Fragment {
 
         mNameSongTxt = (TextView) view.findViewById(R.id.nameSong3);
         mAuthorTxt = (TextView) view.findViewById(R.id.author2);
-        mTimeTxt = (TextView) view.findViewById(R.id.maxTime);
+        mMaxTimeTxt = (TextView) view.findViewById(R.id.maxTime);
         mImageSongImgV = (ImageView) view.findViewById(R.id.image2);
         mImageBackgroundImgV = (ImageView) view.findViewById(R.id.manhinh);
         ConstraintLayout view1 = (ConstraintLayout) view.findViewById(R.id.play);
@@ -91,7 +89,7 @@ public class MediaPlaybackFragment extends Fragment {
         pre();
         shuffle();
         repeat();
-        likeAndDis();
+        likeAndDislike();
         listComeBack();
         updateTimeSong();
         return view;
@@ -109,7 +107,7 @@ public class MediaPlaybackFragment extends Fragment {
     public void updateUI(int id, String name, String author, String time, String image) {
         if (mSeekbar != null && mNameSongTxt != null && mAuthorTxt != null && mImageBackgroundImgV != null
                 && mImageBackgroundImgV != null
-                && mTimeTxt != null && mPlaySongImgV != null && mLikeImg != null) {
+                && mMaxTimeTxt != null && mPlaySongImgV != null && mLikeImg != null) {
             mSeekbar.setMax(mService.getDur());
             mNameSongTxt.setText(name);
             mAuthorTxt.setText(author);
@@ -117,7 +115,7 @@ public class MediaPlaybackFragment extends Fragment {
                 mImageSongImgV.setImageBitmap(decodeBase64(image));
                 mImageBackgroundImgV.setImageBitmap(decodeBase64(image));
             }
-            mTimeTxt.setText(time);
+            mMaxTimeTxt.setText(time);
             play();
             Cursor cursor = findSongById(id);
             if (cursor != null && cursor.moveToFirst()) {
@@ -148,14 +146,14 @@ public class MediaPlaybackFragment extends Fragment {
                     mService.pausePlayer();
                     mService.updatePlayNotification();
                 } else {
-                    mSave = mService.getmSavePlay();
-                    if (mSave == 0) {
+                    mSaveInstance = mService.getmSavePlay();
+                    if (mSaveInstance == 0) {
                         mService.playSong();
-                        mSave++;
+                        mSaveInstance++;
                         mChangeCallBackAll = true;
-                        sendCallBackAll();
+                        sendCallBackAllSongs();
                         mChangeCallBackAll=false;
-                        mService.setmSavePlay(mSave);
+                        mService.setmSavePlay(mSaveInstance);
                     } else {
                         mService.go();
                     }
@@ -187,7 +185,7 @@ public class MediaPlaybackFragment extends Fragment {
             public void onClick(View v) {
                 mService.playNext();
                 mChangeCallBackAll = true;
-                sendCallBackAll();
+                sendCallBackAllSongs();
                 mChangeCallBackAll=false;
                 SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
@@ -203,7 +201,7 @@ public class MediaPlaybackFragment extends Fragment {
             public void onClick(View v) {
                 mService.playPrev();
                 mChangeCallBackAll = true;
-                sendCallBackAll();
+                sendCallBackAllSongs();
                 mChangeCallBackAll=false;
                 SongModel song = mService.findSongFromId();
                 String songString = encodeTobase64(song.getImageSong());
@@ -289,7 +287,7 @@ public class MediaPlaybackFragment extends Fragment {
         });
     }
 
-    public void likeAndDis() {
+    public void likeAndDislike() {
         mLikeImg.setOnClickListener(new View.OnClickListener() {
             boolean i = true;
             @Override
@@ -324,24 +322,6 @@ public class MediaPlaybackFragment extends Fragment {
         });
     }
 
-    private void dislikeSong() {
-        if (mService != null) {
-            SongModel song = mService.findSongFromId();
-            ContentValues values = new ContentValues();
-            values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
-            values.put(FavoriteSongsTable.IS_FAVORITE, 1);
-            Cursor cursor = findSongById(song.getId());
-            if (cursor != null && cursor.moveToFirst()) {
-                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values,
-                        "id_provider = \"" + song.getId() + "\"", null);
-            } else {
-                getActivity().getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
-            }
-            Toast.makeText(getActivity().getBaseContext(),
-                    "Đẫ xoá bài hát " + song.getNameSong() + " khỏi yêu thich", Toast.LENGTH_LONG).show();
-        }
-    }
-
     private void likeSong() {
         if (mService != null) {
             SongModel song = mService.findSongFromId();
@@ -360,6 +340,24 @@ public class MediaPlaybackFragment extends Fragment {
         }
     }
 
+    private void dislikeSong() {
+        if (mService != null) {
+            SongModel song = mService.findSongFromId();
+            ContentValues values = new ContentValues();
+            values.put(FavoriteSongsTable.ID_PROVIDER, song.getId());
+            values.put(FavoriteSongsTable.IS_FAVORITE, 1);
+            Cursor cursor = findSongById(song.getId());
+            if (cursor != null && cursor.moveToFirst()) {
+                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values,
+                        "id_provider = \"" + song.getId() + "\"", null);
+            } else {
+                getActivity().getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
+            }
+            Toast.makeText(getActivity().getBaseContext(),
+                    "Đẫ xoá bài hát " + song.getNameSong() + " khỏi yêu thich", Toast.LENGTH_LONG).show();
+        }
+    }
+
     public void listComeBack() {
         if (mListImg != null) {
             mListImg.setOnClickListener(new View.OnClickListener() {
@@ -371,21 +369,7 @@ public class MediaPlaybackFragment extends Fragment {
         }
     }
 
-    // tim kiem theo id cua bai hat
-    public Cursor findSongById(int id) {
-        return getActivity().getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, new String[]{FavoriteSongsTable.IS_FAVORITE},
-                FavoriteSongsTable.ID_PROVIDER + "=?",
-                new String[]{String.valueOf(id)}, null);
-    }
-
-
-    public void sendCallBackAll(){
-        Intent intent = new Intent();
-        intent.setAction(CALLBACKALL);
-        intent.putExtra(CHECKCALLBACK,mChangeCallBackAll);
-        mService.sendBroadcast(intent);
-    }
-
+    //update thoi gian tren thanh seekbar
     private void updateTimeSong() {
         if (mService != null) {
             final Handler handler = new Handler();
@@ -399,6 +383,21 @@ public class MediaPlaybackFragment extends Fragment {
                 }
             }, 100);
         }
+    }
+
+    // tim kiem theo id cua bai hat
+    public Cursor findSongById(int id) {
+        return getActivity().getContentResolver().query(FavoriteSongsProvider.CONTENT_URI, new String[]{FavoriteSongsTable.IS_FAVORITE},
+                FavoriteSongsTable.ID_PROVIDER + "=?",
+                new String[]{String.valueOf(id)}, null);
+    }
+
+    //gui thong bao den cho listSong neu bai hat dang choi thay doi
+    public void sendCallBackAllSongs(){
+        Intent intent = new Intent();
+        intent.setAction(CALLBACKALL);
+        intent.putExtra(CHECKCALLBACK,mChangeCallBackAll);
+        mService.sendBroadcast(intent);
     }
 
     //chuyen byte[] thanh bimap
@@ -421,6 +420,7 @@ public class MediaPlaybackFragment extends Fragment {
         }
     }
 
+    //nhan thong bao tu service neu sevice thay doi de update UI
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         //code thi hanh khi receiver nhan dc intent
         @Override
@@ -458,31 +458,35 @@ public class MediaPlaybackFragment extends Fragment {
         getActivity().unregisterReceiver(receiver);
     }
 
+    //luu gia tri cua nut shuffle va repeat
     public void saveStateShuffe(boolean shuffleState) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().
+                getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(SHUFFLE, shuffleState);
         editor.apply();
     }
-
     public void saveStateRepeat(int repeatState) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().
+                getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(REPEAT, repeatState);
         editor.apply();
     }
 
+    //doc gia tri cua nut shuffle va repeat tu sharepreference
     public Boolean readShuffleShare() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().
+                getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         boolean i = true;
         if (sharedPreferences != null) {
             i = sharedPreferences.getBoolean(SHUFFLE, true);
         }
         return i;
     }
-
     public int readRepeatShare() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().
+                getSharedPreferences(MediaPlaybackService.SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         int i = 1;
         if (sharedPreferences != null) {
             i = sharedPreferences.getInt(REPEAT, 1);
