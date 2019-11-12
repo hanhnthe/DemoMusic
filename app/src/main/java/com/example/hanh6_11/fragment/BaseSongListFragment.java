@@ -29,21 +29,21 @@ import com.example.hanh6_11.SongGetter;
 import com.example.hanh6_11.SongModel;
 
 public class BaseSongListFragment extends Fragment {
-    protected RecyclerView mRecyclerview;
-    protected SongAdapter mSongAdapter;
-    protected RecyclerView.LayoutManager mLayout;
-    protected SongGetter mSongGetter;
+    private RecyclerView mRecyclerview;
+    private SongAdapter mSongAdapter;
+    private RecyclerView.LayoutManager mLayout;
+    private SongGetter mSongGetter;
 
     private View.OnClickListener mListen;
-    protected OnSongClickListener mOnSongClickListener;
+    private OnSongClickListener mOnSongClickListener;
 
     private TextView nameTxt, auTxt;
     private ImageView ima;
     private ImageButton mPlay;
 
-    protected MediaPlaybackService mService;
+    private MediaPlaybackService mService;
     protected ActivityMusic mActi;
-    private int mSave = 0;
+    private int mSaveInstance = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,11 +74,11 @@ public class BaseSongListFragment extends Fragment {
                     mService.pausePlayer();
                     mService.updatePlayNotification();
                 } else {
-                    mSave = mService.getmSavePlay();
-                    if (mSave == 0) {
+                    mSaveInstance = mService.getmSavePlay();
+                    if (mSaveInstance == 0) {
                         mService.playSong();
-                        mSave++;
-                        mService.setmSavePlay(mSave);
+                        mSaveInstance++;
+                        mService.setmSavePlay(mSaveInstance);
                         setRecyclerview();
                     } else {
                         mService.go();
