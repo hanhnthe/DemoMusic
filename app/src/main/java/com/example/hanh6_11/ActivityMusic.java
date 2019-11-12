@@ -44,7 +44,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     //khai bao cac doi tuong service
     private MediaPlaybackService mMediaService;
     private Intent mPlayIntent;
-    private boolean mMusicBound = false;
     private AppCompatActivity compatActivity;
     public int mOrientation;
 
@@ -52,6 +51,8 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
     private final static String LISTSONGSAVE = "listsongsave";
 
     private List<SongModel> mList;
+    //kiem tra nguoi dung dang chon list bai hat nao
+    //allSongs hay favoriteSongs
     private final static String CHECK = "check";
     private Boolean check = true;
 
@@ -75,42 +76,32 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
         int permission_storage = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE);
         if (permission_storage != PackageManager.PERMISSION_GRANTED) {
-            makeRequest();
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            makeListSongs(savedInstanceState);
         } else {
-            mSongGetterAll = new SongGetter(this, 1, null);
-            mSongGetterFavorite = new SongGetter(this, 2, mSongGetterAll.getmListAll());
-            if (savedInstanceState != null) {
-                check = savedInstanceState.getBoolean(CHECK);
-                if (check) {
-                    mSongGetter = mSongGetterAll;
-                    check = true;
-                    mList = readListPreference();
-                } else {
-                    mSongGetter = mSongGetterFavorite;
-                    check = false;
-                    mList = readListPreference();
-                }
-            } else {
-                mSongGetter = mSongGetterAll;
-                mList = mSongGetter.getLitSong();
-            }
-            compatActivity = this;
-            mOrientation = getResources().getConfiguration().orientation;
-
-            if (mPlayIntent == null) {
-                mPlayIntent = new Intent(this, MediaPlaybackService.class);
-                startService(mPlayIntent);
-                bindService(mPlayIntent, musicConnection, Context.BIND_AUTO_CREATE);
-            }
-            navigation();
+           makeListSongs(savedInstanceState);
         }
     }
 
-    private void makeRequest() {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        mSongGetter = new SongGetter(this, 1, null);
-        mList = mSongGetter.getLitSong();
+    private void makeListSongs(Bundle savedInstanceState) {
+        mSongGetterAll = new SongGetter(this, 1, null);
+        mSongGetterFavorite = new SongGetter(this, 2, mSongGetterAll.getmListAll());
+        if (savedInstanceState != null) {
+            check = savedInstanceState.getBoolean(CHECK);
+            if (check) {
+                mSongGetter = mSongGetterAll;
+                check = true;
+                mList = readListPreference();
+            } else {
+                mSongGetter = mSongGetterFavorite;
+                check = false;
+                mList = readListPreference();
+            }
+        } else {
+            mSongGetter = mSongGetterAll;
+            mList = mSongGetter.getLitSong();
+        }
         compatActivity = this;
         mOrientation = getResources().getConfiguration().orientation;
 
@@ -124,7 +115,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
 
     private void navigation() {
         mDrawerLayout = findViewById(R.id.navigation);
-
         NavigationView navigationView = findViewById(R.id.navi_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -144,6 +134,7 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             }
         });
     }
+
     public void addSongFavorite(SongModel songModel){
         ArrayList<SongModel> songs =  mSongGetterFavorite.getLitSong();
         boolean check = false;
@@ -179,12 +170,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
        unbindService(musicConnection);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
-
     //ket noi voi service
     private ServiceConnection musicConnection = new ServiceConnection() {
         @Override
@@ -194,7 +179,6 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             setmMediaService(((MediaPlaybackService.MusicBinder) service).getService());
             //chuyen list
             mMediaService.setList(mList);
-            mMusicBound = true;
             if (mOrientation == Configuration.ORIENTATION_PORTRAIT) {
                 mLayoutController = new OneFragmentController(compatActivity);
             } else {
@@ -205,12 +189,10 @@ public class ActivityMusic extends AppCompatActivity implements OnSongClickListe
             } else {
                 mLayoutController.onCreate(2);
             }
-
             mLayoutController.setmOnclickService((OnSongClickListener) compatActivity);
         }
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            mMusicBound = false;
         }
     };
 
