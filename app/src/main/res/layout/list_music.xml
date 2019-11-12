@@ -37,6 +37,7 @@
 
             <TextView
                 android:id="@+id/nameSong2"
+                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:gravity="bottom"
@@ -45,6 +46,7 @@
 
             <TextView
                 android:id="@+id/author1"
+                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/w_33"
                 android:text="chi pu"
