@@ -34,9 +34,5 @@ public class FavoriteSongsTable extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String drop_songs_table = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
-        db.execSQL(drop_songs_table);
-
-        onCreate(db);
     }
 }
