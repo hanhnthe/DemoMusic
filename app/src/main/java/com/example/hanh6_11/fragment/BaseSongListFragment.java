@@ -69,7 +69,7 @@ public class BaseSongListFragment extends Fragment {
         mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mService.isPng()) {
+                if (mService.isPlaying()) {
                     mPlay.setImageResource(R.drawable.ic_play_1);
                     mService.pausePlayer();
                     mService.updatePlayNotification();
@@ -130,7 +130,7 @@ public class BaseSongListFragment extends Fragment {
 
     public void play() {
         if (mService != null) {
-            if (mService.isPng()) {
+            if (mService.isPlaying()) {
                 mPlay.setImageResource(R.drawable.ic_pause_1);
             }
             else {

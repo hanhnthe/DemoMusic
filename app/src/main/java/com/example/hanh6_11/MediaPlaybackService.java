@@ -41,6 +41,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     //current position
     private int mCurrentSong;
     private int mIdCurrentSong;
+
     private final IBinder mMusicBind = new MusicBinder();
 
     private NotificationManager mNotifyManager;
@@ -63,6 +64,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     public static final String SONGSHAREPREFERENCE = "song1";
     public static final String IDSONGCURRENT = "idsongcurrent";
     private Intent mchangeListennerIntent = null;
+
     private RemoteViews notificationLayout;
     private RemoteViews notificationLayoutBig;
 
@@ -70,7 +72,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     @Override
     public void onCreate() {
         super.onCreate();
-        mCurrentSong = -1;//khoi tao vi tri =0
+        mCurrentSong = -1;//khoi tao vi tri =-1
         mPlayer = new MediaPlayer();
         initMusicPlayer();
         createNotificationChannel();
@@ -334,7 +336,7 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         return mPlayer.getDuration();
     }
 
-    public Boolean isPng() {
+    public Boolean isPlaying() {
         return mPlayer.isPlaying();
     }
     public void pausePlayer() {

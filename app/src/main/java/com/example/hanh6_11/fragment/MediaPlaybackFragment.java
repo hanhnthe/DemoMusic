@@ -132,7 +132,7 @@ public class MediaPlaybackFragment extends Fragment {
     }
 
     public void play() {
-        if (mService.isPng()) {
+        if (mService.isPlaying()) {
             mPlaySongImgV.setBackgroundResource(R.drawable.ic_pause_22);
         } else {
             mPlaySongImgV.setBackgroundResource(R.drawable.ic_play_22);
@@ -141,7 +141,7 @@ public class MediaPlaybackFragment extends Fragment {
         mPlaySongImgV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mService.isPng()) {
+                if (mService.isPlaying()) {
                     mPlaySongImgV.setBackgroundResource(R.drawable.ic_play_22);
                     mService.pausePlayer();
                     mService.updatePlayNotification();
