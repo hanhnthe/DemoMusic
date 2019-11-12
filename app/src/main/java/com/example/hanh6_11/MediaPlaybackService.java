@@ -470,14 +470,16 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
     };
 
     public void saveIdSongCurrent(int id) {
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getApplicationContext().
+                getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(IDSONGCURRENT, id);
         editor.apply();
     }
 
     public int readIDShare() {
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getApplicationContext().
+                getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         int i = 0;
         if (sharedPreferences != null) {
             i = sharedPreferences.getInt(IDSONGCURRENT, 0);
@@ -485,7 +487,8 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         return i;
     }
     public boolean readShuffle(){
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getApplicationContext().
+                getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         boolean check = true;
         if(sharedPreferences!=null){
             check=sharedPreferences.getBoolean(MediaPlaybackFragment.SHUFFLE,true);
@@ -493,7 +496,8 @@ public class MediaPlaybackService extends Service implements MediaPlayer.OnPrepa
         return check;
     }
     public int readRepeat(){
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getApplicationContext().
+                getSharedPreferences(SONGSHAREPREFERENCE, Context.MODE_PRIVATE);
         int checkrepeat = 1;
         if(sharedPreferences!= null){
             checkrepeat = sharedPreferences.getInt(MediaPlaybackFragment.REPEAT,1);
